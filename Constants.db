@@ -1,0 +1,60 @@
+#pragma once
+
+#ifndef CONSTANTS_DB
+#define CONSTANTS_DB
+
+const int WINDOW_LENGTH = 1300;
+const int WINDOW_HIGH = 700;
+
+const int FIELD_LENGTH = 100;
+const int FIELD_HIGH = 100;
+
+const double SQUARE_SIZE_PIXIL = 100;
+
+const double FIELD_LENGTH_PIXIL = FIELD_LENGTH * SQUARE_SIZE_PIXIL;
+const double FIELD_HIGH_PIXIL = FIELD_HIGH * SQUARE_SIZE_PIXIL;
+
+const int PLAYER_SPRITE_POSITION_X = 0;
+const int PLAYER_SPRITE_POSITION_Y = 0;
+
+const int PLAYER_SPRITE_LENGTH = 50;
+const int PLAYER_SPRITE_HIGH = 50;
+
+const double PLAYER_SPEED = 0.2;
+const double BULLET_SPEED = 0.8;
+
+const double PI = 3.14159265;
+
+const int GROUND_SPRITE_POSITION_X = 0;
+const int GROUND_SPRITE_POSITION_Y = 0;
+
+const int TREE_SPRITE_POSITION_X = 100;
+const int TREE_SPRITE_POSITION_Y = 0;
+
+const int COUNT_TREE = FIELD_LENGTH * FIELD_HIGH / 100;
+
+const int ENVIROMENT_SPRITE_LENGTH = 100;
+const int ENVIROMENT_SPRITE_HIGH = 100;
+
+const double MILLISECOND_FOR_ACTION = 9.9;
+
+const int BULLET_SPRITE_POSITION_X = 0;
+const int BULLET_SPRITE_POSITION_Y = 0;
+
+const int BULLET_SPRITE_LENGTH = 5;
+const int BULLET_SPRITE_HIGH = 5;
+
+const int WEAPON_DAMAGE [1] = {1};
+const int WEAPON_MAX_AMMO [1] = {30};
+const double WEAPON_ACCURACY [1] = {5};
+const double WEAPON_RELOAD_AMMO [1] = {5000};
+const double WEAPON_RELOAD_BULLET [1] = {100};
+
+const double BULLET_MAX_LIFE = 3000;
+
+const double ROAD_STRAIGHT_POSITION_X = 100;
+const double ROAD_TURN_POSITION_X = 200;
+const double ROAD_TRIPLE_POSITION_X = 300;
+const double ROAD_QUADR_POSITION_X = 400;
+
+#endif
