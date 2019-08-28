@@ -79,7 +79,7 @@ bool Game::loadSprites()
 	_road.setTexture(EnviromentTexture);
 
 	// resize roads vector
-	road.resize(15);
+	road.resize(16);
 
 	/*
 	* I (@BagInCode) will use bitmask for numerating roads
@@ -305,13 +305,15 @@ void Game::generateField()
 	*/
 
 	// creating road
-/*
+
 	// calc haw much turns will have road
 	int countTurns = rand() % (FIELD_LENGTH / 10);
 
+	cerr << countTurns << "\n";
+
 	// position of new turn
 	// generate start point
-	int positionX = 1;
+	int positionX = 0;
 	int positionY = rand() % FIELD_HIGH;
 	
 	// position of previous turn
@@ -364,7 +366,7 @@ void Game::generateField()
 	{
 		Field[i][positionY] = 2;
 	}
-*/
+
 	// creating trees
 	for(int i = 0; i < COUNT_TREE; i++)
 	{
@@ -401,6 +403,11 @@ int Game::getRoadNumber(int positionX, int positionY)
 	* if square if near end of map - think, that outside is neighbour road
 	* if near neighbour road - add to result
 	*/
+	/*
+	*  2     X - position of road sprite
+	* 1X3
+	*  0     0,1,2,3 - abstract numerating of neighbours
+	*/
 
 	int result = 0;
 
@@ -409,12 +416,12 @@ int Game::getRoadNumber(int positionX, int positionY)
 		result += 1;
 	}
 	else
-	if (Field[positionX ][positionY+1] == 2)
+	if (Field[positionX][positionY+1] == 2)
 	{
 		result += 1;
 	}
 
-	if (positionX == FIELD_LENGTH - 1)
+	if (positionX == FIELD_HIGH - 1)
 	{
 		result += 2;
 	}
@@ -511,8 +518,8 @@ void Game::drawObjects(RenderWindow & window)
 	pair < double, double > playerPosition = PlayerObject.getPosition();
 
 	// find coorditanes of square where player stay
-	int positionInFieldX = (int)(playerPosition.first) / round(SQUARE_SIZE_PIXIL);
-	int positionInFieldY = (int)(playerPosition.second) / round(SQUARE_SIZE_PIXIL);
+	int positionInFieldY = (int)(playerPosition.first) / round(SQUARE_SIZE_PIXIL);
+	int positionInFieldX = (int)(playerPosition.second) / round(SQUARE_SIZE_PIXIL);
 
 	// find segments, which we have to check for drawing
 	int _up = max(0, positionInFieldX - 8);
@@ -527,8 +534,8 @@ void Game::drawObjects(RenderWindow & window)
 		{
 			// fing global position of current square 
 			// and difference of global position player and current square
-			double deltX = (i * SQUARE_SIZE_PIXIL) - playerPosition.first;
-			double deltY = (j * SQUARE_SIZE_PIXIL) - playerPosition.second;
+			double deltX = (j * SQUARE_SIZE_PIXIL) - playerPosition.first;
+			double deltY = (i * SQUARE_SIZE_PIXIL) - playerPosition.second;
 			
 			// if this square have to be in window
 			if (playerPositionInWindow.first + deltX > -SQUARE_SIZE_PIXIL && playerPositionInWindow.first + deltX < FIELD_LENGTH_PIXIL &&
@@ -539,14 +546,11 @@ void Game::drawObjects(RenderWindow & window)
 				window.draw(enviroment[0]);
 
 				// if square is road
-				/*if (Field[i][j] == 2)
+				if (Field[i][j] == 2)
 				{
 					road[getRoadNumber(i, j)].setPosition(playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
 					window.draw(road[getRoadNumber(i, j)]);
-				}else*/
-
-				cerr << i << " " << j << "\n";
-				cerr << Field[i][j] << "\n";
+				}else
 
 				// if this square is not tree
 				if (Field[i][j] > 1)
