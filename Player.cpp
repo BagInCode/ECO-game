@@ -1,199 +1,89 @@
 #include "Player.h"
 
-Player::Player()
-{
-}
-
-
-Player::~Player()
-{
-}
-
-
-
-pair < double, double > Player::getPosition()
+bool Player::create()
 {
 	/*
-	* function of getting player global (on map) position
+	* function of initialization player
 	*
-	* @return player global position
+	* @return true - if initialization completed
+	*         false - if initialization failed
 	*/
 
-	return { positionX, positionY };
-}
-
-
-pair < double, double > Player::getPositionInWindow()
-{
-	/*
-	* function of calculating and getting player local (in window) position without rotation
-	*
-	* @return player local position without rotation
-	*/
-
-	// default player stay at centre of window
-	double positionInWindowX = (WINDOW_LENGTH - PLAYER_SPRITE_LENGTH) / 2;
-	double positionInWindowY = (WINDOW_HIGH - PLAYER_SPRITE_HIGH) / 2;
-
-	// if payer closer to right border of map 
-	// then centre of window to right border of window
-	// update position 
-	if (positionInWindowX > positionX)
+	// if did not load file
+	if (!PlayerTexture.loadFromFile("Textures\\Player.png"))
 	{
-		positionInWindowX = positionX;
+		// initialization failed
+		return 0;
 	}
 
-	// if payer closer to left border of map 
-	// then centre of window to left border of window
-	// update position 
-	if (WINDOW_LENGTH - positionInWindowX > FIELD_LENGTH_PIXIL - positionX)
-	{
-		positionInWindowX = WINDOW_LENGTH - (FIELD_LENGTH_PIXIL - positionX);
-	}
+	// set texture image to player sprite
+	PlayerSprite.setTexture(PlayerTexture);
 
-	// if payer closer to lower border of map 
-	// then centre of window to lower border of window
-	// update position 
-	if (positionInWindowY > positionY)
-	{
-		positionInWindowY = positionY;
-	}
+	// set player sprite size 
+	spriteHigh = PLAYER_SPRITE_AK_HIGH;
+	spriteLength = PLAYER_SPRITE_AK_LENGTH;
 
-	// if payer closer to upper border of map 
-	// then centre of window to upper border of window
-	// update position 
-	if (WINDOW_HIGH - positionInWindowY > FIELD_HIGH_PIXIL - positionY)
-	{
-		positionInWindowY = WINDOW_HIGH - (FIELD_HIGH_PIXIL - positionY);
-	}
+	// set texture rectangle to the player sprite
+	PlayerSprite.setTextureRect(IntRect(0, 0, spriteLength, spriteHigh));
 
-	// return position
-	return { positionInWindowX, positionInWindowY };
+	// set origin of sprite to center
+	PlayerSprite.setOrigin(spriteLength / 2., spriteHigh / 2.);
+
+	// set player position
+	playerPositionX = FIELD_SIZE / 2 * SQUARE_SIZE_PIXIL;
+	playerPositionY = FIELD_SIZE / 2 * SQUARE_SIZE_PIXIL;
+
+	// initialization complited
+	return 1;
 }
 
-double Player::getAngle()
+void Player::setSprite(int spritePositionX, int spritePositionY, int newSpriteLength, int newSpriteHigh)
 {
 	/*
-	*  function of getting player angle
+	* function of resetting player sprite
 	*
-	* @return angle
+	* @param spritePositionX, spritePositionY - position of top left pixil of image in texture file
+	*        newSpriteLength, newSpriteHigh - sprite image size
 	*/
 
-	return angle;
-}
+	// setting new sprite size
+	spriteHigh = newSpriteHigh;
+	spriteLength = newSpriteLength;
 
-int Player::getHealthPoints()
-{
-	/*
-	* function of getting player health points
-	*
-	* @return player health points
-	*/
+	// setting new sprite image
+	PlayerSprite.setTextureRect(IntRect(spritePositionX, spritePositionY, spriteLength, spriteHigh));
 
-	return healthPoints;
-}
-
-int Player::getArmorPoints()
-{
-	/*
-	* function of getting player armor points
-	*
-	* @return player armor points
-	*/
-
-	return armorPoints;
-}
-
-void Player::setPosition(double newPositionX, double newPositionY)
-{
-	/*
-	* function of setting player global (on map) position
-	*
-	* @param newPlayerPositionX, newPlayerPositionY - new global position
-	*/
-
-	positionX = newPositionX;
-	positionY = newPositionY;
+	// set origin of sprite to center
+	PlayerSprite.setOrigin(spriteLength / 2., spriteHigh / 2.);
 
 	return;
 }
 
-void Player::setArmorPoints(int newArmorPoints)
+void Player::draw(RenderWindow& window)
 {
 	/*
-	* function of setting player armor posints
+	* function of drawing player sprite in game window
 	*
-	* @param newArmorPoints - new armor points
+	* @param window - game window
 	*/
 
-	armorPoints = newArmorPoints;
+	// get player position inside game window
+	double playerPositionInWindowX = getPositionInWindow().first;
+	double playerPositionInWindowY = getPositionInWindow().second;
+
+	// get angle and position of rotation
+	rotate(window, playerPositionInWindowX, playerPositionInWindowY);
+
+	// rotate sprite
+	PlayerSprite.setRotation(angle * 180 / acos(-1));
+
+	// set sprite position
+	PlayerSprite.setPosition(playerPositionInWindowX, playerPositionInWindowY);
+
+	// drawing sprite
+	window.draw(PlayerSprite);
 
 	return;
-}
-
-void Player::setHealthPoints(int newHealthPoints)
-{
-	/*
-	* function of setting player health points
-	*
-	* @param newHealthPoints - new health points
-	*/
-
-	healthPoints = newHealthPoints;
-
-	return;
-}
-
-void Player::setKeyUpPressed(bool newValue)
-{
-	/*
-	* function of setting key up pressed value
-	*
-	* @param newValue - true if key pressed
-	*                   false if key released
-	*/
-
-	keyUpMovePressed = newValue;
-
-	return;
-}
-
-void Player::setKeyDownPressed(bool newValue)
-{
-	/*
-	* function of setting key down pressed
-	*
-	* @param newValue - true if key pressed
-	*                   false if key released
-	*/
-
-	keyDownMovePressed = newValue;
-
-	return;
-}
-
-void Player::setKeyLeftPressed(bool newValue)
-{
-	/*
-	* function of setting key left pressed
-	*
-	* @param newValue - true if key pressed
-	*                   false if key released
-	*/
-
-	keyLeftMovePressed = newValue;
-}
-
-void Player::setKeyRightPressed(bool newValue)
-{
-	/*
-	* function of setting
-	*
-	* @param newValue - true if key pressed
-	*                   false if key released
-	*/
-
-	keyRightMovePressed = newValue;
 }
 
 void Player::move(double timer)
@@ -201,129 +91,142 @@ void Player::move(double timer)
 	/*
 	* function of updating player position
 	*
-	* @param timer - how much time has been passed
+	* @param timer - count elapsed time in ms
 	*/
 
-	// update position
-	positionX += ((keyRightMovePressed * timer) -  (keyLeftMovePressed * timer)) * PLAYER_SPEED;
-	positionY += ((keyDownMovePressed * timer) - (keyUpMovePressed * timer)) * PLAYER_SPEED;
+	// calculating delt by ordinate and abscis
+	double delt = sqrt(abs(vectorX) * abs(vectorX) + abs(vectorY) * abs(vectorY));
 
-	// if position is out of map - return it inside
-	if (positionX < 0)
+	// if no moving, we may get dividing by zero, solve this problem
+	if (vectorX == 0 && vectorY == 0)
 	{
-		positionX = 0;
-	}
-	if (positionX > FIELD_LENGTH_PIXIL - PLAYER_SPRITE_LENGTH)
-	{
-		positionX = FIELD_LENGTH_PIXIL - PLAYER_SPRITE_LENGTH;
+		delt = 1;
 	}
 
-	if (positionY < 0)
+	// updating player position
+	playerPositionX = playerPositionX + vectorX * PLAYER_SPEED * timer / delt;
+	playerPositionY = playerPositionY + vectorY * PLAYER_SPEED * timer / delt;
+
+	// if player position is out of field - get it inside
+	if (playerPositionX < spriteLength / 2. || playerPositionX > FIELD_SIZE* SQUARE_SIZE_PIXIL - spriteLength / 2.)
 	{
-		positionY = 0;
+		playerPositionX = max(min(playerPositionX, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteLength / 2.), spriteLength / 2.);
 	}
-	if (positionY > FIELD_HIGH_PIXIL - PLAYER_SPRITE_HIGH)
+
+	if (playerPositionY < spriteHigh / 2. || playerPositionY > FIELD_SIZE* SQUARE_SIZE_PIXIL - spriteHigh / 2.)
 	{
-		positionY = FIELD_HIGH_PIXIL - PLAYER_SPRITE_HIGH;
+		playerPositionY = max(min(playerPositionY, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteHigh / 2.), spriteHigh / 2.);
 	}
 
 	return;
 }
 
-void Player::draw(RenderWindow & window)
+void Player::setMoovingVector(int newVectorX, int newVectorY)
 {
 	/*
-	* function of drawing sprite in window
+	* function of updating speed vector
 	*
-	* @param window - window of game
+	* @param newVectorX, newVectorY - new speed vector
 	*/
 
-	// get position in window
-	pair < double, double > positionInWindow = getPositionInWindow();
-
-	// find centre of rotation
-	double centreX = positionInWindow.first + PLAYER_SPRITE_LENGTH / 2;
-	double centreY = positionInWindow.second + PLAYER_SPRITE_HIGH / 2;
-		
-	// get mous position inside window
-	Vector2i MousePosition = Mouse::getPosition(window);
-
-	// if mouse is inside window
-	if (MousePosition.x > 0 && MousePosition.x < WINDOW_LENGTH &&
-		MousePosition.y > 0 && MousePosition.y < WINDOW_HIGH)
+	// if new vector in range {-1, 0, 1} - change it
+	if (newVectorX < 2 && newVectorX > -2)
 	{
-		// calculate angle of rotation
-		angle = atan2(MousePosition.y - centreY, MousePosition.x - centreX);
+		vectorX = newVectorX;
 	}
 
-	// calculate radius of rotation
-	double radius = sqrt((PLAYER_SPRITE_LENGTH / 2)*(PLAYER_SPRITE_LENGTH / 2) + (PLAYER_SPRITE_HIGH / 2)*(PLAYER_SPRITE_HIGH / 2));
+	if (newVectorY < 2 && newVectorY > -2)
+	{
+		vectorY = newVectorY;
+	}
 
-	// calculate final position in window (with rotation)
-	positionInWindow.first = centreX + cos(angle + 5*PI/4)*radius;
-	positionInWindow.second = centreY + sin(angle + 5*PI/4)*radius;
-
-	// set roation of player sprite
-	PlayerSpirite.setRotation(angle*180/PI);
-
-	// set position of player sprite
-	PlayerSpirite.setPosition(positionInWindow.first, positionInWindow.second);
-
-	// draw player sprite
-	window.draw(PlayerSpirite);
-	
 	return;
 }
 
-bool Player::loadSprite()
+pair < double, double > Player::getPosition()
 {
 	/*
-	* function of loading player textures and sprite
+	* function of getting player position
 	*
-	* @return true - if loading completed
-	*         false - if loading failed
+	* @return player position
 	*/
 
-	// if texture dowasn`t load 
-	if (!PlayerTexture.loadFromFile("Textures\\Player.png"))
-	{
-		// loading failed -> return false
-		return 0;
-	}
-
-	// set texture and rectangle inside texture
-	PlayerSpirite.setTexture(PlayerTexture);
-	PlayerSpirite.setTextureRect(IntRect(PLAYER_SPRITE_POSITION_X, PLAYER_SPRITE_POSITION_Y, PLAYER_SPRITE_LENGTH, PLAYER_SPRITE_HIGH));
-
-	// loading completed
-	return 1;
+	return { playerPositionX, playerPositionY };
 }
 
-bool Player::create(double newPositionX, double newPositionY, int healthPoints, int armorPoints)
+pair < double, double > Player::getPositionInWindow()
 {
 	/*
-	* function of initialization player object
+	* function of getting player position inside the window
 	*
-	* @param newPositionX, newPositionY - player global (on map) position
-	*        healthPoints - health points
-	*        armorPoints - armor points
-	*
-	* @return true - if initialization completed
-	*         false - if initialization failed
+	* @return player position inside the window
 	*/
 
-	// if sprite doesn`t load
-	if (!loadSprite())
+	// set position in centre of window
+	double resultPositionX = (WINDOW_LENGTH - spriteLength) / 2;
+	double resultPositionY = (WINDOW_HIGH - spriteHigh) / 2;
+
+	// if player is to close to left border - move position
+	if (playerPositionX < resultPositionX)
 	{
-		// initialization failed -> return false
-		return 0;
+		resultPositionX = playerPositionX;
 	}
 
-	// set values
-	setPosition(newPositionX, newPositionY);
-	setHealthPoints(healthPoints);
-	setArmorPoints(armorPoints);
+	// if player is to close to up border - move position
+	if (playerPositionY < resultPositionY)
+	{
+		resultPositionY = playerPositionY;
+	}
 
-	// initialization completed
-	return 1;
+	// if player is to close to right border - move position
+	if (WINDOW_LENGTH - resultPositionX > FIELD_SIZE * SQUARE_SIZE_PIXIL - playerPositionX)
+	{
+		resultPositionX = WINDOW_LENGTH - FIELD_SIZE * SQUARE_SIZE_PIXIL + playerPositionX;
+	}
+
+	// if player is to close to down border - move position
+	if (WINDOW_HIGH - resultPositionY > FIELD_SIZE * SQUARE_SIZE_PIXIL - playerPositionY)
+	{
+		resultPositionY = WINDOW_HIGH - FIELD_SIZE * SQUARE_SIZE_PIXIL + playerPositionY;
+	}
+
+	// return result
+	return { resultPositionX, resultPositionY };
+}
+
+void Player::rotate(RenderWindow & window, double positionX, double positionY)
+{
+	/*
+	* function of changing angle to order sprite by mouse
+	*
+	* @param positionX, positionY - position of center of sprite image
+	*        window - game window
+	*/
+
+	// get mouse position inside the window
+	Vector2i mousePosition = Mouse::getPosition(window);
+
+	// if mouse inside the widow change - angle of rotation
+	if (mousePosition.x >= 0 && mousePosition.x <= WINDOW_LENGTH && mousePosition.y >= 0 && mousePosition.y <= WINDOW_HIGH)
+	{
+		// get coordinats of vector (center of sprite -> mouse)
+		double deltX = mousePosition.x - positionX;
+		double deltY = mousePosition.y - positionY;
+
+		// get angle of this vector with vector (0, 1)
+		angle = atan2(deltY, deltX);
+	}
+
+	return;
+}
+
+double Player::getAngle()
+{
+	/*
+	* function of getting player angle
+	*
+	* @return player angle
+	*/
+
+	return angle;
 }

@@ -1,27 +1,14 @@
-/*
-*
-* created by @BagInCode
-* for Eloped Crime Object Game
-*
-*/
-
 #pragma once
-
-#ifndef WEAPON_CLASS
-#define WEAPON_CLASS
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <algorithm>
-#include <math.h>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
-#include <time.h>
-#include <random>
-#include <fstream>
 
+#include <iostream>
+#include <vector>
+
+#include "Player.h"
 #include "Bullet.h"
+
 #include "Constants.db"
 
 using namespace std;
@@ -29,38 +16,29 @@ using namespace sf;
 
 class Weapon
 {
+protected:
+	double reload;
+	double shootDelay;
+	double timer;
+	double bulletSpeed;
+	double accuracy;
+	
+	int bulletsPerShoot;
 	int maxAmmo;
 	int currentAmmo;
+
 	int damage;
-	double accuracy;
-	double delayBetweenShoots;
-	double timer;
-	double reloadTime;
+
+	bool isPlayerWeapon;
 
 public:
 	Weapon();
 	~Weapon();
 
-	void setMaxAmmo(int newMaxAmmo);
-	void setCurrentAmmo(int newCurrentAmmo);
-	void setDamage(int newDamage);
-	void setAccuracy(double newAccurasy);
-	void setDelayBetweenShoots(double newDelayBetweenShoots);
-	void setTimer(double newTimer);
-	void setReloadTime(double newReloadTime);
-
-	int getMaxAmmo();
-	int getCurrentAmmo();
-	int getDamage();
-	double getAccurasy();
-	double getDelayBetweenShoots();
-	double getTimer();
-	double getReloadTime();
-
-	void create(int weaponType);
-	void increaseTimer(double delt);
-	double calcAccuracy();
-	
+	void increaseTimer(double _timer);
+	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon);
+	void shoot(Player & player, vector < Bullet > & Bullets);
+	void createBullet(Player & player, vector < Bullet > & Bullets);
+	void startReload();
 };
 
-#endif

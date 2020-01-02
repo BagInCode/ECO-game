@@ -1,887 +1,397 @@
 #include "Game.h"
+#include "Constants.db"
 
-
-
-Game::Game()
-{
-}
-
-
-Game::~Game()
-{
-}
-
-
-bool Game::equal(Event lValue, Event rValue)
+bool Game::initComponents()
 {
 	/*
-	* function of checking: are two Event object equal or not
+	* function of initialization of components
 	*
-	* two Event object are equal if 
-	*     both are event of key pressed/released and they have same key code;
-	*     both are event of mouse button pressed/released and they have same mouse button code;
-	* 
-	* @param lValue - event made by user 
-	*        rValue - system event for checking with
-	*
-	* @return true - events are equal
-	*         false - events are different
+	* @return true - initialization completed
+	*         false - initialization failed
 	*/
 
-	if ((lValue.type == Event::KeyPressed || lValue.type == Event::KeyReleased) && rValue.type == Event::KeyPressed)
+	Sprite temp;
+
+	// if texture does not load 
+	if(!EnviromentTexture.loadFromFile("Textures\\Enviroment.png"))
 	{
-		return (lValue.key.code == rValue.key.code);
-	}
-
-	if ((lValue.type == Event::MouseButtonPressed || lValue.type == Event::MouseButtonReleased) && rValue.type == Event::MouseButtonPressed)
-	{
-		return (lValue.mouseButton.button == rValue.mouseButton.button);
-	}
-
-	return 0;
-}
-
-bool Game::loadSprites()
-{	
-	/*
-	* function of loadind textures and sprites for map
-	*
-	* @return true - if loading completed
-	*         false - if loading failed
-	*/
-
-	// if texture image do not load  
-	if (!EnviromentTexture.loadFromFile("Textures\\Enviroment.png"))
-	{
-		// return false
+		// initialization failed
 		return 0;
 	}
 
-	// create ground sprite
-	Sprite ground;
-	ground.setTexture(EnviromentTexture);
-	ground.setTextureRect(IntRect(GROUND_SPRITE_POSITION_X, GROUND_SPRITE_POSITION_Y, ENVIROMENT_SPRITE_LENGTH, ENVIROMENT_SPRITE_HIGH));
+	// set texture
+	temp.setTexture(EnviromentTexture);
 
-	// add ground sprite 
-	enviroment.push_back(ground);
+	// choose image rectangle of ground
+	temp.setTextureRect(IntRect(0, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
 
-	// create tree sprite
-	Sprite tree;
-	tree.setTexture(EnviromentTexture);
-	tree.setTextureRect(IntRect(TREE_SPRITE_POSITION_X, TREE_SPRITE_POSITION_Y, ENVIROMENT_SPRITE_LENGTH, ENVIROMENT_SPRITE_HIGH));
+	// add sprite
+	EnviromentSprite.push_back(temp);
 
-	// add tree sprite
-	enviroment.push_back(tree);
-
-	// creating road sprites
-	
-	Sprite _road;
-	_road.setTexture(EnviromentTexture);
-
-	// resize roads vector
-	road.resize(16);
-
-	/*
-	* I (@BagInCode) will use bitmask for numerating roads
-	*
-	* For example:
-	* 
-	* let use next picture:
-	*
-	*  3     X - position of road sprite
-	* 2X0
-	*  1     0,1,2,3 - abstract numerating of neighbours
-	*
-	* if there is straight road from left to right, it conect neighbours with number 2 and 0
-	* it is equal to next mask (1 - if connect, 0 - if not)
-	*
-	* 3 2 1 0 | neighbour number
-	* 0 1 0 1 | connect or not
-	*
-	* let imagine, this is not a table, bat number in binary system
-	* in decade system this number is equal to: 2^0 + 2^2 = 1 + 4 = 5
-	* so remember this road in sprite with number 5
-	*/
-
-	// creating straight roads
-	_road.setTextureRect(IntRect(ROAD_STRAIGHT_POSITION_X, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road from left to right
-	road[5] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_STRAIGHT_POSITION_X, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road from up to down
-	road[10] = _road;
-
-	// creating turn roads
-	_road.setTextureRect(IntRect(ROAD_TURN_POSITION_X, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // turn from down to right
-	road[3] = _road;
-	
-	_road.setTextureRect(IntRect(ROAD_TURN_POSITION_X, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // turn from left to down
-	road[6] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_TURN_POSITION_X, 2*SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // turn from left to up
-	road[12] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_TURN_POSITION_X, 3*SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // turn from up to right
-	road[9] = _road;
-	
-	//creating triple roads
-	_road.setTextureRect(IntRect(ROAD_TRIPLE_POSITION_X, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road not to up
-	road[7] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_TRIPLE_POSITION_X, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road not to right
-	road[14] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_TRIPLE_POSITION_X, 2*SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road not to down
-	road[13] = _road;
-
-	_road.setTextureRect(IntRect(ROAD_TRIPLE_POSITION_X, 3*SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL)); // road not to left
-	road[11] = _road;
-
-	// creating quadr road
-	_road.setTextureRect(IntRect(ROAD_QUADR_POSITION_X, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
-	road[15] = _road;
-
-	// loading complete
-	return 1;
-}
-
-bool Game::createPlayer(double newPositionX, double newPositionY, int healthPoints, int armorPoints)
-{
-	/*
-	* function of initialization PlayerObject
-	*
-	* @param newPositionX, newPositionY - start position of player
-	*        healthPoints - count health points
-	*        armorPoints - count armor points
-	*
-	* @return true - if initialization completed
-	*         false - if initialization failed
-	*/
-
-	// if initialization failed
-	if (!PlayerObject.create(newPositionX, newPositionY, healthPoints, armorPoints))
+	// init player
+	if (!playerObject.create())
 	{
-		// return false
 		return 0;
 	}
 
-	// return true
+	// init bullet sprite - red circle with radius 2
+	bulletSprite.setFillColor(Color::Red);
+	bulletSprite.setRadius(2);
+
+	// init weapon
+	PlayerWeapon.create(5000, 100, 1, 5*acos(-1)/180, 1, 30, 0, 0);
+
+	// start without pause
+	pause = 0;
+
 	return 1;
-}
-
-bool Game::loadSave(double & newPositionX, double & newPositionY, int & healthPoints, int & armorPoints)
-{
-	/*
-	* functiont of loading saved game
-	* 
-	* @param pointers to:
-	*                    newPositionX, newPositionY - start player position
-	*                    healthPoints - count player health points
-	*                    armorPoints - count player armor points
-	*
-	* @return true - if loading completed
-	*         false - if loading failed
-	*/
-
-	// create input file stream for readin from save file
-	ifstream in;
-
-	// open save file
-	in.open("Saves\\saveFile.db");
-	
-	// if some trouble - load default values
-	if (!in.is_open())
-	{
-		loadDefault(newPositionX, newPositionY, healthPoints, armorPoints);
-	}
-	
-	// loading completed
-	return 1;
-}
-
-void Game::loadDefault(double & newPositionX, double & newPositionY, int & healthPoints, int & armorPoints)
-{
-	/*
-	* function of loading default control, weapon and players settings
-	*
-	* @param pointers to
-	*                newPositionX, newPositionY - player position
-	*                healthPoints - player health points
-	*                armorPoints - armor points
-	*/
-
-	// default move up key - W
-	MoveUp.key.code = Keyboard::W;
-	MoveUp.type = Event::KeyPressed;
-
-	// default move down key - S
-	MoveDown.key.code = Keyboard::S;
-	MoveDown.type = Event::KeyPressed;
-
-	// default move left key - A
-	MoveLeft.key.code = Keyboard::A;
-	MoveLeft.type = Event::KeyPressed;
-
-	// default move right key - D
-	MoveRight.key.code = Keyboard::D;
-	MoveRight.type = Event::KeyPressed;
-
-	// default shoot button - LMB
-	Shoot.mouseButton.button = Mouse::Left;
-	Shoot.type = Event::MouseButtonPressed;
-
-	// default player start position - centre of map
-	newPositionX = (FIELD_LENGTH_PIXIL - PLAYER_SPRITE_LENGTH) / 2;
-	newPositionY = (FIELD_HIGH_PIXIL - PLAYER_SPRITE_HIGH) / 2;
-
-	// default health points - 100
-	healthPoints = 100;
-
-	// default armor points - 0
-	armorPoints = 0;
-
-	// create default weapons
-	PlayerWeapons[0].create(0);
-
-}
-
-bool Game::loadGame()
-{
-	/*
-	* function of loading game save and settings, creating sprites
-	*
-	* @return true - if loading completed
-	*         false - if loading failed
-	*/
-
-	// creating player config values
-	double newPositionX, newPositionY;
-	int healthPoints, armorPoints;
-
-	// load save
-	if (!loadSave(newPositionX, newPositionY, healthPoints, armorPoints)) 
-	{
-		// save doesn`t load -> loading failed
-		return 0;
-	}
-
-	// player config values loaded -> create Player object
-	if (!createPlayer(newPositionX, newPositionY, healthPoints, armorPoints))
-	{
-		// Player object doesn`t create -> loading failed
-		return 0;
-	}
-	
-	// load map sprites
-	if (!loadSprites())
-	{
-		// sprites doesn`t load -> loading failed
-		return 0;
-	}
-
-	// generate map
-	generateField();
-
-	// loading comlete
-	return 1;
-}
-
-bool Game::createEnemies()
-{
-	/*
-	* function of creating Enemies
-	*
-	* @return true - if creating completed
-	*         false - if creating failed
-	*/
-
-	// creating complete
-	return 1;
-}
-
-void Game::generateField()
-{
-	/*
-	* function of generating field
-	*/
-
-	// creating road
-
-	// calc haw much turns will have road
-	int countTurns = rand() % (FIELD_LENGTH / 10);
-
-	cerr << countTurns << "\n";
-
-	// position of new turn
-	// generate start point
-	int positionX = 0;
-	int positionY = rand() % FIELD_HIGH;
-	
-	// position of previous turn
-	int previousX;
-	int previousY;
-
-	// create turns
-	for (int i = 0; i < countTurns; i++)
-	{
-		// remember previous position
-		previousX = positionX;
-		previousY = positionY;
-
-		// if move left/right
-		if (!(i & 1))
-		{
-			// generate end of moving
-			positionX = rand() % (FIELD_LENGTH - 1);
-
-			if (positionX >= previousX)
-			{
-				positionX++;
-			}
-
-			// set road
-			for (int j = min(positionX, previousX); j <= max(positionX, previousX); j++)
-			{
-				Field[j][positionY] = 2;
-			}
-		}else // if move up/down
-		{
-			//generate end of moving
-			positionY = rand() % (FIELD_HIGH - 1);
-
-			if (positionY >= previousY)
-			{
-				positionY++;
-			}
-
-			// set road
-			for (int j = min(positionY, previousY); j <= max(positionY, previousY); j++)
-			{
-				Field[positionX][j] = 2;
-			}
-		}
-	}
-
-	// set road to the end of map
-	for (int i = positionX; i < FIELD_LENGTH; i++)
-	{
-		Field[i][positionY] = 2;
-	}
-
-	// creating trees
-	for(int i = 0; i < COUNT_TREE; i++)
-	{
-		// set position
-		int positionX = rand() % FIELD_LENGTH;
-		int positionY = rand() % FIELD_HIGH;
-
-		// if field square is not empty
-		if (Field[positionX][positionY])
-		{
-			// redo
-			i--;
-		}else
-		{
-			// set tree to this square
-			Field[positionX][positionY] = 1;
-		}
-	}
-
-	return;
-}
-
-int Game::getRoadNumber(int positionX, int positionY)
-{
-	/*
-	* function of getting road sprite number
-	*
-	* @param positionX, positionY - position field square (not on map)
-	*
-	* @return number of road sprite
-	*/
-
-	/*
-	* if square if near end of map - think, that outside is neighbour road
-	* if near neighbour road - add to result
-	*/
-	/*
-	*  2     X - position of road sprite
-	* 1X3
-	*  0     0,1,2,3 - abstract numerating of neighbours
-	*/
-
-	int result = 0;
-
-	if (positionY == FIELD_LENGTH - 1)
-	{
-		result += 1;
-	}
-	else
-	if (Field[positionX][positionY+1] == 2)
-	{
-		result += 1;
-	}
-
-	if (positionX == FIELD_HIGH - 1)
-	{
-		result += 2;
-	}
-	else
-	if (Field[positionX + 1][positionY] == 2)
-	{
-		result += 2;
-	}
-
-	if (positionY == 0)
-	{
-		result += 4;
-	}
-	else
-	if (Field[positionX][positionY-1] == 2)
-	{
-		result += 4;
-	}
-
-	if (positionX == 0)
-	{
-		result += 8;
-	}
-	else
-	if (Field[positionX - 1][positionY] == 2)
-	{
-		result += 8;
-	}
-
-	return result;
-}
-
-void Game::checkIntersections()
-{
-	/*
-	* function of cheking intersection
-	*/
-
-	return;
 }
 
 void Game::checkTime(RenderWindow & window)
 {
 	/*
-	* function of checking time
-	*             if enough time passed - do some actions
-	*
-	* @param window - window of game
-	*/
-
-	// calc how much time passed
-	double timer = myClock.getElapsedTime().asMilliseconds();
-
-	// if enough time passed
-	if (timer > MILLISECOND_FOR_ACTION)
-	{
-		// restart timer
-		myClock.restart();
-		
-		// if game is not on pause
-		if (!pause)
-		{
-
-			// move objects
-			moveObjects(timer);
-
-			// check bullets for deleting
-			checkBullets();
-
-			// check player gun for shooting and reloading
-			checkPlayerGun(timer);
-
-			//draw pictures
-			drawObjects(window);
-		}
-	}
-	
-	return;
-}
-
-void Game::drawObjects(RenderWindow & window)
-{
-	/*
-	* function of drawing sprites on screen
+	* function of checking timer
 	*
 	* @param window - game window
 	*/
 
-	// clear window, set background color Color::Black
+	// if game on pause
+	if (pause)
+	{
+		// do not do any actions
+		return;
+	}
+
+	// get time delt
+	double timerDelt = myClock.getElapsedTime().asMicroseconds() / 1000.;
+
+	// restart clock
+	myClock.restart();
+	
+	// increase timer
+	timer += timerDelt;
+
+	// if there is enough time passed
+	if (timer > TIME_FOR_ACTION)
+	{
+		// do some actions
+		doActions();
+		
+		// move objects
+		moveObjects();
+
+		// draw picture
+		drawPicture(window);
+
+		// null timer
+		timer = 0;
+	}
+
+	return;
+}
+void Game::moveObjects()
+{
+	/*
+	* function of moving objects
+	*/
+
+	// move player
+	playerObject.move(timer);
+
+	// if there are some bullets 
+	if (Bullets.size() > 0)
+	{
+		// remember here last element to erase
+		vector < vector < Bullet > :: iterator > eraseIt;
+
+		// will be true if there are some bullets for deleting
+		bool needToErase = 0;
+
+		// move bullets
+		for (vector < Bullet > ::iterator it = Bullets.begin(); it != Bullets.end(); it++)
+		{
+			// move it
+			it->move(timer); 
+
+			// it it is time to delete bullet
+			if (it->readyToDelete())
+			{
+				// remember element for delete
+				eraseIt.push_back(it);
+
+				// set variable
+				needToErase = 1;
+			}
+		}
+
+		// if there are some bullets for deleting
+		if (needToErase)
+		{
+			// for each element for deleting
+			for (int i = 0; i < eraseIt.size(); i++)
+			{
+				// delete it
+				Bullets.erase(eraseIt[i]);
+			}
+		}
+	}
+
+	return;
+}
+
+void Game::drawPicture(RenderWindow & window)
+{
+	/*
+	* function of drawing picture in game window
+	*
+	* @param window - game window
+	*/
+
+	// clear previous picture, set color of background black
 	window.clear(Color::Black);
 
-	// remember player global position (at map) and local (in window)
-	pair < double, double > playerPositionInWindow = PlayerObject.getPositionInWindow();
-	pair < double, double > playerPosition = PlayerObject.getPosition();
+	// get position of player sprite inside game window
+	double playerPositionX = playerObject.getPositionInWindow().first;
+	double playerPositionY = playerObject.getPositionInWindow().second;
 
-	// find coorditanes of square where player stay
-	int positionInFieldY = (int)(playerPosition.first) / round(SQUARE_SIZE_PIXIL);
-	int positionInFieldX = (int)(playerPosition.second) / round(SQUARE_SIZE_PIXIL);
+	// get position of player sprite on map
+	double playerGlobalPositionX = playerObject.getPosition().first;
+	double playerGlobalPositionY = playerObject.getPosition().second;
 
-	// find segments, which we have to check for drawing
-	int _up = max(0, positionInFieldX - 8);
-	int _down = min(FIELD_HIGH-1, positionInFieldX + 8);
-	int _left = max(0, positionInFieldY - 14);
-	int _right = min(FIELD_LENGTH-1, positionInFieldY + 14);
+	// get position in array of cell, where player stay
+	int playerCellX = playerGlobalPositionX / SQUARE_SIZE_PIXIL;
+	int playerCellY = playerGlobalPositionY / SQUARE_SIZE_PIXIL;
 
-	// chech this rectangular
-	for (int i = _up; i <= _down; i++)
+	// calculate borders of drawing rectangle
+	int Left = max(0, playerCellX - 13);
+	int Right = min(FIELD_SIZE, playerCellX + 13);
+	int Up = max(0, playerCellY - 7);
+	int Down = min(FIELD_SIZE, playerCellY + 7);
+
+	// draw
+	for (int i = Up; i <= Down; i++)
 	{
-		for (int j = _left; j <= _right; j++)
+		for (int j = Left; j <= Right; j++)
 		{
-			// fing global position of current square 
-			// and difference of global position player and current square
-			double deltX = (j * SQUARE_SIZE_PIXIL) - playerPosition.first;
-			double deltY = (i * SQUARE_SIZE_PIXIL) - playerPosition.second;
-			
-			// if this square have to be in window
-			if (playerPositionInWindow.first + deltX > -SQUARE_SIZE_PIXIL && playerPositionInWindow.first + deltX < FIELD_LENGTH_PIXIL &&
-				playerPositionInWindow.second + deltY > -SQUARE_SIZE_PIXIL && playerPositionInWindow.second + deltY < FIELD_HIGH_PIXIL)
-			{
-				// set ground sprite position and drow it 
-				enviroment[0].setPosition(playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
-				window.draw(enviroment[0]);
+			// get global position of cell
+			double cellPositionX = j * SQUARE_SIZE_PIXIL;
+			double cellPositionY = i * SQUARE_SIZE_PIXIL;
 
-				// if square is road
-				if (Field[i][j] == 2)
-				{
-					road[getRoadNumber(i, j)].setPosition(playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
-					window.draw(road[getRoadNumber(i, j)]);
-				}else
+			// get difference between player and cell global positions
+			double deltX = cellPositionX - playerGlobalPositionX;
+			double deltY = cellPositionY - playerGlobalPositionY;
 
-				// if this square is not tree
-				if (Field[i][j] > 1)
-				{
-					// set sprite position and draw
-					enviroment[Field[i][j]].setPosition(playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
-					window.draw(enviroment[Field[i][j]]);
-				}
-			}
+			// set position for ground sprite
+			EnviromentSprite[0].setPosition(playerPositionX + deltX, playerPositionY + deltY);
+
+			// draw ground
+			window.draw(EnviromentSprite[0]);
 		}
 	}
-
-	// draw Player object
-	PlayerObject.draw(window);
-
-	// draw trees
-	for (int i = _up; i <= _down; i++)
+	
+	// draw bullets
+	for (vector < Bullet > ::iterator it = Bullets.begin(); it != Bullets.end(); it++)
 	{
-		for (int j = _left; j <= _right; j++)
-		{
-			double deltX = (i * SQUARE_SIZE_PIXIL) - playerPosition.first;
-			double deltY = (j * SQUARE_SIZE_PIXIL) - playerPosition.second;
+		// get bullet position on map
+		pair < double, double > bulletPosition = it->getPosition();
 
-			if (playerPositionInWindow.first + deltX > -SQUARE_SIZE_PIXIL && playerPositionInWindow.first + deltX < FIELD_LENGTH_PIXIL &&
-				playerPositionInWindow.second + deltY > -SQUARE_SIZE_PIXIL && playerPositionInWindow.second + deltY < FIELD_HIGH_PIXIL)
-			{
-				if (Field[i][j] == 1)
-				{
-					enviroment[Field[i][j]].setPosition(playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
-					window.draw(enviroment[Field[i][j]]);
-				}
-			}
-		}
+		// bullet position inside game window
+		pair < double, double > bulletPositionInWindow;
+
+		// calculate bullet position inside game window
+		bulletPositionInWindow.first = playerPositionX + bulletPosition.first - playerGlobalPositionX;
+		bulletPositionInWindow.second = playerPositionY + bulletPosition.second - playerGlobalPositionY;
+
+		// set position
+		bulletSprite.setPosition(bulletPositionInWindow.first, bulletPositionInWindow.second);
+
+		// draw
+		window.draw(bulletSprite);
 	}
 
-	// check all bullets
-	for (int i = 0; i < bullets.size(); i++)
-	{
-		// get bullet global position
-		pair < double, double > bulletPosition = bullets[i].getPosition();
+	// draw player
+	playerObject.draw(window);
 
-		// find difference bullet and player positions
-		double deltX = bulletPosition.first - playerPosition.first;
-		double deltY = bulletPosition.second - playerPosition.second;
-
-		// draw bullet
-		bullets[i].draw(window, playerPositionInWindow.first + deltX, playerPositionInWindow.second + deltY);
-	}
-
-	// show new picture on display
+	// showing picture
 	window.display();
 
 	return;
 }
 
-void Game::moveObjects(double timer)
+void Game::switchEvent(Event event, RenderWindow& window)
 {
 	/*
-	* function of moving objects
+	* function of switching event type and chosing reaction for it
 	*
-	* @param timer - how much time have been passed
+	* @param event - event
+	*        window - game window
 	*/
 
-	// move player
-	PlayerObject.move(timer);
-
-	// move all bullets
-	for (int i = 0; i < bullets.size(); i++)
+	// if event of closing window
+	if (event.type == Event::Closed)
 	{
-		bullets[i].move(timer);
+		// close it
+		window.close();
+	}
+
+	// if window lost focus
+	if (event.type == Event::LostFocus)
+	{
+		// set pause mod
+		makePause();
+	}
+
+	// if event of keypressing
+	if (event.type == Event::KeyPressed)
+	{
+		// if key ESC
+		if (event.key.code == Keyboard::Escape)
+		{
+			// set pause mod
+			makePause();
+		}
+
+		// if key A
+		if (event.key.code == Keyboard::A)
+		{
+			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+			playerObject.setMoovingVector(-1, 2);
+		}
+
+		// if key S
+		if (event.key.code == Keyboard::S)
+		{
+			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+			playerObject.setMoovingVector(2, 1);
+		}
+
+		// if key W
+		if (event.key.code == Keyboard::W)
+		{
+			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+			playerObject.setMoovingVector(2, -1);
+		}
+
+		// if key D
+		if (event.key.code == Keyboard::D)
+		{
+			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+			playerObject.setMoovingVector(1, 2);
+		}
+	}
+
+	if (event.type == Event::KeyReleased)
+	{
+		// if key A
+		if (event.key.code == Keyboard::A)
+		{
+			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+			playerObject.setMoovingVector(0, 2);
+		}
+
+		// if key S
+		if (event.key.code == Keyboard::S)
+		{
+			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+			playerObject.setMoovingVector(2, 0);
+		}
+
+		// if key W
+		if (event.key.code == Keyboard::W)
+		{
+			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+			playerObject.setMoovingVector(2, 0);
+		}
+
+		// if key D
+		if (event.key.code == Keyboard::D)
+		{
+			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+			playerObject.setMoovingVector(0, 2);
+		}
+	}
+
+	// if mouse button pressed
+	if (event.type == Event::MouseButtonPressed)
+	{
+		// if LMB
+		if (event.mouseButton.button == Mouse::Left)
+		{
+			playerShooting = 1;
+		}
+	}
+
+	// if mouse button released
+	if (event.type == Event::MouseButtonReleased)
+	{
+		// if LMB
+		if (event.mouseButton.button == Mouse::Left)
+		{
+			playerShooting = 0;
+		}
 	}
 
 	return;
 }
 
-bool Game::switchEvent(Event & event)
+void Game::makePause()
 {
 	/*
-	* function of checking event type and set reaction for event
-	*
-	* @param event - new event
-	*
-	* @return true - if it is time to finish programm
-	*         false - we have to continue programm
-	*/
-
-	// if window close
-	if (event.type == Event::Closed)
-	{
-		// it is time to finish programm
-		return 1;
-	}
-
-	// if window lost focus (user switch to another window)
-	if (event.type == Event::LostFocus)
-	{
-		// set pause
-		makePause(1);
-	}
-
-	// if window gained focus (user switch to this window)
-	if (event.type == Event::GainedFocus)
-	{
-		// stop pause
-		makePause(0);
-	}
-
-	// if event of start/finish shooting
-	if (equal(event, Shoot))
-	{
-		// set start/finish shooting
-		shooting = (event.type == Shoot.type);
-	}
-
-	// if event of start/finish moving up
-	if (equal(event, MoveUp))
-	{
-		// set start/finish moving up
-		PlayerObject.setKeyUpPressed((event.type == MoveUp.type));
-	}
-
-	// if event of start/finish moving down
-	if (equal(event, MoveDown))
-	{
-		// set start/finish moving down
-		PlayerObject.setKeyDownPressed((event.type == MoveDown.type));
-	}
-
-	// if event of start/finish moving left
-	if (equal(event, MoveLeft))
-	{
-		// set start/finish moving left
-		PlayerObject.setKeyLeftPressed((event.type == MoveLeft.type));
-	}
-
-	// if event of start/finish moving right
-	if (equal(event, MoveRight))
-	{
-		// set start/finish moving right
-		PlayerObject.setKeyRightPressed((event.type == MoveRight.type));
-	}
-	
-	// continue programm
-	return 0;
-}
-
-void Game::makePause(bool isPause)
-{
-	/*
-	* function of starting and stopping pause
-	*
-	* @param isPause - true if pause start 
-	*                  flase if pause stop
+	* function of setting/unsetting pause
 	*/
 
 	// set pause value
-	pause = isPause;
+	pause = !pause;
 
-	// restart timer
-	myClock.restart();
-
-	return;
-}
-
-void Game::saveGame()
-{
-	/*
-	* function of rewriting save file
-	*/
+	// stop player mooving
+	playerObject.setMoovingVector(0, 0);
 
 	return;
 }
 
-void Game::initBullet(Enemy & enemy)
-{
-	/*
-	* function of initialization bullets by enemy
-	*
-	* @param  pointer to evemy object, which bullet created by
-	*/
-
-	return;
-}
-
-bool Game::initBullet()
-{
-	/*
-	* function of initialization bullet by player
-	*
-	* @return true - if initialization completed
-	*         false - if initialization failed
-	*/
-
-	// calculate bullet angle
-	// bullet angle = player angle + random value in [- player weapon accurasy .. + player weapon accurasy]
-	double angle = PlayerObject.getAngle() + PlayerWeapons[PlayerWeaponNumber].getAccurasy();
-
-	// calculate global position of centre player sprite
-	pair < double, double > playerPosition = PlayerObject.getPosition();
-	playerPosition.first += PLAYER_SPRITE_LENGTH / 2;
-	playerPosition.second += PLAYER_SPRITE_HIGH / 2;
-
-	// set this position for bullet
-	double positionX = playerPosition.first;
-	double positionY = playerPosition.second;
-
-	// set damage which bullet give
-	int damage = PlayerWeapons[PlayerWeaponNumber].getDamage();
-
-	// create new Bullet object
-	Bullet newBullet;
-
-	// if initializtion failed
-	if (!newBullet.create(angle, positionX, positionY, 0, damage))
-	{
-		// return false - initialization failed
-		return 0;
-	}
-
-	// push pullet to bullets list
-	bullets.push_back(newBullet);
-
-	// initialization completed
-	return 1;
-}
-
-void Game::checkPlayerGun(double timer)
-{
-	/*
-	* functio of checking player gun fo shooting and reloading
-	*
-	* @param timer - how mush time has been passed
-	*/
-
-	// increase timer inside the weapon
-	PlayerWeapons[PlayerWeaponNumber].increaseTimer(timer);
-
-	// if passed enough time for reloading and there is 0 ammo
-	if (PlayerWeapons[PlayerWeaponNumber].getTimer() > PlayerWeapons[PlayerWeaponNumber].getReloadTime() && 
-		PlayerWeapons[PlayerWeaponNumber].getCurrentAmmo() == 0)
-	{
-		// reload and set timer as zero
-		PlayerWeapons[PlayerWeaponNumber].setCurrentAmmo(PlayerWeapons[PlayerWeaponNumber].getMaxAmmo());
-		PlayerWeapons[PlayerWeaponNumber].setTimer(0.0);
-	}
-
-	// if player press shooting button and there is any bullet in ammo
-	if (shooting && PlayerWeapons[PlayerWeaponNumber].getCurrentAmmo() > 0)
-	{
-		// if enough time has been passed
-		if (PlayerWeapons[PlayerWeaponNumber].getTimer() > PlayerWeapons[PlayerWeaponNumber].getDelayBetweenShoots())
-		{
-			// shoot
-			// set new ammo, set timer as zero
-			PlayerWeapons[PlayerWeaponNumber].setCurrentAmmo(PlayerWeapons[PlayerWeaponNumber].getCurrentAmmo() - 1);
-			PlayerWeapons[PlayerWeaponNumber].setTimer(0.0);
-			
-			// if bullet initialization failed
-			if (!initBullet())
-			{
-				cerr << "Not init bullet\n";
-			}
-		}
-	}
-
-	// don`t make to mach value for timer
-	if (PlayerWeapons[PlayerWeaponNumber].getTimer() > 10000)
-	{
-		PlayerWeapons[PlayerWeaponNumber].setTimer(10000);
-	}
-
-	return;
-}
-
-void Game::checkBullets()
-{
-	/*
-	* function of checking bullets for deleting
-	*/
-
-	// look all bullets from last to first
-	for (int i = bullets.size(); i; i--)
-	{
-		// if this bullets live too long
-		if (bullets[i - 1].getTimeOfLife() > BULLET_MAX_LIFE)
-		{
-			// all bullets was before live too long to, delete them all
-			bullets.erase(bullets.begin() + 0, bullets.begin() + i);
-
-			break;
-		}
-	}
-
-	return;
-}
-
-void Game::game(RenderWindow & window)
+void Game::process(RenderWindow & window)
 {
 	/*
 	* main function of game
 	*
-	* @param window - window of game
 	*/
 
-	// if game doesn`t load
-	if (!loadGame())
-	{
-		// there if somthing wrong
-		cerr << "Somthing go wrong...\n";
-	}
-			
-	// create Event object
-	Event event;
+	// init game components
+	initComponents();
 
-	cerr << "STH";
+	// starting clock counter
+	myClock.restart();
 
-	// while user doesn`t close window 
+	// while game is not closed
 	while (window.isOpen())
 	{
 		// if there is some event
 		if (window.pollEvent(event))
 		{
-			// check event type
-			if (switchEvent(event))
-			{
-				break;
-			}
+			// make some reaction
+			switchEvent(event, window);
 		}
 
-		// check time for actions
+		// checking clock
 		checkTime(window);
+	}
+
+	return;
+}
+
+void Game::doActions()
+{
+	/*
+	* function of doing some actions
+	*/
+
+	// increase weapon timer
+	PlayerWeapon.increaseTimer(timer);
+
+	// action of shooting
+	if (playerShooting)
+	{
+		PlayerWeapon.shoot(playerObject, Bullets);
 	}
 
 	return;

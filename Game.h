@@ -1,92 +1,47 @@
-/*
-*
-* created by @BagInCode
-* for Eloped Crime Object Game
-*
-*/
-
 #pragma once
-
-
-#ifndef GAME_CLASS
-#define GAME_CLASS
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <algorithm>
-#include <math.h>
-#include <cmath>
-#include <iomanip>
+
 #include <iostream>
-#include <time.h>
-#include <random>
-#include <fstream>
-#include <queue>
+#include <vector>
 
-#include "Player.h";
-#include "Bullet.h";
-#include "Constants.db";
+#include "Player.h"
+#include "Bullet.h"
 #include "Weapon.h"
-#include "Enemy.h"
 
-using namespace std;
-using namespace sf;
+#include "Constants.db"
 
 class Game
 {
-	int Field[FIELD_HIGH][FIELD_LENGTH];
-	int PlayerWeaponNumber = 0;
+	int Field[FIELD_SIZE][FIELD_SIZE];
+	Player playerObject;
 
-	Player PlayerObject;
-
-	Texture EnviromentTexture;
-	vector < Sprite > enviroment;
-	vector < Sprite > road;
-	vector < Bullet > bullets;
-	vector < Enemy > enemies;
-	Weapon PlayerWeapons[10];
-	
-
+	double timer;
 	Clock myClock;
 
-	Event MoveUp;
-	Event MoveDown;
-	Event MoveLeft;
-	Event MoveRight;
-	Event Shoot;
+	Event event;
 
-	bool pause = 0;
-	bool shooting = 0;
+	Texture EnviromentTexture;
+	vector < Sprite > EnviromentSprite;
+
+	CircleShape bulletSprite;
+
+	bool playerShooting = 0;
+	Weapon PlayerWeapon;
+	vector < Bullet > Bullets;
+
+	bool pause;
+
+	bool initComponents();
+	void checkTime(RenderWindow & window);
+	void moveObjects();
+	void drawPicture(RenderWindow & window);
+	void switchEvent(Event event, RenderWindow & window);
+	void makePause();
+	void doActions();
 
 public:
-	Game();
-	~Game();
-
-	bool equal(Event a, Event b);
-
-	bool loadSprites();
-	bool createPlayer(double newPositionX, double newPositionY, int healthPoints, int armorPoints);
-	bool loadSave(double & newPositionX, double & newPositionY, int & healthPoints, int & armorPoints);
-	void loadDefault(double & newPositionX, double & newPositionY, int & healthPoints, int & armorPoints);
-	bool loadGame();
-	bool createEnemies();
-
-	void generateField();
-
-	int getRoadNumber(int positionX, int positionY);
-	void checkIntersections();
-	void checkTime(RenderWindow & window);
-	void drawObjects(RenderWindow & window);
-	void moveObjects(double timer);
-	bool switchEvent(Event & event);
-	void makePause(bool isPause);
-	void saveGame();
-	void initBullet(Enemy & enemy);
-	bool initBullet();
-	void checkPlayerGun(double timer);
-	void checkBullets();
-
-	void game(RenderWindow & window);
+	void process(RenderWindow & window);
 };
 
-#endif

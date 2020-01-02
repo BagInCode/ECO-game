@@ -1,25 +1,13 @@
-/*
-*
-* created by @BagInCode
-* for Eloped Crime Object Game
-*
-*/
+#pragma once
 
 #pragma once
 
-#ifndef BULLET_CLASS
-#define BULLET_CLASS
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <algorithm>
-#include <math.h>
-#include <cmath>
-#include <iomanip>
+
 #include <iostream>
-#include <time.h>
-#include <random>
-#include <fstream>
+#include <vector>
+
 #include "Constants.db"
 
 using namespace std;
@@ -27,39 +15,29 @@ using namespace sf;
 
 class Bullet
 {
-	Texture bulletTexture;
-	Sprite bulletSprite;
-
+public:
 	double angle;
 
 	double positionX;
 	double positionY;
 
-	double timeOfLife;
+	double speed;
 
-	bool isPlayerTarget;
+	int bulletId;
 
 	int damage;
 
-public:
+	bool isPlayerTarget;
+
+	double timerOfLife = 0;
+
 	Bullet();
 	~Bullet();
 
-	void setAngle(double newAngle);
-	void setPosition(double newPositionX, double newPositionY);
-	void setTerget(double newIsPlayerTarget);
-	void setDamage(int newDamage);
-
-	double getAngle();
-	double getTimeOfLife();
-	pair < double, double > getPosition();
-	bool getTarget();
-	int getDamage();
-
-	bool loadSprite();
-	bool create(double _angle, double _positionX, double _positionY, bool _isPlayerTarget, int _damage);
+	void create(double _positionX, double _positionY, double _angle, double _speed, int _damage, bool _isPlayerTarget);
 	void move(double timer);
-	void draw(RenderWindow & window, double positionX, double positionY);
+	bool readyToDelete();
+
+	pair < double, double > getPosition();
 };
 
-#endif
