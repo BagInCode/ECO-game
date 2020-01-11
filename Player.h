@@ -12,10 +12,7 @@ using namespace std;
 using namespace sf;
 
 class Player
-{
-	Sprite PlayerSprite;
-	Texture PlayerTexture;
-	
+{	
 	int spriteHigh;
 	int spriteLength;
 
@@ -28,14 +25,14 @@ class Player
 	double playerPositionY;
 
 public:
-	bool create();
-	void setSprite(int spritePositionX, int spritePositionY, int newSpriteLength, int newSpriteHigh);
-	void draw(RenderWindow& window);
+	void create();
 	void move(double timer);
 	void setMoovingVector(int newVectorX, int newVectorY);
 	pair < double, double > getPosition();
 	pair < double, double > getPositionInWindow();
-	void rotate(RenderWindow & window, double positionX, double poisitionY);
+	pair < double, double > getSize();
+	double rotate(RenderWindow & window);
 	double getAngle();
+	void setPosition(double newX, double newY);
 };
 

@@ -1,87 +1,18 @@
 #include "Player.h"
 
-bool Player::create()
+void Player::create()
 {
 	/*
 	* function of initialization player
-	*
-	* @return true - if initialization completed
-	*         false - if initialization failed
 	*/
 
-	// if did not load file
-	if (!PlayerTexture.loadFromFile("Textures\\Player.png"))
-	{
-		// initialization failed
-		return 0;
-	}
-
-	// set texture image to player sprite
-	PlayerSprite.setTexture(PlayerTexture);
-
-	// set player sprite size 
-	spriteHigh = PLAYER_SPRITE_AK_HIGH;
+	// set position
+	playerPositionX = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
+	playerPositionY = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
+	
+	// set player sprite size
 	spriteLength = PLAYER_SPRITE_AK_LENGTH;
-
-	// set texture rectangle to the player sprite
-	PlayerSprite.setTextureRect(IntRect(0, 0, spriteLength, spriteHigh));
-
-	// set origin of sprite to center
-	PlayerSprite.setOrigin(spriteLength / 2., spriteHigh / 2.);
-
-	// set player position
-	playerPositionX = FIELD_SIZE / 2 * SQUARE_SIZE_PIXIL;
-	playerPositionY = FIELD_SIZE / 2 * SQUARE_SIZE_PIXIL;
-
-	// initialization complited
-	return 1;
-}
-
-void Player::setSprite(int spritePositionX, int spritePositionY, int newSpriteLength, int newSpriteHigh)
-{
-	/*
-	* function of resetting player sprite
-	*
-	* @param spritePositionX, spritePositionY - position of top left pixil of image in texture file
-	*        newSpriteLength, newSpriteHigh - sprite image size
-	*/
-
-	// setting new sprite size
-	spriteHigh = newSpriteHigh;
-	spriteLength = newSpriteLength;
-
-	// setting new sprite image
-	PlayerSprite.setTextureRect(IntRect(spritePositionX, spritePositionY, spriteLength, spriteHigh));
-
-	// set origin of sprite to center
-	PlayerSprite.setOrigin(spriteLength / 2., spriteHigh / 2.);
-
-	return;
-}
-
-void Player::draw(RenderWindow& window)
-{
-	/*
-	* function of drawing player sprite in game window
-	*
-	* @param window - game window
-	*/
-
-	// get player position inside game window
-	double playerPositionInWindowX = getPositionInWindow().first;
-	double playerPositionInWindowY = getPositionInWindow().second;
-
-	// get angle and position of rotation
-	rotate(window, playerPositionInWindowX, playerPositionInWindowY);
-
-	// rotate sprite
-	PlayerSprite.setRotation(angle * 180 / acos(-1));
-
-	// set sprite position
-	PlayerSprite.setPosition(playerPositionInWindowX, playerPositionInWindowY);
-
-	// drawing sprite
-	window.draw(PlayerSprite);
+	spriteHigh = PLAYER_SPRITE_AK_HIGH;
 
 	return;
 }
@@ -194,14 +125,29 @@ pair < double, double > Player::getPositionInWindow()
 	return { resultPositionX, resultPositionY };
 }
 
-void Player::rotate(RenderWindow & window, double positionX, double positionY)
+pair < double, double > Player::getSize()
+{
+	/*
+	* function of getting player sprite size
+	*
+	* @return size of player sprite
+	*/
+
+	return{ spriteLength, spriteHigh };
+}
+
+double Player::rotate(RenderWindow & window)
 {
 	/*
 	* function of changing angle to order sprite by mouse
 	*
-	* @param positionX, positionY - position of center of sprite image
-	*        window - game window
+	* @param window - game window
+	* @return new angle
 	*/
+
+	// get position of center sprite in window
+	double positionX = getPositionInWindow().first;
+	double positionY = getPositionInWindow().second;
 
 	// get mouse position inside the window
 	Vector2i mousePosition = Mouse::getPosition(window);
@@ -217,7 +163,7 @@ void Player::rotate(RenderWindow & window, double positionX, double positionY)
 		angle = atan2(deltY, deltX);
 	}
 
-	return;
+	return angle;
 }
 
 double Player::getAngle()
@@ -229,4 +175,18 @@ double Player::getAngle()
 	*/
 
 	return angle;
+}
+
+void Player::setPosition(double newX, double newY)
+{
+	/*
+	* function of setting player position
+	*
+	* @param newX, newY - new position
+	*/
+
+	playerPositionX = newX;
+	playerPositionY = newY;
+
+	return;
 }

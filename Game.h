@@ -24,15 +24,16 @@ class Game
 
 	Texture EnviromentTexture;
 	vector < Sprite > EnviromentSprite;
-
-	CircleShape bulletSprite;
-
+	
 	bool playerShooting = 0;
 	Weapon PlayerWeapon;
 	vector < Bullet > Bullets;
 
+	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;
+
 	bool pause;
 
+	bool loadSprites();
 	bool initComponents();
 	void checkTime(RenderWindow & window);
 	void moveObjects();
@@ -40,6 +41,10 @@ class Game
 	void switchEvent(Event event, RenderWindow & window);
 	void makePause();
 	void doActions();
+	void fieldGeneration();
+	void prepareToDrawing(RenderWindow & window);
+	void checkIntersection();
+	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
 
 public:
 	void process(RenderWindow & window);

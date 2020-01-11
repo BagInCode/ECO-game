@@ -7,6 +7,9 @@ const int WINDOW_HIGH = 700;
 const int FIELD_SIZE = 20;
 const int SQUARE_SIZE_PIXIL = 100;
 
+const double PLAYER_SPRITE_AK_POSITION_TOP = 0;
+const double PLAYER_SPRITE_AK_POSITION_LEFT = 200;
+
 const int PLAYER_SPRITE_AK_LENGTH = 40;
 const int PLAYER_SPRITE_AK_HIGH = 30;
 
@@ -15,5 +18,18 @@ const double PLAYER_SPEED = 0.1;
 const double TIME_FOR_ACTION = 20;
 
 const double TIME_OF_BULLET_LIFE = 10000;
+
+const int COUNT_TREES_IN_SQUARE = 3;
+
+const double GROUND_SPRITE_POSITION_TOP = 0;
+const double GROUND_SPRITE_POSITIOM_LEFT = 0;
+
+const double TREE_SPRITE_POSITION_TOP = 0;
+const double TREE_SPRITE_POSITION_LEFT = 100;
+
+const double HAUSE_SPRITE_POSITION_TOP = 100;
+const double HAUSE_SPRITE_POSITION_LEFT = 0;
+const double HAUSE_SPRITE_LENGTH = 200;
+const double HAUSE_SPRITE_HIGH = 300;
 
 #endif

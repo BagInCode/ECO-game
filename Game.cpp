@@ -10,39 +10,23 @@ bool Game::initComponents()
 	*         false - initialization failed
 	*/
 
-	Sprite temp;
-
-	// if texture does not load 
-	if(!EnviromentTexture.loadFromFile("Textures\\Enviroment.png"))
-	{
-		// initialization failed
-		return 0;
-	}
-
-	// set texture
-	temp.setTexture(EnviromentTexture);
-
-	// choose image rectangle of ground
-	temp.setTextureRect(IntRect(0, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
 	// init player
-	if (!playerObject.create())
+	playerObject.create();
+
+	// load enviroment sprites
+	if (!loadSprites())
 	{
 		return 0;
 	}
-
-	// init bullet sprite - red circle with radius 2
-	bulletSprite.setFillColor(Color::Red);
-	bulletSprite.setRadius(2);
 
 	// init weapon
 	PlayerWeapon.create(5000, 100, 1, 5*acos(-1)/180, 1, 30, 0, 0);
 
 	// start without pause
 	pause = 0;
+
+	// generate field
+	fieldGeneration();
 
 	return 1;
 }
@@ -80,6 +64,9 @@ void Game::checkTime(RenderWindow & window)
 		// move objects
 		moveObjects();
 
+		// check intersections
+		checkIntersection();
+
 		// draw picture
 		drawPicture(window);
 
@@ -89,6 +76,7 @@ void Game::checkTime(RenderWindow & window)
 
 	return;
 }
+
 void Game::moveObjects()
 {
 	/*
@@ -163,12 +151,18 @@ void Game::drawPicture(RenderWindow & window)
 	int playerCellY = playerGlobalPositionY / SQUARE_SIZE_PIXIL;
 
 	// calculate borders of drawing rectangle
-	int Left = max(0, playerCellX - 13);
-	int Right = min(FIELD_SIZE, playerCellX + 13);
-	int Up = max(0, playerCellY - 7);
-	int Down = min(FIELD_SIZE, playerCellY + 7);
+	int Left = max(0, playerCellX - 15);
+	int Right = min(FIELD_SIZE-1, playerCellX + 15);
+	int Up = max(0, playerCellY - 10);
+	int Down = min(FIELD_SIZE-1, playerCellY + 10);
 
-	// draw
+	// drawingOrder[i] - position of all sprites EnviromentSprite[i] on screen
+	vector < vector < pair < double, double > > > drawingOrder;
+
+	// resize vector to count sprites
+	drawingOrder.resize(EnviromentSprite.size());
+
+	// draw ground
 	for (int i = Up; i <= Down; i++)
 	{
 		for (int j = Left; j <= Right; j++)
@@ -181,36 +175,52 @@ void Game::drawPicture(RenderWindow & window)
 			double deltX = cellPositionX - playerGlobalPositionX;
 			double deltY = cellPositionY - playerGlobalPositionY;
 
-			// set position for ground sprite
-			EnviromentSprite[0].setPosition(playerPositionX + deltX, playerPositionY + deltY);
+			// add ground to drawing order
+			drawingOrder[0].push_back({ playerPositionX + deltX, playerPositionY + deltY });
 
-			// draw ground
-			window.draw(EnviromentSprite[0]);
+			// if there is sth in this square
+			if (Field[i][j] > 0)
+			{
+				// add to the order
+				drawingOrder[Field[i][j]].push_back({ playerPositionX + deltX, playerPositionY + deltY });
+			}
 		}
 	}
-	
-	// draw bullets
-	for (vector < Bullet > ::iterator it = Bullets.begin(); it != Bullets.end(); it++)
+
+	// for all Bullets
+	for (int i = 0; i < Bullets.size(); i++)
 	{
-		// get bullet position on map
-		pair < double, double > bulletPosition = it->getPosition();
+		// get Bullet position
+		double bulletPositionX = Bullets[i].getPosition().first;
+		double bulletPositionY = Bullets[i].getPosition().second;
 
-		// bullet position inside game window
-		pair < double, double > bulletPositionInWindow;
+		// get difference
+		double deltX = bulletPositionX - playerGlobalPositionX;
+		double deltY = bulletPositionY - playerGlobalPositionY;
 
-		// calculate bullet position inside game window
-		bulletPositionInWindow.first = playerPositionX + bulletPosition.first - playerGlobalPositionX;
-		bulletPositionInWindow.second = playerPositionY + bulletPosition.second - playerGlobalPositionY;
-
-		// set position
-		bulletSprite.setPosition(bulletPositionInWindow.first, bulletPositionInWindow.second);
-
-		// draw
-		window.draw(bulletSprite);
+		// add to order
+		drawingOrder[2].push_back({playerPositionX + deltX, playerPositionY + deltY});
 	}
 
-	// draw player
-	playerObject.draw(window);
+	// add player to order
+	drawingOrder[3].push_back(playerObject.getPositionInWindow());
+
+	// prepare to drawing
+	prepareToDrawing(window);
+
+	// for each type of sprites
+	for (int i = 0; i < drawingOrder.size(); i++)
+	{
+		// for each position of this type of sprites
+		for (int j = 0; j < drawingOrder[i].size(); j++)
+		{
+			// set position
+			EnviromentSprite[i].setPosition(drawingOrder[i][j].first, drawingOrder[i][j].second);
+
+			// and draw
+			window.draw(EnviromentSprite[i]);
+		}
+	}
 
 	// showing picture
 	window.display();
@@ -354,6 +364,7 @@ void Game::process(RenderWindow & window)
 	/*
 	* main function of game
 	*
+	* @param window - game window
 	*/
 
 	// init game components
@@ -395,4 +406,225 @@ void Game::doActions()
 	}
 
 	return;
+}
+
+void Game::fieldGeneration()
+{
+	/*
+	* function of generating field
+	*/
+
+	/// make random more randomly
+	srand(time(NULL));
+
+	int x, y;
+
+	// divid all fieald on squares 10x10 and random in each square independly
+	for (int i = 0; i < FIELD_SIZE / 10; i++)
+	{
+		for (int j = 0; j < FIELD_SIZE / 10; j++)
+		{
+			// random position of house
+			x = rand() % 7;
+			y = rand() % 7;
+
+			// set pointer of house in the top left corner of house
+			Field[i * 10 + y][j * 10 + x] = 1;
+
+			// in other square of house set pointer, that they are not empty
+			Field[i * 10 + y + 1][j * 10 + x] = -1;
+			Field[i * 10 + y + 2][j * 10 + x] = -1;
+			Field[i * 10 + y][j * 10 + x + 1] = -1;
+			Field[i * 10 + y + 1][j * 10 + x + 1] = -1;
+			Field[i * 10 + y + 2][j * 10 + x + 1] = -1;
+
+			// add to objects list (x1, x2, y1, y2, x1 < x2, y1 < y2)
+			positionOfObjects.push_back({ {(j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL}, 
+										  {(i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL} });
+
+			// generate tree
+			for (int k = 0; k < COUNT_TREES_IN_SQUARE; k++)
+			{
+				// generete while not get empty square
+				while (1)
+				{
+					// random position
+					x = rand() % 10;
+					y = rand() % 10;
+
+					// if square is empty
+					if (Field[i * 10 + x][j * 10 + y] == 0)
+					{
+						// set tree in this square
+						Field[i * 10 + x][j * 10 + y] = 4;
+
+						//stop generating
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	return;
+}
+
+bool Game::loadSprites()
+{
+	/*
+	* function of loading sprites
+	*
+	* @return true - if loadding complited
+	*         false - if loading failed
+	*/
+
+	Sprite temp;
+
+	// if texture does not load 
+	if (!EnviromentTexture.loadFromFile("Textures\\Enviroment.png"))
+	{
+		// loadging failed
+		return 0;
+	}
+
+	// set texture
+	temp.setTexture(EnviromentTexture);
+
+	// choose image rectangle of ground
+	temp.setTextureRect(IntRect(0, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
+	// choose image rectangle of home
+	temp.setTextureRect(IntRect(HAUSE_SPRITE_POSITION_LEFT, HAUSE_SPRITE_POSITION_TOP, HAUSE_SPRITE_LENGTH, HAUSE_SPRITE_HIGH));
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
+	// choose image rectangle of bullet
+	temp.setTextureRect(IntRect(0, 0, 3, 3));
+
+	// set color of sprite as red
+	temp.setColor(Color::Red);
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
+	// set basic color
+	temp.setColor(Color::White);
+
+	// choose image rectangle of player
+	temp.setTextureRect(IntRect(PLAYER_SPRITE_AK_POSITION_LEFT, PLAYER_SPRITE_AK_POSITION_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
+
+	// set origin
+	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
+	// set basic origin
+	temp.setOrigin(0, 0);
+
+	// choose image rectangle of tree
+	temp.setTextureRect(IntRect(TREE_SPRITE_POSITION_LEFT, TREE_SPRITE_POSITION_TOP, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
+	return 1;
+}
+
+void Game::prepareToDrawing(RenderWindow & window)
+{
+	/*
+	* function of preparing to drawing (rotate, set scale, ect.)
+	*/
+
+	// get angle of player sprite
+	double angle = playerObject.rotate(window);
+
+	// set rotation, convert angle from radian to degree
+	EnviromentSprite[3].setRotation(angle * 180 / acos(-1));
+
+	return;
+}
+
+void Game::checkIntersection()
+{
+	/*
+	* function of checking intersection of plaeyr and enemys with houses
+	*/
+
+	double playerSize = max(playerObject.getSize().first, playerObject.getSize().second);
+
+	// get coordinats of corners of player sprite
+	double playerX1 = playerObject.getPosition().first - playerSize / 2;
+	double playerX2 = playerObject.getPosition().first + playerSize / 2;
+
+	double playerY1 = playerObject.getPosition().second - playerSize / 2;
+	double playerY2 = playerObject.getPosition().second + playerSize / 2;
+
+	// for all objects
+	for (int i = 0; i < positionOfObjects.size(); i++)
+	{
+		// get coordinats of intersection
+		double x1 = max(playerX1, positionOfObjects[i].first.first);
+		double x2 = min(playerX2, positionOfObjects[i].first.second);
+
+		double y1 = max(playerY1, positionOfObjects[i].second.first);
+		double y2 = min(playerY2, positionOfObjects[i].second.second);
+
+		// if rectangle with negative square
+		if (x1 > x2 || y1 > y2)
+		{
+			// go to the next object
+			continue;
+		}
+
+		// get oriented area
+		bool flag1 = orientedArea(playerObject.getPosition().first, playerObject.getPosition().second, x1, y2, x2, y1);
+		bool flag2 = orientedArea(playerObject.getPosition().first, playerObject.getPosition().second, x1, y1, x2, y2);
+
+		// if moving up or right
+		if (flag1)
+		{
+			// if up
+			if (flag2)
+			{
+				playerObject.setPosition(playerObject.getPosition().first, y2 + playerSize / 2.);
+			}else
+			{
+				playerObject.setPosition(x2 + playerSize / 2., playerObject.getPosition().second);
+			}
+		}else
+		{
+			// if left
+			if (flag2)
+			{
+				playerObject.setPosition(x1 - playerSize / 2., playerObject.getPosition().second);
+			}else
+			{
+				playerObject.setPosition(playerObject.getPosition().first, y1 - playerSize / 2.);
+			}
+		}
+	}
+
+	return;
+}
+
+
+bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+	/*
+	* function of getting oriented area of triangle A(x1, y1) B(x2,y2) C(x3, y3)
+	*
+	* @param x1, y1, x2, y2, x3, y3 - coordinates of triangle vertex
+	* @return true if oriented area greather than zero
+	*/
+
+	// calculate area
+	double S = x1*y2 + y1*x3 + x2*y3 - y2*x3 - x2*y1 - x1*y3;
+
+	return (S > 0);
 }
