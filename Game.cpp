@@ -25,6 +25,9 @@ bool Game::initComponents()
 	// start without pause
 	pause = 0;
 
+	// start with drawing game scene
+	isMinimapDrawing = 0;
+
 	// generate field
 	fieldGeneration();
 
@@ -67,8 +70,17 @@ void Game::checkTime(RenderWindow & window)
 		// check intersections
 		checkIntersection();
 
-		// draw picture
-		drawPicture(window);
+		// if minimap drawing
+		if (isMinimapDrawing)
+		{
+			// draw minimap
+			drawMinimap(window);
+		}
+		else
+		{
+			// draw game scene
+			drawPicture(window);
+		}
 
 		// null timer
 		timer = 0;
@@ -288,6 +300,13 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
 			playerObject.setMoovingVector(1, 2);
 		}
+
+		// if key M
+		if (event.key.code == Keyboard::M)
+		{
+			// drowing minimap/drawing game scene
+			isMinimapDrawing = !isMinimapDrawing;
+		}
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -404,6 +423,9 @@ void Game::doActions()
 	{
 		PlayerWeapon.shoot(playerObject, Bullets);
 	}
+
+	// update vision
+	updateVision();
 
 	return;
 }
@@ -532,6 +554,70 @@ bool Game::loadSprites()
 	// add sprite
 	EnviromentSprite.push_back(temp);
 
+	// if texture does not load
+	if (!MinimapTexture.loadFromFile("Textures\\Minimap.png"))
+	{
+		// loading failed
+		return 0;
+	}
+
+	// set texture
+	temp.setTexture(MinimapTexture);
+
+	// set image rectangle of active ground
+	temp.setTextureRect(IntRect(MINIMAP_GROUND_ACTIVE_SPRITE_LEFT, MINIMAP_GROUND_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+	
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of active house
+	temp.setTextureRect(IntRect(MINIMAP_HOUSE_ACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of active tree
+	temp.setTextureRect(IntRect(MINIMAP_TREE_ACTIVE_SPRITE_LEFT, MINIMAP_TREE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of player
+	temp.setTextureRect(IntRect(MINIMAP_PLAYER_SPRITE_LEFT, MINIMAP_PLAYER_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of enemy
+	temp.setTextureRect(IntRect(MINIMAP_ENEMY_SPRITE_LEFT, MINIMAP_ENEMY_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of invisible
+	temp.setTextureRect(IntRect(MINIMAP_INVISIBLE_SPRITE_LEFT, MINIMAP_INVISIBLE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of inactive ground
+	temp.setTextureRect(IntRect(MINIMAP_GROUND_INACTIVE_SPRITE_LEFT, MINIMAP_GROUND_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of inactive house
+	temp.setTextureRect(IntRect(MINIMAP_HOUSE_INACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
+	// set image rectangle of inactive tree
+	temp.setTextureRect(IntRect(MINIMAP_TREE_INACTIVE_SPRITE_LEFT, MINIMAP_TREE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// add sprite
+	MinimapSprite.push_back(temp);
+
 	return 1;
 }
 
@@ -613,7 +699,6 @@ void Game::checkIntersection()
 	return;
 }
 
-
 bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, double y3)
 {
 	/*
@@ -627,4 +712,128 @@ bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, d
 	double S = x1*y2 + y1*x3 + x2*y3 - y2*x3 - x2*y1 - x1*y3;
 
 	return (S > 0);
+}
+
+int Game::getManhetenDist(int x1, int y1, int x2, int y2)
+{
+	/*
+	* function of getting manheten dist between two field squares
+	*
+	* @param x1, y1 - coordinate of first square
+	*        x2, y2 - coordinate of second square
+	*
+	* @return manheten dist
+	*/
+
+	return abs(x1 - x2) + abs(y1 - y2);
+}
+
+bool Game::isVisible(int playerX, int playerY, int x, int y)
+{
+	/*
+	* function of checking is square visible for player
+	*
+	* @param playerX, playerY - coordinate of player square
+	*        x, y - coordinate of square for checking
+	*
+	* @return true - if square is visible for player
+	*/
+
+	return (abs(playerX - x) <= MAX_VISIBLE_DIST) && (abs(playerY - y) <= MAX_VISIBLE_DIST);
+}
+
+void Game::drawMinimap(RenderWindow & window)
+{
+	/*
+	* function of drawing minimap
+	*
+	* @param window - game window
+	*/
+
+	// clear window, set color of background black
+	window.clear(Color::Black);
+
+	// create pointer of sprite
+	int pointerSprite = 0;
+
+	// get position of player square
+	int playerX = playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
+	int playerY = playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
+
+	// for all square
+	for (int i = 0; i < FIELD_SIZE; i++)
+	{
+		for (int j = 0; j < FIELD_SIZE; j++)
+		{
+			// if not opened square
+			if (!visionMap[i][j])
+			{
+				// set pointer to invisible sprite
+				pointerSprite = 5;
+			}
+			else
+			{
+				// if ground -> set pointer to the ground
+				if (Field[i][j] == 0) pointerSprite = 0;
+
+				// if house -> set pointer to the house
+				if (abs(Field[i][j]) == 1) pointerSprite = 1;
+
+				// if tree -> set pointer to the tree
+				if (Field[i][j] == 4) pointerSprite = 2;
+
+				// if invisible -> move pointer to invisible pictures
+				if (!isVisible(playerX, playerY, j, i))
+				{
+					pointerSprite += 6;
+				}
+			}
+
+			// set position
+			MinimapSprite[pointerSprite].setPosition(MINIMAP_DELT_X + j * MINIMAP_SQUARE_SIZE_PIXIL, i * MINIMAP_SQUARE_SIZE_PIXIL);
+			
+			// draw
+			window.draw(MinimapSprite[pointerSprite]);
+		}
+	}
+
+	// set player sprite position
+	MinimapSprite[3].setPosition(MINIMAP_DELT_X + playerX * MINIMAP_SQUARE_SIZE_PIXIL, playerY * MINIMAP_SQUARE_SIZE_PIXIL);
+	
+	// draw
+	window.draw(MinimapSprite[3]);
+
+	// sho picture
+	window.display();
+
+	return;
+}
+
+void Game::updateVision()
+{
+	/*
+	* function of updating minimap vision
+	*/
+	
+	// get position of player square
+	int playerX = playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
+	int playerY = playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
+
+	// get coordinate of square
+	int Up = min(FIELD_SIZE-1, playerY + MAX_VISIBLE_DIST);
+	int Down = max(0, playerY - MAX_VISIBLE_DIST);
+	int Left = max(playerX - MAX_VISIBLE_DIST, 0);
+	int Right = min(playerX + MAX_VISIBLE_DIST, FIELD_SIZE - 1);
+
+	// for each square
+	for (int i = Down; i <= Up; i++)
+	{
+		for (int j = Left; j <= Right; j++)
+		{
+			// set visibility
+			visionMap[i][j] = 1;
+		}
+	}
+
+	return;
 }

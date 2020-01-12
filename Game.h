@@ -17,6 +17,8 @@ class Game
 	int Field[FIELD_SIZE][FIELD_SIZE];
 	Player playerObject;
 
+	bool visionMap[FIELD_SIZE][FIELD_SIZE];
+
 	double timer;
 	Clock myClock;
 
@@ -24,6 +26,9 @@ class Game
 
 	Texture EnviromentTexture;
 	vector < Sprite > EnviromentSprite;
+
+	Texture MinimapTexture;
+	vector < Sprite > MinimapSprite;
 	
 	bool playerShooting = 0;
 	Weapon PlayerWeapon;
@@ -32,6 +37,8 @@ class Game
 	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;
 
 	bool pause;
+
+	bool isMinimapDrawing;
 
 	bool loadSprites();
 	bool initComponents();
@@ -45,6 +52,10 @@ class Game
 	void prepareToDrawing(RenderWindow & window);
 	void checkIntersection();
 	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
+	void drawMinimap(RenderWindow & window);
+	void updateVision();
+	int getManhetenDist(int x1, int y1, int x2, int y2);
+	bool isVisible(int playerX, int playerY, int x, int y);
 
 public:
 	void process(RenderWindow & window);
