@@ -35,8 +35,8 @@ void Player::move(double timer)
 	}
 
 	// updating player position
-	playerPositionX = playerPositionX + vectorX * PLAYER_SPEED * timer / delt;
-	playerPositionY = playerPositionY + vectorY * PLAYER_SPEED * timer / delt;
+	playerPositionX = playerPositionX + vectorX * PLAYER_SPEED * timer / delt * 4;
+	playerPositionY = playerPositionY + vectorY * PLAYER_SPEED * timer / delt * 4; // * 4 only for debugging
 
 	// if player position is out of field - get it inside
 	if (playerPositionX < spriteLength / 2. || playerPositionX > FIELD_SIZE* SQUARE_SIZE_PIXIL - spriteLength / 2.)

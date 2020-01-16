@@ -46,7 +46,7 @@ class Game
 	void moveObjects();
 	void drawPicture(RenderWindow & window);
 	void switchEvent(Event event, RenderWindow & window);
-	void makePause();
+	void makePause(int value = -1);
 	void doActions();
 	void fieldGeneration();
 	void prepareToDrawing(RenderWindow & window);

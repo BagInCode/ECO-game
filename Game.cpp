@@ -260,7 +260,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 	if (event.type == Event::LostFocus)
 	{
 		// set pause mod
-		makePause();
+		makePause(1);
 	}
 
 	// if event of keypressing
@@ -363,14 +363,32 @@ void Game::switchEvent(Event event, RenderWindow& window)
 	return;
 }
 
-void Game::makePause()
+void Game::makePause(int value)
 {
 	/*
 	* function of setting/unsetting pause
+	* -1 for switch (default)
+	* 0 for unpause
+	* 1 for pause
 	*/
 
 	// set pause value
-	pause = !pause;
+	_ASSERT(value >= -1 && value <= 1);
+	if (value == -1)
+	{
+		pause = !pause;
+	}
+	else if (value == 0)
+	{
+		pause = false;
+	}
+	else if (value == 1)
+	{
+		pause = true;
+	}
+
+	// restart clock
+	myClock.restart();
 
 	// stop player mooving
 	playerObject.setMoovingVector(0, 0);
@@ -625,6 +643,8 @@ void Game::prepareToDrawing(RenderWindow & window)
 {
 	/*
 	* function of preparing to drawing (rotate, set scale, ect.)
+	*
+	* @param window - game window
 	*/
 
 	// get angle of player sprite
@@ -639,7 +659,7 @@ void Game::prepareToDrawing(RenderWindow & window)
 void Game::checkIntersection()
 {
 	/*
-	* function of checking intersection of plaeyr and enemys with houses
+	* function of checking intersection of player and enemys with houses
 	*/
 
 	double playerSize = max(playerObject.getSize().first, playerObject.getSize().second);
