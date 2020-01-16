@@ -146,14 +146,14 @@ double Player::rotate(RenderWindow & window)
 	*/
 
 	// get position of center sprite in window
-	double positionX = getPositionInWindow().first;
-	double positionY = getPositionInWindow().second;
+	double positionX = getPositionInWindow().first / double(WINDOW_LENGTH)*double(window.getSize().x);
+	double positionY = getPositionInWindow().second / double(WINDOW_HIGH)*double(window.getSize().y);
 
 	// get mouse position inside the window
 	Vector2i mousePosition = Mouse::getPosition(window);
 
 	// if mouse inside the widow change - angle of rotation
-	if (mousePosition.x >= 0 && mousePosition.x <= WINDOW_LENGTH && mousePosition.y >= 0 && mousePosition.y <= WINDOW_HIGH)
+	if (mousePosition.x >= 0 && mousePosition.x <= window.getSize().x && mousePosition.y >= 0 && mousePosition.y <= window.getSize().y)
 	{
 		// get coordinats of vector (center of sprite -> mouse)
 		double deltX = mousePosition.x - positionX;
