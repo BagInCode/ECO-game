@@ -2,21 +2,23 @@
 
 MainMenu::MainMenu()
 {
+	haveFocus = 1;
+
 	timer = 0;
 
 	init();
 
 	newGame = new Button(WINDOW_LENGTH / 2 - 200, 50, 400, 100, font, "NEW GAME", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	newGame->setTextSize(24);
+	newGame->setTextSize(48);
 
 	continueGame = new Button(WINDOW_LENGTH / 2 - 200, 200, 400, 100, font, "CONTINUE", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	continueGame->setTextSize(24);
+	continueGame->setTextSize(48);
 
 	settings = new Button(WINDOW_LENGTH / 2 - 200, 350, 400, 100, font, "SETTINGS", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	settings->setTextSize(24);
+	settings->setTextSize(48);
 
 	quit = new Button(WINDOW_LENGTH / 2 - 200, 500, 400, 100, font, "QUIT", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	quit->setTextSize(24);
+	quit->setTextSize(48);
 }
 
 MainMenu::~MainMenu()
@@ -29,7 +31,7 @@ MainMenu::~MainMenu()
 
 void MainMenu::init()
 {
-	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
+	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/SourceSansPro-Black.ttf");
 }
 
 bool MainMenu::switchEvent(Event event, RenderWindow &window)
@@ -41,19 +43,23 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 	if (event.type == Event::LostFocus)
 	{
-		// todo to not redraw 
+		haveFocus = 0;
 
 		return true;
 	}
 	if (event.type == Event::GainedFocus)
 	{
-		// todo to redraw again 
+		haveFocus = 1;
+	}
+
+	if (haveFocus == 0)
+	{
+		return true;
 	}
 
 	Vector2f mousePosition(Mouse::getPosition(window));
 	mousePosition.x *= double(WINDOW_LENGTH) / double(window.getSize().x);
 	mousePosition.y *= double(WINDOW_HIGH) / double(window.getSize().y);
-
 
 	newGame->updateState(mousePosition);
 	continueGame->updateState(mousePosition);
@@ -65,6 +71,8 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 		Game game;
 
 		game.process(window);
+
+		clock.restart();
 	}
 
 	if (continueGame->isPressed())
@@ -88,6 +96,11 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 void MainMenu::draw(RenderWindow& window)
 {
+	if (haveFocus == 0)
+	{
+		return;
+	}
+
 	window.clear(Color::Cyan);
 
 	newGame->draw(window);

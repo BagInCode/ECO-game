@@ -21,14 +21,9 @@ enum BUTTON_STATE
 
 class Button
 {
-	/*
-	This button is not very flexible and require attention
-	be accurate using it
-	*/
-
 private:
 
-	pair<BUTTON_STATE, BUTTON_STATE> buttonState;
+	pair<BUTTON_STATE, BUTTON_STATE> buttonState; // current state - first, previous state - second
 
 	RectangleShape shape;
 	Font font;
@@ -45,6 +40,10 @@ public:
 	~Button();
 
 	void setTextSize(int textSize);
+	void setTextColor(Color textColor);
+	void setIdleColor(Color idleColor);
+	void setHoverColor(Color hoverColor);
+	void setActiveColor(Color activeColor);
 
 	bool isPressed();
 

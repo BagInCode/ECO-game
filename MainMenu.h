@@ -15,6 +15,8 @@ class MainMenu
 {
 private:
 
+	int haveFocus;
+
 	Font font;
 	Event event;
 
