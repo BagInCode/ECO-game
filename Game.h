@@ -14,6 +14,8 @@
 
 class Game
 {
+	int gameOver;
+
 	int Field[FIELD_SIZE][FIELD_SIZE];
 	Player playerObject;
 

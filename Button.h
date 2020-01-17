@@ -28,10 +28,10 @@ class Button
 
 private:
 
-	BUTTON_STATE buttonState;
+	pair<BUTTON_STATE, BUTTON_STATE> buttonState;
 
 	RectangleShape shape;
-	Font* font;
+	Font font;
 	Text text;
 
 	Color idleColor;
@@ -40,9 +40,11 @@ private:
 
 public:
 
-	Button(float x, float y, float width, float height, Font* font, string text,
+	Button(float x, float y, float width, float height, Font font, string text,
 		Color idleColor, Color hoverColor, Color activeColor);
 	~Button();
+
+	void setTextSize(int textSize);
 
 	bool isPressed();
 

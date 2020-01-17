@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include "Game.h"
+#include "MainMenu.h"
 
 #include "Constants.db"
 
@@ -21,10 +21,10 @@ int main()
 	// if you press and hold key - it give only one event KeyPressed (at the begin)
 	window.setKeyRepeatEnabled(0);
 
-	Game game;
+	MainMenu menu;
 
 	// play and have fun))
-	game.process(window);
+	menu.process(window);
 
 	return 0;
 }

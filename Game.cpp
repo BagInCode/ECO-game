@@ -10,6 +10,8 @@ bool Game::initComponents()
 	*         false - initialization failed
 	*/
 
+	gameOver = 0;
+
 	// init player
 	playerObject.create();
 
@@ -307,6 +309,13 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			// drowing minimap/drawing game scene
 			isMinimapDrawing = !isMinimapDrawing;
 		}
+
+		// if key P
+		if (event.key.code == Keyboard::P)
+		{
+			// use for debug, if you need to return to mainMenu
+			gameOver = 1;
+		}
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -411,7 +420,7 @@ void Game::process(RenderWindow & window)
 	myClock.restart();
 
 	// while game is not closed
-	while (window.isOpen())
+	while (window.isOpen() && !gameOver)
 	{
 		// if there is some event
 		if (window.pollEvent(event))
