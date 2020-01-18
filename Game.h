@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Weapon.h"
+#include "GamePausa.h"
 
 #include "Constants.db"
 
@@ -38,8 +39,6 @@ class Game
 
 	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;
 
-	bool pause;
-
 	bool isMinimapDrawing;
 
 	bool loadSprites();
@@ -48,7 +47,6 @@ class Game
 	void moveObjects();
 	void drawPicture(RenderWindow & window);
 	void switchEvent(Event event, RenderWindow & window);
-	void makePause(int value = -1);
 	void doActions();
 	void fieldGeneration();
 	void prepareToDrawing(RenderWindow & window);

@@ -24,9 +24,6 @@ bool Game::initComponents()
 	// init weapon
 	PlayerWeapon.create(5000, 100, 1, 5*acos(-1)/180, 1, 30, 0, 0);
 
-	// start without pause
-	pause = 0;
-
 	// start with drawing game scene
 	isMinimapDrawing = 0;
 
@@ -43,13 +40,6 @@ void Game::checkTime(RenderWindow & window)
 	*
 	* @param window - game window
 	*/
-
-	// if game on pause
-	if (pause)
-	{
-		// do not do any actions
-		return;
-	}
 
 	// get time delt
 	double timerDelt = myClock.getElapsedTime().asMicroseconds() / 1000.;
@@ -262,7 +252,15 @@ void Game::switchEvent(Event event, RenderWindow& window)
 	if (event.type == Event::LostFocus)
 	{
 		// set pause mod
-		makePause(1);
+		GamePausa gamePausa;
+
+		if (!gamePausa.process(window))
+		{
+			gameOver = 1;
+		}
+
+		timer = 0;
+		myClock.restart();
 	}
 
 	// if event of keypressing
@@ -272,7 +270,17 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		if (event.key.code == Keyboard::Escape)
 		{
 			// set pause mod
-			makePause();
+			GamePausa gamePausa;
+
+			if (!gamePausa.process(window))
+			{
+				gameOver = 1;
+			}
+
+			playerObject.setMoovingVector(0, 0);
+			playerShooting = 0;
+			timer = 0;
+			myClock.restart();
 		}
 
 		// if key A
@@ -368,39 +376,6 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			playerShooting = 0;
 		}
 	}
-
-	return;
-}
-
-void Game::makePause(int value)
-{
-	/*
-	* function of setting/unsetting pause
-	* -1 for switch (default)
-	* 0 for unpause
-	* 1 for pause
-	*/
-
-	// set pause value
-	_ASSERT(value >= -1 && value <= 1);
-	if (value == -1)
-	{
-		pause = !pause;
-	}
-	else if (value == 0)
-	{
-		pause = false;
-	}
-	else if (value == 1)
-	{
-		pause = true;
-	}
-
-	// restart clock
-	myClock.restart();
-
-	// stop player mooving
-	playerObject.setMoovingVector(0, 0);
 
 	return;
 }
