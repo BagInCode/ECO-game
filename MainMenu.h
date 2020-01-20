@@ -15,8 +15,6 @@ class MainMenu
 {
 private:
 
-	int haveFocus;
-
 	Font font;
 	Event event;
 
@@ -39,4 +37,3 @@ public:
 
 	bool process(RenderWindow& window);
 };
-

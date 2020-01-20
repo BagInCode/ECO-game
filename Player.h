@@ -24,6 +24,8 @@ class Player
 	double playerPositionX;
 	double playerPositionY;
 
+	int healthPoints;
+	
 public:
 	void create();
 	void move(double timer);
@@ -34,5 +36,7 @@ public:
 	double rotate(RenderWindow & window);
 	double getAngle();
 	void setPosition(double newX, double newY);
+	int getHealthPoints();
+	void getDamage(int damage);
 };
 

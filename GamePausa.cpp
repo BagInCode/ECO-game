@@ -5,7 +5,7 @@ GamePausa::GamePausa()
 	haveFocus = 1;
 	continueGame = 0;
 
-	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/SourceSansPro-Black.ttf");
+	font.loadFromFile("E:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
 
 	continueGameRutton = new Button(WINDOW_LENGTH / 2 - 300, 250, 600, 150, font, "CONTINUE GAME", Color(0, 75, 75), Color(0, 150, 150), Color(0, 225, 225));
 	continueGameRutton->setTextSize(72);
@@ -30,7 +30,7 @@ GamePausa::~GamePausa()
 bool GamePausa::process(RenderWindow& window)
 {
 	/*
-		return false if want back to menu (gameOver = 1 in Game class)	
+	return false if want back to menu (gameOver = 1 in Game class)
 	*/
 	screenTexture.create(window.getSize().x, window.getSize().y);
 	screenTexture.update(window);
@@ -74,7 +74,7 @@ bool GamePausa::process(RenderWindow& window)
 bool GamePausa::switchEvent(Event event, RenderWindow &window)
 {
 	/*
-		return false when want to return to the menu
+	return false when want to return to the menu
 	*/
 
 	if (event.type == Event::Closed)

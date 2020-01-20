@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 
@@ -41,3 +42,4 @@ public:
 	bool process(RenderWindow& window);
 
 };
+

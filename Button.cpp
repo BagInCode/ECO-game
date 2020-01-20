@@ -16,7 +16,7 @@ Button::Button(float x, float y, float width, float height, Font font, string te
 	this->text.setCharacterSize(12);
 	this->text.setPosition(
 		shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - this->text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height
+		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height / 2.0
 		);
 }
 
@@ -28,31 +28,15 @@ Button::~Button()
 void Button::setTextSize(int textSize)
 {
 	text.setCharacterSize(textSize);
-
 	text.setPosition(
 		shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - text.getGlobalBounds().height
+		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - text.getGlobalBounds().height / 2.0
 		);
 }
 
 void Button::setTextColor(Color color)
 {
 	text.setFillColor(color);
-}
-
-void Button::setIdleColor(Color idleColor)
-{
-	this->idleColor = idleColor;
-}
-
-void Button::setHoverColor(Color hoverColor)
-{
-	this->hoverColor = hoverColor;
-}
-
-void Button::setActiveColor(Color activeColor)
-{
-	this->activeColor = activeColor;
 }
 
 bool Button::isPressed()

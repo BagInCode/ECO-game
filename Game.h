@@ -4,12 +4,17 @@
 #include <SFML/Audio.hpp>
 
 #include <iostream>
+#include <math.h>
+#include <cmath>
 #include <vector>
 
 #include "Player.h"
 #include "Bullet.h"
 #include "Weapon.h"
 #include "GamePausa.h"
+#include "RunState.h"
+#include "StayState.h"
+#include "ShootState.h"
 
 #include "Constants.db"
 
@@ -32,13 +37,16 @@ class Game
 
 	Texture MinimapTexture;
 	vector < Sprite > MinimapSprite;
-	
+
 	bool playerShooting = 0;
 	Weapon PlayerWeapon;
 	vector < Bullet > Bullets;
 
 	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;
 
+	vector < Enemy > Enemys;
+	vector < State* > EnemysState;
+	
 	bool isMinimapDrawing;
 
 	bool loadSprites();
@@ -49,13 +57,16 @@ class Game
 	void switchEvent(Event event, RenderWindow & window);
 	void doActions();
 	void fieldGeneration();
-	void prepareToDrawing(RenderWindow & window);
 	void checkIntersection();
+	void checkIntersectionPlayer();
+	void checkIntersectionEnemy(Enemy & enemy);
 	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
 	void drawMinimap(RenderWindow & window);
 	void updateVision();
 	int getManhetenDist(int x1, int y1, int x2, int y2);
 	bool isVisible(int playerX, int playerY, int x, int y);
+	void checkGameOver();
+	State* chooseNext(int next);
 
 public:
 	void process(RenderWindow & window);

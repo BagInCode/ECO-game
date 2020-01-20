@@ -15,7 +15,6 @@ using namespace sf;
 
 class Bullet
 {
-public:
 	double angle;
 
 	double positionX;
@@ -30,6 +29,7 @@ public:
 	bool isPlayerTarget;
 
 	double timerOfLife = 0;
+public:
 
 	Bullet();
 	~Bullet();

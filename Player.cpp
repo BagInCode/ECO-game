@@ -14,6 +14,9 @@ void Player::create()
 	spriteLength = PLAYER_SPRITE_AK_LENGTH;
 	spriteHigh = PLAYER_SPRITE_AK_HIGH;
 
+	// set health points
+	healthPoints = 100;
+	
 	return;
 }
 
@@ -35,19 +38,13 @@ void Player::move(double timer)
 	}
 
 	// updating player position
-	playerPositionX = playerPositionX + vectorX * PLAYER_SPEED * timer / delt * 4;
-	playerPositionY = playerPositionY + vectorY * PLAYER_SPEED * timer / delt * 4; // * 4 only for debugging
+	playerPositionX = playerPositionX + vectorX * PLAYER_SPEED * timer / delt;
+	playerPositionY = playerPositionY + vectorY * PLAYER_SPEED * timer / delt;
 
 	// if player position is out of field - get it inside
-	if (playerPositionX < spriteLength / 2. || playerPositionX > FIELD_SIZE* SQUARE_SIZE_PIXIL - spriteLength / 2.)
-	{
-		playerPositionX = max(min(playerPositionX, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteLength / 2.), spriteLength / 2.);
-	}
-
-	if (playerPositionY < spriteHigh / 2. || playerPositionY > FIELD_SIZE* SQUARE_SIZE_PIXIL - spriteHigh / 2.)
-	{
-		playerPositionY = max(min(playerPositionY, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteHigh / 2.), spriteHigh / 2.);
-	}
+	playerPositionX = max(min(playerPositionX, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteLength / 2.), spriteLength / 2.);
+	playerPositionY = max(min(playerPositionY, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteHigh / 2.), spriteHigh / 2.);
+	
 
 	return;
 }
@@ -146,14 +143,14 @@ double Player::rotate(RenderWindow & window)
 	*/
 
 	// get position of center sprite in window
-	double positionX = getPositionInWindow().first / double(WINDOW_LENGTH)*double(window.getSize().x);
-	double positionY = getPositionInWindow().second / double(WINDOW_HIGH)*double(window.getSize().y);
+	double positionX = getPositionInWindow().first;
+	double positionY = getPositionInWindow().second;
 
 	// get mouse position inside the window
 	Vector2i mousePosition = Mouse::getPosition(window);
 
 	// if mouse inside the widow change - angle of rotation
-	if (mousePosition.x >= 0 && mousePosition.x <= window.getSize().x && mousePosition.y >= 0 && mousePosition.y <= window.getSize().y)
+	if (mousePosition.x >= 0 && mousePosition.x <= WINDOW_LENGTH && mousePosition.y >= 0 && mousePosition.y <= WINDOW_HIGH)
 	{
 		// get coordinats of vector (center of sprite -> mouse)
 		double deltX = mousePosition.x - positionX;
@@ -187,6 +184,30 @@ void Player::setPosition(double newX, double newY)
 
 	playerPositionX = newX;
 	playerPositionY = newY;
+
+	return;
+}
+
+int Player::getHealthPoints()
+{
+	/*
+	* function of getting player health points
+	*
+	* @return health points
+	*/
+
+	return healthPoints;
+}
+
+void Player::getDamage(int damage)
+{
+	/*
+	* function of decreasing player HP
+	*
+	* @param damage - damage
+	*/
+
+	healthPoints -= damage;
 
 	return;
 }

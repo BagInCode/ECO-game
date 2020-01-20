@@ -31,14 +31,16 @@ protected:
 
 	bool isPlayerWeapon;
 
+	vector < Bullet >* Bullets;
+
 public:
 	Weapon();
 	~Weapon();
 
 	void increaseTimer(double _timer);
-	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon);
-	void shoot(Player & player, vector < Bullet > & Bullets);
-	void createBullet(Player & player, vector < Bullet > & Bullets);
+	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon, vector < Bullet >* _bullets);
+	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget);
+	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget);
 	void startReload();
 };
 

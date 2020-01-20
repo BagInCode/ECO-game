@@ -17,7 +17,7 @@ int main()
 {
 	// create window
 	RenderWindow window(VideoMode(WINDOW_LENGTH, WINDOW_HIGH), WINDOW_NAME);
-	
+
 	// if you press and hold key - it give only one event KeyPressed (at the begin)
 	window.setKeyRepeatEnabled(0);
 

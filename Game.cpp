@@ -10,6 +10,7 @@ bool Game::initComponents()
 	*         false - initialization failed
 	*/
 
+	// game is not over
 	gameOver = 0;
 
 	// init player
@@ -22,8 +23,18 @@ bool Game::initComponents()
 	}
 
 	// init weapon
-	PlayerWeapon.create(5000, 100, 1, 5*acos(-1)/180, 1, 30, 0, 0);
+	PlayerWeapon.create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
 
+	Weapon weapon;
+	weapon.create(330, 330, 1, 5 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
+
+	Enemy enemy;
+	enemy.create(1000, 1000, weapon);
+
+	Enemys.push_back(enemy);
+
+	EnemysState.push_back(new RunState());
+	
 	// start with drawing game scene
 	isMinimapDrawing = 0;
 
@@ -40,13 +51,13 @@ void Game::checkTime(RenderWindow & window)
 	*
 	* @param window - game window
 	*/
-
+	
 	// get time delt
 	double timerDelt = myClock.getElapsedTime().asMicroseconds() / 1000.;
 
 	// restart clock
 	myClock.restart();
-	
+
 	// increase timer
 	timer += timerDelt;
 
@@ -55,7 +66,7 @@ void Game::checkTime(RenderWindow & window)
 	{
 		// do some actions
 		doActions();
-		
+
 		// move objects
 		moveObjects();
 
@@ -76,6 +87,9 @@ void Game::checkTime(RenderWindow & window)
 
 		// null timer
 		timer = 0;
+
+		// check game for ending
+		checkGameOver();
 	}
 
 	return;
@@ -93,39 +107,24 @@ void Game::moveObjects()
 	// if there are some bullets 
 	if (Bullets.size() > 0)
 	{
-		// remember here last element to erase
-		vector < vector < Bullet > :: iterator > eraseIt;
+		// create new vector
+		vector < Bullet > newBullets;
 
-		// will be true if there are some bullets for deleting
-		bool needToErase = 0;
-
-		// move bullets
-		for (vector < Bullet > ::iterator it = Bullets.begin(); it != Bullets.end(); it++)
+		for (int i = 0; i < Bullets.size(); i++)
 		{
-			// move it
-			it->move(timer); 
+			// move bullet
+			Bullets[i].move(timer);
 
-			// it it is time to delete bullet
-			if (it->readyToDelete())
+			// if bullet have to stay alife
+			if (!Bullets[i].readyToDelete())
 			{
-				// remember element for delete
-				eraseIt.push_back(it);
-
-				// set variable
-				needToErase = 1;
+				// add to new vector
+				newBullets.push_back(Bullets[i]);
 			}
 		}
 
-		// if there are some bullets for deleting
-		if (needToErase)
-		{
-			// for each element for deleting
-			for (int i = 0; i < eraseIt.size(); i++)
-			{
-				// delete it
-				Bullets.erase(eraseIt[i]);
-			}
-		}
+		// overwrite old vector
+		Bullets = newBullets;
 	}
 
 	return;
@@ -156,9 +155,9 @@ void Game::drawPicture(RenderWindow & window)
 
 	// calculate borders of drawing rectangle
 	int Left = max(0, playerCellX - 15);
-	int Right = min(FIELD_SIZE-1, playerCellX + 15);
+	int Right = min(FIELD_SIZE - 1, playerCellX + 15);
 	int Up = max(0, playerCellY - 10);
-	int Down = min(FIELD_SIZE-1, playerCellY + 10);
+	int Down = min(FIELD_SIZE - 1, playerCellY + 10);
 
 	// drawingOrder[i] - position of all sprites EnviromentSprite[i] on screen
 	vector < vector < pair < double, double > > > drawingOrder;
@@ -203,14 +202,30 @@ void Game::drawPicture(RenderWindow & window)
 		double deltY = bulletPositionY - playerGlobalPositionY;
 
 		// add to order
-		drawingOrder[2].push_back({playerPositionX + deltX, playerPositionY + deltY});
+		drawingOrder[2].push_back({ playerPositionX + deltX, playerPositionY + deltY });
 	}
 
 	// add player to order
 	drawingOrder[3].push_back(playerObject.getPositionInWindow());
 
-	// prepare to drawing
-	prepareToDrawing(window);
+	// get angle of player sprite
+	double angle = playerObject.rotate(window);
+
+	// set rotation, convert angle from radian to degree
+	EnviromentSprite[3].setRotation(angle * 180 / acos(-1));
+
+	// add enemys
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		pair < double, double > position;
+
+		// calculate position in window
+		position.first = playerPositionX + Enemys[i].getPosition().first - playerGlobalPositionX;
+		position.second = playerPositionY + Enemys[i].getPosition().second - playerGlobalPositionY;
+
+		// add to order
+		drawingOrder[4].push_back(position);
+	}
 
 	// for each type of sprites
 	for (int i = 0; i < drawingOrder.size(); i++)
@@ -220,6 +235,13 @@ void Game::drawPicture(RenderWindow & window)
 		{
 			// set position
 			EnviromentSprite[i].setPosition(drawingOrder[i][j].first, drawingOrder[i][j].second);
+
+			// if enemy sprite
+			if (i == 4)
+			{
+				// set sprite rotation
+				EnviromentSprite[i].setRotation(Enemys[j].getAngleWatching() * 180 / acos(-1));
+			}
 
 			// and draw
 			window.draw(EnviromentSprite[i]);
@@ -406,6 +428,12 @@ void Game::process(RenderWindow & window)
 
 		// checking clock
 		checkTime(window);
+
+		// if game over
+		if (gameOver != 0)
+		{
+			break;
+		}
 	}
 
 	return;
@@ -423,11 +451,44 @@ void Game::doActions()
 	// action of shooting
 	if (playerShooting)
 	{
-		PlayerWeapon.shoot(playerObject, Bullets);
+		PlayerWeapon.shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
 	}
 
 	// update vision
 	updateVision();
+
+	// for all enemys
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		// increase weapon timer
+		Enemys[i].getWeaponPointer()->increaseTimer(timer);
+
+		// do action
+		EnemysState[i] -> doAction(timer, Enemys[i], playerObject);
+
+		// try next state
+		int next = EnemysState[i]->goNext(Enemys[i], playerObject);
+
+		// if there is some
+		if (next != -1)
+		{
+			// delete previous
+			delete EnemysState[i];
+
+			// overwrite
+			EnemysState[i] = chooseNext(next);
+		}
+
+		// calculate coordinates of vector (enemy position -> player position)
+		double deltX = playerObject.getPosition().first - Enemys[i].getPosition().first;
+		double deltY = playerObject.getPosition().second - Enemys[i].getPosition().second;
+
+		// get angle between this vector and vector (0 1)
+		double angle = atan2(deltY, deltX);
+
+		// set angle to player position
+		Enemys[i].setAngleWatching(angle);
+	}
 
 	return;
 }
@@ -463,8 +524,8 @@ void Game::fieldGeneration()
 			Field[i * 10 + y + 2][j * 10 + x + 1] = -1;
 
 			// add to objects list (x1, x2, y1, y2, x1 < x2, y1 < y2)
-			positionOfObjects.push_back({ {(j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL}, 
-										  {(i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL} });
+			positionOfObjects.push_back({ { (j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL },
+			{ (i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL } });
 
 			// generate tree
 			for (int k = 0; k < COUNT_TREES_IN_SQUARE; k++)
@@ -480,7 +541,7 @@ void Game::fieldGeneration()
 					if (Field[i * 10 + x][j * 10 + y] == 0)
 					{
 						// set tree in this square
-						Field[i * 10 + x][j * 10 + y] = 4;
+						Field[i * 10 + x][j * 10 + y] = EnviromentSprite.size()-1;
 
 						//stop generating
 						break;
@@ -547,6 +608,15 @@ bool Game::loadSprites()
 	// add sprite
 	EnviromentSprite.push_back(temp);
 
+	// set origin
+	temp.setOrigin(ENEMY_SPRITE_LENGTH / 2., ENEMY_SPRITE_HIGH / 2.);
+
+	// choose image rectangle of enemy
+	temp.setTextureRect(IntRect(ENEMY_SPRITE_LEFT, ENEMY_SPRITE_TOP, ENEMY_SPRITE_LENGTH, ENEMY_SPRITE_HIGH));
+
+	// add sprite
+	EnviromentSprite.push_back(temp);
+
 	// set basic origin
 	temp.setOrigin(0, 0);
 
@@ -568,7 +638,7 @@ bool Game::loadSprites()
 
 	// set image rectangle of active ground
 	temp.setTextureRect(IntRect(MINIMAP_GROUND_ACTIVE_SPRITE_LEFT, MINIMAP_GROUND_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-	
+
 	// add sprite
 	MinimapSprite.push_back(temp);
 
@@ -623,27 +693,28 @@ bool Game::loadSprites()
 	return 1;
 }
 
-void Game::prepareToDrawing(RenderWindow & window)
+void Game::checkIntersection()
 {
 	/*
-	* function of preparing to drawing (rotate, set scale, ect.)
-	*
-	* @param window - game window
+	* function of checking intersection
 	*/
 
-	// get angle of player sprite
-	double angle = playerObject.rotate(window);
+	// check player
+	checkIntersectionPlayer();
 
-	// set rotation, convert angle from radian to degree
-	EnviromentSprite[3].setRotation(angle * 180 / acos(-1));
+	// check all enemys
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		checkIntersectionEnemy(Enemys[i]);
+	}
 
 	return;
 }
 
-void Game::checkIntersection()
+void Game::checkIntersectionPlayer()
 {
 	/*
-	* function of checking intersection of player and enemys with houses
+	* function of checking intersection of player with houses
 	*/
 
 	double playerSize = max(playerObject.getSize().first, playerObject.getSize().second);
@@ -656,7 +727,7 @@ void Game::checkIntersection()
 	double playerY2 = playerObject.getPosition().second + playerSize / 2;
 
 	// for all objects
-	for (int i = 0; i < positionOfObjects.size(); i++)
+	for (int i = positionOfObjects.size()-1; i >= 0; i--)
 	{
 		// get coordinats of intersection
 		double x1 = max(playerX1, positionOfObjects[i].first.first);
@@ -683,19 +754,88 @@ void Game::checkIntersection()
 			if (flag2)
 			{
 				playerObject.setPosition(playerObject.getPosition().first, y2 + playerSize / 2.);
-			}else
+			}
+			else
 			{
 				playerObject.setPosition(x2 + playerSize / 2., playerObject.getPosition().second);
 			}
-		}else
+		}
+		else
 		{
 			// if left
 			if (flag2)
 			{
 				playerObject.setPosition(x1 - playerSize / 2., playerObject.getPosition().second);
-			}else
+			}
+			else
 			{
 				playerObject.setPosition(playerObject.getPosition().first, y1 - playerSize / 2.);
+			}
+		}
+	}
+
+	return;
+}
+
+void Game::checkIntersectionEnemy(Enemy & enemy)
+{
+	/*
+	* function of checking intersection of enemy with houses
+	*/
+
+	double enemySize = max(enemy.getSize().first, enemy.getSize().second);
+
+	// get coordinats of corners of enemy sprite
+	double enemyX1 = enemy.getPosition().first - enemySize / 2;
+	double enemyX2 = enemy.getPosition().first + enemySize / 2;
+
+	double enemyY1 = enemy.getPosition().second - enemySize / 2;
+	double enemyY2 = enemy.getPosition().second + enemySize / 2;
+	
+	// for all objects
+	for (int i = 0; i < positionOfObjects.size(); i++)
+	{
+		// get coordinats of intersection
+		double x1 = max(enemyX1, positionOfObjects[i].first.first);
+		double x2 = min(enemyX2, positionOfObjects[i].first.second);
+
+		double y1 = max(enemyY1, positionOfObjects[i].second.first);
+		double y2 = min(enemyY2, positionOfObjects[i].second.second);
+
+		// if rectangle with negative square
+		if (x1 > x2 || y1 > y2)
+		{
+			// go to the next object
+			continue;
+		}
+
+		// get oriented area
+		bool flag1 = orientedArea(enemy.getPosition().first, enemy.getPosition().second, x1, y2, x2, y1);
+		bool flag2 = orientedArea(enemy.getPosition().first, enemy.getPosition().second, x1, y1, x2, y2);
+
+		// if moving up or right
+		if (flag1)
+		{
+			// if up
+			if (flag2)
+			{
+				enemy.setPosition(enemy.getPosition().first, y2 + enemySize / 2.);
+			}
+			else
+			{
+				enemy.setPosition(x2 + enemySize / 2., enemy.getPosition().second);
+			}
+		}
+		else
+		{
+			// if left
+			if (flag2)
+			{
+				enemy.setPosition(x1 - enemySize / 2., enemy.getPosition().second);
+			}
+			else
+			{
+				enemy.setPosition(enemy.getPosition().first, y1 - enemySize / 2.);
 			}
 		}
 	}
@@ -784,7 +924,7 @@ void Game::drawMinimap(RenderWindow & window)
 				if (abs(Field[i][j]) == 1) pointerSprite = 1;
 
 				// if tree -> set pointer to the tree
-				if (Field[i][j] == 4) pointerSprite = 2;
+				if (Field[i][j] == EnviromentSprite.size()-1) pointerSprite = 2;
 
 				// if invisible -> move pointer to invisible pictures
 				if (!isVisible(playerX, playerY, j, i))
@@ -795,15 +935,36 @@ void Game::drawMinimap(RenderWindow & window)
 
 			// set position
 			MinimapSprite[pointerSprite].setPosition(MINIMAP_DELT_X + j * MINIMAP_SQUARE_SIZE_PIXIL, i * MINIMAP_SQUARE_SIZE_PIXIL);
-			
+
 			// draw
 			window.draw(MinimapSprite[pointerSprite]);
 		}
 	}
 
+	// fro all enemys
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		// get cordinates of square
+		int enemyX = Enemys[i].getPosition().first / SQUARE_SIZE_PIXIL;
+		int enemyY = Enemys[i].getPosition().second / SQUARE_SIZE_PIXIL;
+
+		// if square is not visible
+		if (!isVisible(playerX, playerY, enemyX, enemyY))
+		{
+			// go to next enemy
+			continue;
+		}
+
+		// set position
+		MinimapSprite[4].setPosition(MINIMAP_DELT_X + enemyX * MINIMAP_SQUARE_SIZE_PIXIL, enemyY * MINIMAP_SQUARE_SIZE_PIXIL);
+
+		// draw
+		window.draw(MinimapSprite[4]);
+	}
+
 	// set player sprite position
 	MinimapSprite[3].setPosition(MINIMAP_DELT_X + playerX * MINIMAP_SQUARE_SIZE_PIXIL, playerY * MINIMAP_SQUARE_SIZE_PIXIL);
-	
+
 	// draw
 	window.draw(MinimapSprite[3]);
 
@@ -818,13 +979,13 @@ void Game::updateVision()
 	/*
 	* function of updating minimap vision
 	*/
-	
+
 	// get position of player square
 	int playerX = playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
 	int playerY = playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
 
 	// get coordinate of square
-	int Up = min(FIELD_SIZE-1, playerY + MAX_VISIBLE_DIST);
+	int Up = min(FIELD_SIZE - 1, playerY + MAX_VISIBLE_DIST);
 	int Down = max(0, playerY - MAX_VISIBLE_DIST);
 	int Left = max(playerX - MAX_VISIBLE_DIST, 0);
 	int Right = min(playerX + MAX_VISIBLE_DIST, FIELD_SIZE - 1);
@@ -840,4 +1001,73 @@ void Game::updateVision()
 	}
 
 	return;
+}
+
+void Game::checkGameOver()
+{
+	/*
+	* function of checking game for ending
+	*/
+
+	// player die
+	if (playerObject.getHealthPoints() < 1)
+	{
+		gameOver = -1;
+	}
+
+	// get player poisition
+	double playerX = playerObject.getPosition().first;
+	double playerY = playerObject.getPosition().second;
+
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		// get enemy position
+		double enemyX = Enemys[i].getPosition().first;
+		double enemyY = Enemys[i].getPosition().second;
+
+		// get dist between player and this enemy 
+		double dist = sqrt((enemyX - playerX) * (enemyX - playerX) + (enemyY - playerY) * (enemyY - playerY));
+
+		// if enemy too close
+		if (dist < ENDING_RADIUS)
+		{
+			gameOver = -1;
+
+			break;
+		}
+	}
+
+	return;
+}
+
+State* Game::chooseNext(int next)
+{
+	/*
+	* functionf of choosing next state
+	*
+	* @param next - integet pointer to next state
+	*
+	* @return pointer to new state
+	*/
+
+	// if next run state
+	if (next == 0)
+	{
+		// return new run state
+		return new RunState();
+	}
+
+	// if next stay state
+	if (next == 1)
+	{
+		// return new stay state
+		return new StayState();
+	}
+
+	// if next shoot state
+	if (next == 2)
+	{
+		// return new shoo state
+		return new ShootState();
+	}
 }

@@ -10,7 +10,7 @@ Weapon::~Weapon()
 {
 }
 
-void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon)
+void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon, vector < Bullet >* _bullets)
 {
 	/*
 	* function of initialiation weapon
@@ -23,6 +23,7 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	*        maxAmmo - maximal ammo
 	*        damage - damage of single bullet
 	*        isPlayerWeapon - true if it is players` weapon
+	*        bullets - vector of bullets
 	*/
 
 	reload = _reload;
@@ -33,6 +34,7 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	maxAmmo = _maxAmmo;
 	damage = _damage;
 	isPlayerWeapon = _isPlayerWeapon;
+	Bullets = _bullets;
 
 	// set timer to value more than reload
 	timer = reload + 1;
@@ -43,23 +45,18 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	return;
 }
 
-void Weapon::createBullet(Player & player, vector < Bullet > & Bullets)
+void Weapon::createBullet(pair < double, double > position, double angle, bool isPlayerTarget)
 {
 	/*
 	* function of creating bullet and add to vector of bullets
 	*
-	* @param player - player object
-	*        Bullets - vector of Bullets
+	* @param position - position of bullet
+	*        angle - angle of moving
+	*        isPlayerTarget - true, if target is player
 	*/
 
 	// create new object
 	Bullet newBullet;
-
-	// get player position on map
-	pair < double, double > playerPosition = player.getPosition();
-	
-	// get player angle
-	double angle = player.getAngle();
 
 	// random value in range [-1..1]
 	double accuracyValue = ((rand() % 101) - 50);
@@ -69,10 +66,10 @@ void Weapon::createBullet(Player & player, vector < Bullet > & Bullets)
 	angle += accuracy * accuracyValue;
 
 	// init bullet with new parametrs
-	newBullet.create(playerPosition.first, playerPosition.second, angle, bulletSpeed, damage, !isPlayerWeapon);
+	newBullet.create(position.first, position.second, angle, bulletSpeed, damage, !isPlayerWeapon);
 
 	// add new bullet
-	Bullets.push_back(newBullet);
+	Bullets->push_back(newBullet);
 
 	return;
 }
@@ -88,46 +85,6 @@ void Weapon::startReload()
 
 	// start reload timer
 	timer = 0;
-
-	return;
-}
-
-void Weapon::shoot(Player & player, vector < Bullet > & Bullets)
-{
-	/*
-	* function of checking ammo and shooting
-	*/
-
-	// if ammo is empty
-	if (currentAmmo == 0)
-	{
-		// if tine for reload has been passed
-		if (timer > reload)
-		{
-			// reload ammo
-			currentAmmo = maxAmmo;
-		}else
-		{
-			// no amo -> can`t shoot
-			return;
-		}
-	}
-
-	// if there is some ammo and enough time passed for shooting
-	if (timer > shootDelay)
-	{
-		// decrease ammo
-		currentAmmo -= 1;
-
-		// restart timer
-		timer = 0;
-
-		// create bullets
-		for (int i = 0; i < bulletsPerShoot; i++)
-		{
-			createBullet(player, Bullets);
-		}
-	}
 
 	return;
 }
@@ -151,4 +108,47 @@ void Weapon::increaseTimer(double _timer)
 	}
 
 	return;
+}
+
+bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayerTarget)
+{
+	/*
+	* function of checking ammo and shooting
+	*/
+
+	// if ammo is empty
+	if (currentAmmo == 0)
+	{
+		// if tine for reload has been passed
+		if (timer > reload)
+		{
+			// reload ammo
+			currentAmmo = maxAmmo;
+		}
+		else
+		{
+			// no amo -> can`t shoot
+			return 0;
+		}
+	}
+
+	// if there is some ammo and enough time passed for shooting
+	if (timer > shootDelay)
+	{
+		// decrease ammo
+		currentAmmo -= 1;
+
+		// restart timer
+		timer = 0;
+
+		// create bullets
+		for (int i = 0; i < bulletsPerShoot; i++)
+		{
+			createBullet(position, angle, 1);
+		}
+
+		return 1;
+	}
+
+	return 0;
 }

@@ -2,23 +2,25 @@
 
 MainMenu::MainMenu()
 {
-	haveFocus = 1;
-
 	timer = 0;
 
 	init();
 
-	newGame = new Button(WINDOW_LENGTH / 2 - 200, 50, 400, 100, font, "NEW GAME", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	newGame->setTextSize(48);
+	newGame = new Button(WINDOW_LENGTH / 2 - 200, 50, 400, 100, font, "NEW GAME", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
+	newGame->setTextSize(24);
+	newGame->setTextColor(Color(213, 0, 0));
 
-	continueGame = new Button(WINDOW_LENGTH / 2 - 200, 200, 400, 100, font, "CONTINUE", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	continueGame->setTextSize(48);
+	continueGame = new Button(WINDOW_LENGTH / 2 - 200, 200, 400, 100, font, "CONTINUE", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
+	continueGame->setTextSize(24);
+	continueGame->setTextColor(Color(213, 0, 0));
 
-	settings = new Button(WINDOW_LENGTH / 2 - 200, 350, 400, 100, font, "SETTINGS", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	settings->setTextSize(48);
+	settings = new Button(WINDOW_LENGTH / 2 - 200, 350, 400, 100, font, "SETTINGS", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
+	settings->setTextSize(24);
+	settings->setTextColor(Color(213, 0, 0));
 
-	quit = new Button(WINDOW_LENGTH / 2 - 200, 500, 400, 100, font, "QUIT", Color(75, 75, 0), Color(150, 150, 0), Color(225, 225, 0));
-	quit->setTextSize(48);
+	quit = new Button(WINDOW_LENGTH / 2 - 200, 500, 400, 100, font, "QUIT", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
+	quit->setTextSize(24);
+	quit->setTextColor(Color(213, 0, 0));
 }
 
 MainMenu::~MainMenu()
@@ -31,7 +33,7 @@ MainMenu::~MainMenu()
 
 void MainMenu::init()
 {
-	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/SourceSansPro-Black.ttf");
+	font.loadFromFile("E:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
 }
 
 bool MainMenu::switchEvent(Event event, RenderWindow &window)
@@ -43,23 +45,19 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 	if (event.type == Event::LostFocus)
 	{
-		haveFocus = 0;
+		// todo to not redraw 
 
 		return true;
 	}
 	if (event.type == Event::GainedFocus)
 	{
-		haveFocus = 1;
-	}
-
-	if (haveFocus == 0)
-	{
-		return true;
+		// todo to redraw again 
 	}
 
 	Vector2f mousePosition(Mouse::getPosition(window));
 	mousePosition.x *= double(WINDOW_LENGTH) / double(window.getSize().x);
 	mousePosition.y *= double(WINDOW_HIGH) / double(window.getSize().y);
+
 
 	newGame->updateState(mousePosition);
 	continueGame->updateState(mousePosition);
@@ -71,8 +69,6 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 		Game game;
 
 		game.process(window);
-
-		clock.restart();
 	}
 
 	if (continueGame->isPressed())
@@ -96,12 +92,7 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 void MainMenu::draw(RenderWindow& window)
 {
-	if (haveFocus == 0)
-	{
-		return;
-	}
-
-	window.clear(Color::Cyan);
+	window.clear(Color::Black);
 
 	newGame->draw(window);
 	continueGame->draw(window);
