@@ -13,7 +13,8 @@ const double PLAYER_SPRITE_AK_POSITION_LEFT = 200;
 const int PLAYER_SPRITE_AK_LENGTH = 40;
 const int PLAYER_SPRITE_AK_HIGH = 30;
 
-const double PLAYER_SPEED = 0.1;
+const double PLAYER_SPEED = 1;
+const double ENEMY_SPEED = 0.15;
 
 const double TIME_FOR_ACTION = 20;
 
@@ -64,5 +65,16 @@ const double MINIMAP_INVISIBLE_SPRITE_LEFT = 28;
 const double MINIMAP_DELT_X = 300;
 
 const int MAX_VISIBLE_DIST = 12;
+
+const double TIME_ENEMY_STAY = 500;
+const double TIME_ENEMY_RUN = 1000;
+
+const double ENDING_RADIUS = 40;
+
+const double ENEMY_SPRITE_TOP = 30;
+const double ENEMY_SPRITE_LEFT = 200;
+
+const double ENEMY_SPRITE_LENGTH = 35;
+const double ENEMY_SPRITE_HIGH = 25;
 
 #endif
