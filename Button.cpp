@@ -16,7 +16,7 @@ Button::Button(float x, float y, float width, float height, Font font, string te
 	this->text.setCharacterSize(12);
 	this->text.setPosition(
 		shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - this->text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height / 2.0
+		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height
 		);
 }
 
@@ -29,8 +29,8 @@ void Button::setTextSize(int textSize)
 {
 	text.setCharacterSize(textSize);
 	text.setPosition(
-		shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - text.getGlobalBounds().height / 2.0
+		shape.getPosition().x + shape.getGlobalBounds().width / 2. - text.getGlobalBounds().width / 2.0,
+		shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height
 		);
 }
 
@@ -85,4 +85,9 @@ void Button::draw(RenderWindow& window)
 {
 	window.draw(shape);
 	window.draw(text);
+}
+
+void Button::setTextThickness(int thicknessSize)
+{
+	text.setOutlineThickness(thicknessSize);
 }

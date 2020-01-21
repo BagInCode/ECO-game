@@ -24,15 +24,14 @@ void RunRandomVectorState::doAction(double _timer, Enemy& enemy, Player& player)
 	// if timer is zero
 	if (abs(timer) < 1e-3)
 	{
-		// generate random value 
-		double randomValue = rand();
-		randomValue /= rand();
+		// generate random value in range [-1, 1] 
+		double randomValue1 = (rand()%3) - 1;
+		double randomValue2 = (rand()%10) + 1;
 
-		// make it in range [0..2]
-		for (; randomValue > 2; randomValue -= 2){}
-
+		double randomValue = randomValue1 / randomValue2;
+		
 		// set angle
-		enemy.setAngleMoving(randomValue * acos(-1));
+		enemy.setAngleMoving(randomValue * acos(-1) / 2 + enemy.getAngleWatching());
 	}
 
 	// move enemy

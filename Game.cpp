@@ -26,13 +26,21 @@ bool Game::initComponents()
 	PlayerWeapon.create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 2, 0, &Bullets);
 
 	Weapon weapon;
-	weapon.create(330, 330, 1, 5 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
+	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
 
 	Enemy enemy;
 	enemy.create(1000, 1000, weapon);
 
 	Enemys.push_back(enemy);
+	Enemys.push_back(enemy);
+	Enemys.push_back(enemy);
+	Enemys.push_back(enemy);
+	Enemys.push_back(enemy);
 
+	EnemysState.push_back(new RunState());
+	EnemysState.push_back(new RunState());
+	EnemysState.push_back(new RunState());
+	EnemysState.push_back(new RunState());
 	EnemysState.push_back(new RunState());
 	
 	// start with drawing game scene

@@ -46,6 +46,7 @@ public:
 
 	void setTextSize(int textSize);
 	void setTextColor(Color color);
+	void setTextThickness(int thicknessSize);
 
 	bool isPressed();
 

@@ -7,20 +7,24 @@ MainMenu::MainMenu()
 	init();
 
 	newGame = new Button(WINDOW_LENGTH / 2 - 200, 50, 400, 100, font, "NEW GAME", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
-	newGame->setTextSize(24);
+	newGame->setTextSize(50);
 	newGame->setTextColor(Color(213, 0, 0));
+	newGame->setTextThickness(2);
 
 	continueGame = new Button(WINDOW_LENGTH / 2 - 200, 200, 400, 100, font, "CONTINUE", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
-	continueGame->setTextSize(24);
+	continueGame->setTextSize(50);
 	continueGame->setTextColor(Color(213, 0, 0));
+	continueGame->setTextThickness(2);
 
 	settings = new Button(WINDOW_LENGTH / 2 - 200, 350, 400, 100, font, "SETTINGS", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
-	settings->setTextSize(24);
+	settings->setTextSize(50);
 	settings->setTextColor(Color(213, 0, 0));
+	settings->setTextThickness(2);
 
 	quit = new Button(WINDOW_LENGTH / 2 - 200, 500, 400, 100, font, "QUIT", Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
-	quit->setTextSize(24);
+	quit->setTextSize(50);
 	quit->setTextColor(Color(213, 0, 0));
+	quit->setTextThickness(2);
 }
 
 MainMenu::~MainMenu()
