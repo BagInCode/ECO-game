@@ -15,6 +15,7 @@
 #include "RunState.h"
 #include "StayState.h"
 #include "ShootState.h"
+#include "RunRandomVectorState.h"
 
 #include "Constants.db"
 

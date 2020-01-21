@@ -1166,6 +1166,12 @@ State* Game::chooseNext(int next)
 		// return new shoo state
 		return new ShootState();
 	}
+
+	// if next run on random vector state
+	if (next == 3)
+	{
+		return new RunRandomVectorState();
+	}
 }
 
 void Game::checkEnemyAlive()

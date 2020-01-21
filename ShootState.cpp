@@ -48,6 +48,13 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	//if count shoots enough
 	if (countShoots == 3)
 	{
+		// with probability near 25% 
+		if (rand() % 4 == 0)
+		{
+			// next state is run on random vector
+			return 3;
+		}
+
 		// return pointer to run state
 		return 0;
 	}

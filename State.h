@@ -16,7 +16,7 @@ using namespace sf;
 class State
 {
 protected:
-	double timer = 0;
+	double timer = 0.000;
 	int countShoots = 0;
 
 public:
