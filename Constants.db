@@ -77,4 +77,7 @@ const double ENEMY_SPRITE_LEFT = 200;
 const double ENEMY_SPRITE_LENGTH = 35;
 const double ENEMY_SPRITE_HIGH = 25;
 
+const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
+const double CHARACTER_BODY_RADIUS = 10;
+
 #endif

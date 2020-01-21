@@ -66,7 +66,7 @@ void Weapon::createBullet(pair < double, double > position, double angle, bool i
 	angle += accuracy * accuracyValue;
 
 	// init bullet with new parametrs
-	newBullet.create(position.first, position.second, angle, bulletSpeed, damage, !isPlayerWeapon);
+	newBullet.create(position.first, position.second, angle, bulletSpeed, damage, isPlayerTarget);
 
 	// add new bullet
 	Bullets->push_back(newBullet);
@@ -144,7 +144,7 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 		// create bullets
 		for (int i = 0; i < bulletsPerShoot; i++)
 		{
-			createBullet(position, angle, 1);
+			createBullet(position, angle, isPlayerTarget);
 		}
 
 		return 1;

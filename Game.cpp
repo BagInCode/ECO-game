@@ -23,7 +23,7 @@ bool Game::initComponents()
 	}
 
 	// init weapon
-	PlayerWeapon.create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
+	PlayerWeapon.create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 2, 0, &Bullets);
 
 	Weapon weapon;
 	weapon.create(330, 330, 1, 5 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
@@ -73,6 +73,12 @@ void Game::checkTime(RenderWindow & window)
 		// check intersections
 		checkIntersection();
 
+		// check game for ending
+		checkGameOver();
+
+		// check enemy
+		checkEnemyAlive();
+
 		// if minimap drawing
 		if (isMinimapDrawing)
 		{
@@ -87,9 +93,6 @@ void Game::checkTime(RenderWindow & window)
 
 		// null timer
 		timer = 0;
-
-		// check game for ending
-		checkGameOver();
 	}
 
 	return;
@@ -116,7 +119,7 @@ void Game::moveObjects()
 			Bullets[i].move(timer);
 
 			// if bullet have to stay alife
-			if (!Bullets[i].readyToDelete())
+			if (!Bullets[i].readyToDelete() && !checkIntersectionBullet(Bullets[i]))
 			{
 				// add to new vector
 				newBullets.push_back(Bullets[i]);
@@ -248,6 +251,9 @@ void Game::drawPicture(RenderWindow & window)
 		}
 	}
 
+	// set base color to player sprite
+	EnviromentSprite[3].setColor(Color::White);
+
 	// showing picture
 	window.display();
 
@@ -281,6 +287,8 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			gameOver = 1;
 		}
 
+		playerObject.setMoovingVector(0, 0);
+		playerShooting = 0;
 		timer = 0;
 		myClock.restart();
 	}
@@ -843,6 +851,94 @@ void Game::checkIntersectionEnemy(Enemy & enemy)
 	return;
 }
 
+bool Game::checkIntersectionBullet(Bullet & bullet)
+{
+	/*
+	* function of checking intersection bullets with objects
+	*
+	* @param bullet - bulet
+	*
+	* @return true - if bullet have intersection with any object
+	*/
+
+	// calculate vector of bullet moving
+	pair < double, double > vectorMoving = bullet.getPosition();
+
+	vectorMoving.first -= bullet.getPreviousPosition().first;
+	vectorMoving.second -= bullet.getPreviousPosition().second;
+
+	// set position ofr checking
+	pair < double, double > currentPosition = bullet.getPreviousPosition();
+
+	// for all segments
+	for (int i = 0; i <= COUNT_SEGMENTS_FOR_BULLET_CHECKING; i++)
+	{
+		// check intersection with houses
+		for (int j = 0; j < positionOfObjects.size(); j++)
+		{
+			// if intersection with houses
+			if (positionOfObjects[j].first.first < currentPosition.first &&
+				positionOfObjects[j].first.second > currentPosition.first &&
+				positionOfObjects[j].second.first < currentPosition.second &&
+				positionOfObjects[j].second.second > currentPosition.second)
+			{
+				return 1;
+			}
+		}
+
+		// if target is player
+		if (bullet.getIsPlayerTarget())
+		{
+			// calculate position of body rectangle
+			double playerX1 = playerObject.getPosition().first - CHARACTER_BODY_RADIUS;
+			double playerX2 = playerObject.getPosition().first + CHARACTER_BODY_RADIUS;
+			double playerY1 = playerObject.getPosition().second - CHARACTER_BODY_RADIUS;
+			double playerY2 = playerObject.getPosition().second + CHARACTER_BODY_RADIUS;
+
+			// if there is intersection
+			if (playerX1 < currentPosition.first &&
+				playerX2 > currentPosition.first &&
+				playerY1 < currentPosition.second &&
+				playerY2 > currentPosition.second)
+			{
+				playerObject.getDamage(bullet.getDamage());
+
+				EnviromentSprite[3].setColor(Color::Red);
+
+				return 1;
+			}
+		}
+		else
+		{
+			for (int j = 0; j < Enemys.size(); j++)
+			{
+				// calculate position of body rectangle
+				double enemyX1 = Enemys[j].getPosition().first - CHARACTER_BODY_RADIUS;
+				double enemyX2 = Enemys[j].getPosition().first + CHARACTER_BODY_RADIUS;
+				double enemyY1 = Enemys[j].getPosition().second - CHARACTER_BODY_RADIUS;
+				double enemyY2 = Enemys[j].getPosition().second + CHARACTER_BODY_RADIUS;
+
+				// if there is intersection
+				if (enemyX1 < currentPosition.first &&
+					enemyX2 > currentPosition.first &&
+					enemyY1 < currentPosition.second &&
+					enemyY2 > currentPosition.second)
+				{
+					Enemys[j].getDamage(bullet.getDamage());
+
+					return 1;
+				}
+			}
+		}
+
+		// go to next position
+		currentPosition.first += vectorMoving.first / COUNT_SEGMENTS_FOR_BULLET_CHECKING;
+		currentPosition.second += vectorMoving.second / COUNT_SEGMENTS_FOR_BULLET_CHECKING;
+	}
+
+	return 0;
+}
+
 bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, double y3)
 {
 	/*
@@ -1070,4 +1166,30 @@ State* Game::chooseNext(int next)
 		// return new shoo state
 		return new ShootState();
 	}
+}
+
+void Game::checkEnemyAlive()
+{
+	/*
+	* function of checking is enemy alive or not
+	*/
+
+	// create new enemy vector
+	vector < Enemy > newEnemys;
+
+	// for all enemys
+	for (int i = 0; i < Enemys.size(); i++)
+	{
+		// if enemy alive
+		if (!Enemys[i].isDead())
+		{
+			// add to new vector
+			newEnemys.push_back(Enemys[i]);
+		}
+	}
+
+	// overwite previous vector
+	Enemys = newEnemys;
+
+	return;
 }

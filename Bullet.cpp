@@ -26,6 +26,8 @@ void Bullet::create(double _positionX, double _positionY, double _angle, double 
 	positionX = _positionX;
 	positionY = _positionY;
 
+	previousPosition = { positionX, positionY };
+
 	angle = _angle;
 	speed = _speed;
 
@@ -44,6 +46,9 @@ void Bullet::move(double timer)
 	*
 	* @param timer - how much time has been passed
 	*/
+
+	// overwrite previous position
+	previousPosition = { positionX, positionY };
 
 	// increase timer of lofe
 	timerOfLife += timer;
@@ -76,4 +81,37 @@ pair < double, double > Bullet::getPosition()
 	*/
 
 	return{ positionX, positionY };
+}
+
+pair < double, double > Bullet::getPreviousPosition()
+{
+	/*
+	* function of getting previous position
+	*
+	* @return previous position
+	*/
+
+	return previousPosition;
+}
+
+bool Bullet::getIsPlayerTarget()
+{
+	/*
+	* function of getting is player target or not
+	*
+	* @return isPlayerTarget
+	*/
+
+	return isPlayerTarget;
+}
+
+int Bullet::getDamage()
+{
+	/*
+	* function of getting bullet damage
+	*
+	* @return bullet damage
+	*/
+
+	return damage;
 }

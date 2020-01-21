@@ -20,6 +20,8 @@ class Bullet
 	double positionX;
 	double positionY;
 
+	pair < double, double > previousPosition;
+
 	double speed;
 
 	int bulletId;
@@ -39,5 +41,9 @@ public:
 	bool readyToDelete();
 
 	pair < double, double > getPosition();
+	pair < double, double > getPreviousPosition();
+
+	bool getIsPlayerTarget();
+	int getDamage();
 };
 

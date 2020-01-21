@@ -14,7 +14,7 @@ GamePausa::GamePausa()
 	backToMenuButton->setTextSize(72);
 
 	pausaText.setFont(font);
-	pausaText.setString("PAUSA");
+	pausaText.setString("PAUSE");
 	pausaText.setFillColor(Color::White);
 	pausaText.setOutlineThickness(5);
 	pausaText.setOutlineColor(Color::Black);

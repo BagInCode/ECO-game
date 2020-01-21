@@ -60,6 +60,7 @@ class Game
 	void checkIntersection();
 	void checkIntersectionPlayer();
 	void checkIntersectionEnemy(Enemy & enemy);
+	bool checkIntersectionBullet(Bullet & bullet);
 	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
 	void drawMinimap(RenderWindow & window);
 	void updateVision();
@@ -67,6 +68,7 @@ class Game
 	bool isVisible(int playerX, int playerY, int x, int y);
 	void checkGameOver();
 	State* chooseNext(int next);
+	void checkEnemyAlive();
 
 public:
 	void process(RenderWindow & window);

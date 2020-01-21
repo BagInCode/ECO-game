@@ -40,6 +40,8 @@ public:
 	void setPosition(double newX, double newY);
 	void create(double _positionX, double _positionY, Weapon weapon);
 	void setAngleWatching(double angle);
+	void getDamage(int damage);
+	bool isDead();
 
 	Enemy();
 	~Enemy();

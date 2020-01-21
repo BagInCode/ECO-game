@@ -148,6 +148,8 @@ void Enemy::create(double _positionX, double _positionY, Weapon weapon)
 	spriteLength = ENEMY_SPRITE_LENGTH;
 	spriteHigh = ENEMY_SPRITE_HIGH;
 
+	healthPoints = 10;
+
 	myWeapon = weapon;
 }
 
@@ -162,4 +164,24 @@ void Enemy::setAngleWatching(double angle)
 	angleWathcing = angle;
 
 	return;
+}
+
+void Enemy::getDamage(int damage)
+{
+	/*
+	* function of decreasing enemys hp
+	*
+	* @param damage - damage
+	*/
+
+	healthPoints -= damage;
+}
+
+bool Enemy::isDead()
+{
+	/*
+	* function of chekcing enemy hp 
+	*/
+
+	return healthPoints < 1;
 }
