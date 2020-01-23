@@ -20,6 +20,8 @@ class Enemy
 
 	double angleMoving;
 	double angleWathcing;
+
+	pair < double, double > previousPosition;
 	
 	Weapon myWeapon;
 
@@ -42,6 +44,7 @@ public:
 	void setAngleWatching(double angle);
 	void getDamage(int damage);
 	bool isDead();
+	pair < double, double > getPreviousPosition();
 
 	Enemy();
 	~Enemy();

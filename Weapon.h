@@ -29,8 +29,6 @@ protected:
 
 	int damage;
 
-	bool isPlayerWeapon;
-
 	vector < Bullet >* Bullets;
 
 public:
@@ -38,9 +36,11 @@ public:
 	~Weapon();
 
 	void increaseTimer(double _timer);
-	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon, vector < Bullet >* _bullets);
+	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, vector < Bullet >* _bullets);
 	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget);
 	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget);
 	void startReload();
+	int getCurrentAmmo();
+	void setCurrentAmmo(int _currentAmmo);
 };
 

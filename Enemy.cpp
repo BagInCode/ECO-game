@@ -30,6 +30,9 @@ void Enemy::move(double timer, double speed)
 	*        speed - speed of moving
 	*/
 
+	// overwrite previous position
+	previousPosition = { positionX, positionY };
+
 	// update position
 	positionX += speed * timer * cos(angleMoving);
 	positionY += speed * timer * sin(angleMoving);
@@ -145,6 +148,8 @@ void Enemy::create(double _positionX, double _positionY, Weapon weapon)
 	positionX = _positionX;
 	positionY = _positionY;
 
+	previousPosition = { positionX, positionY };
+
 	spriteLength = ENEMY_SPRITE_LENGTH;
 	spriteHigh = ENEMY_SPRITE_HIGH;
 
@@ -184,4 +189,14 @@ bool Enemy::isDead()
 	*/
 
 	return healthPoints < 1;
+}
+
+pair < double, double > Enemy::getPreviousPosition()
+{
+	/*
+	* function of getting previous position
+	*
+	* @return previous position 
+	*/
+	return previousPosition;
 }

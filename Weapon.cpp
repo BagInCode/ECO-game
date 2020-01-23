@@ -10,7 +10,7 @@ Weapon::~Weapon()
 {
 }
 
-void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, bool _isPlayerWeapon, vector < Bullet >* _bullets)
+void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, vector < Bullet >* _bullets)
 {
 	/*
 	* function of initialiation weapon
@@ -33,11 +33,10 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	bulletsPerShoot = _bulletsPerShoot;
 	maxAmmo = _maxAmmo;
 	damage = _damage;
-	isPlayerWeapon = _isPlayerWeapon;
 	Bullets = _bullets;
 
-	// set timer to value more than reload
-	timer = reload + 1;
+	// null timer
+	timer = 0;
 
 	// at start ammo is full
 	currentAmmo = maxAmmo;
@@ -151,4 +150,26 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 	}
 
 	return 0;
+}
+
+int Weapon::getCurrentAmmo()
+{
+	/*
+	* function of getting current ammo
+	*
+	* @return current ammo
+	*/
+
+	return currentAmmo;
+}
+
+void Weapon::setCurrentAmmo(int _currentAmmo)
+{
+	/*
+	* function of setting current ammo
+	*
+	* @param currentAmmo - new current ammo
+	*/
+
+	currentAmmo = _currentAmmo;
 }

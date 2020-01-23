@@ -1,13 +1,14 @@
 #pragma once
+
 #include "State.h"
 
-class RunState :
+class OutOfVisibilityState :
 	public State
 {
 public:
-	RunState();
-	~RunState();
-
+	OutOfVisibilityState();
+	~OutOfVisibilityState();
+	
 	void doAction(double _timer, Enemy& enemy, Player& player);
 	int goNext(Enemy& enemy, Player& player);
 };

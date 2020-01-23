@@ -16,6 +16,7 @@
 #include "StayState.h"
 #include "ShootState.h"
 #include "RunRandomVectorState.h"
+#include "OutOfVisibilityState.h"
 
 #include "Constants.db"
 
@@ -40,7 +41,12 @@ class Game
 	vector < Sprite > MinimapSprite;
 
 	bool playerShooting = 0;
-	Weapon PlayerWeapon;
+
+	int currentWeaponPointer = 0;
+	Weapon allPlayerWeapon[5];
+	Sprite allPlayerSprite[5];
+
+	Weapon currentPlayerWeapon;
 	vector < Bullet > Bullets;
 
 	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;

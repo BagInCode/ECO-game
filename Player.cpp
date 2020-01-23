@@ -211,3 +211,16 @@ void Player::getDamage(int damage)
 
 	return;
 }
+
+void Player::setSize(double length, double high)
+{
+	/*
+	* function of setting player sprite size
+	*
+	* @param length - new length
+	*        high - new high
+	*/
+
+	spriteLength = length;
+	spriteHigh = high;
+}

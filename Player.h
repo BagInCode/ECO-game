@@ -38,5 +38,6 @@ public:
 	void setPosition(double newX, double newY);
 	int getHealthPoints();
 	void getDamage(int damage);
+	void setSize(double length, double high);
 };
 

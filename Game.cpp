@@ -22,26 +22,41 @@ bool Game::initComponents()
 		return 0;
 	}
 
-	// init weapon
-	PlayerWeapon.create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 2, 0, &Bullets);
+	// init weapon pistol
+	allPlayerWeapon[0].create(3000, 300, 0.7, 3 * acos(-1) / 180, 1, 10, 5, &Bullets);
+
+	// init weapon hunter double
+	allPlayerWeapon[1].create(4000, 1000, 0.5, 10 * acos(-1) / 180, 5, 2, 4, &Bullets);
+
+	// init weapon AK
+	allPlayerWeapon[2].create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 10, &Bullets);
+
+	// init weapon minigan
+	allPlayerWeapon[3].create(10000, 60, 1, 7.5 * acos(-1) / 180, 1, 100, 10, &Bullets);
+
+	// init weapon sniper
+	allPlayerWeapon[4].create(5000, 1000, 1.5, 1.5 * acos(-1) / 180, 1, 5, 50, &Bullets);
+
+	// start with pistol
+	currentPlayerWeapon = allPlayerWeapon[0];
 
 	Weapon weapon;
-	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, 0, &Bullets);
+	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, &Bullets);
 
 	Enemy enemy;
 	enemy.create(1000, 1000, weapon);
 
-	Enemys.push_back(enemy);
+	/*Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 
-	EnemysState.push_back(new RunState());
-	EnemysState.push_back(new RunState());
-	EnemysState.push_back(new RunState());
-	EnemysState.push_back(new RunState());
-	EnemysState.push_back(new RunState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());*/
 	
 	// start with drawing game scene
 	isMinimapDrawing = 0;
@@ -362,6 +377,92 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			// use for debug, if you need to return to mainMenu
 			gameOver = 1;
 		}
+
+		// if key 1
+		if (event.key.code == Keyboard::Num1)
+		{
+			// remember this weapon state
+			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
+
+			// update pointer
+			currentWeaponPointer = 0;
+
+			// set pistol gun an sprite
+			currentPlayerWeapon = allPlayerWeapon[0];
+			EnviromentSprite[3] = allPlayerSprite[0];
+
+			// set sprite size
+			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+
+		// if key 2
+		if (event.key.code == Keyboard::Num2)
+		{
+			// remember this weapon state
+			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
+
+			// update pointer
+			currentWeaponPointer = 1;
+
+			// set hunter double gun an sprite
+			currentPlayerWeapon = allPlayerWeapon[1];
+			EnviromentSprite[3] = allPlayerSprite[1];
+
+			// set sprite size
+			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+
+		// if key 3
+		if (event.key.code == Keyboard::Num3)
+		{
+			// remember this weapon state
+			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
+
+			// update pointer
+			currentWeaponPointer = 2;
+
+			// set AK gun an sprite
+			currentPlayerWeapon = allPlayerWeapon[2];
+			EnviromentSprite[3] = allPlayerSprite[2];
+
+			// set sprite size
+			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+
+		// if key 4
+		if (event.key.code == Keyboard::Num4)
+		{
+			// remember this weapon state
+			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
+
+			// update pointer
+			currentWeaponPointer = 3;
+
+			// set minigun gun an sprite
+			currentPlayerWeapon = allPlayerWeapon[3];
+			EnviromentSprite[3] = allPlayerSprite[3];
+
+			// set sprite size
+			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+
+		// if key 5
+		if (event.key.code == Keyboard::Num5)
+		{
+			// remember this weapon state
+			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
+
+			// update pointer
+			currentWeaponPointer = 4;
+
+			// set sniper gun an sprite
+			currentPlayerWeapon = allPlayerWeapon[4];
+			EnviromentSprite[3] = allPlayerSprite[4];
+
+			// set sprite size
+			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+		
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -462,12 +563,12 @@ void Game::doActions()
 	*/
 
 	// increase weapon timer
-	PlayerWeapon.increaseTimer(timer);
+	currentPlayerWeapon.increaseTimer(timer);
 
 	// action of shooting
 	if (playerShooting)
 	{
-		PlayerWeapon.shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
+		currentPlayerWeapon.shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
 	}
 
 	// update vision
@@ -615,14 +716,53 @@ bool Game::loadSprites()
 	// set basic color
 	temp.setColor(Color::White);
 
-	// choose image rectangle of player
+	// choose image rectangle of player pistol sprite
+	temp.setTextureRect(IntRect(PLAYER_SPRITE_PISTOL_LEFT, PLAYER_SPRITE_PISTOL_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
+
+	// set origin
+	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
+
+	// add sprite
+	allPlayerSprite[0] = temp;
+
+	// choose image rectangle of player hunter double sprite
+	temp.setTextureRect(IntRect(PLAYER_SPRITE_HUNTER_DOUBLE_LEFT, PLAYER_SPRITE_HUNTER_DOUBLE_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
+
+	// set origin
+	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
+
+	// add sprite
+	allPlayerSprite[1] = temp;
+
+	// choose image rectangle of player AK sprite
 	temp.setTextureRect(IntRect(PLAYER_SPRITE_AK_POSITION_LEFT, PLAYER_SPRITE_AK_POSITION_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
 
 	// set origin
 	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
 
 	// add sprite
-	EnviromentSprite.push_back(temp);
+	allPlayerSprite[2] = temp;
+
+	// choose image rectangle of player minigun sprite
+	temp.setTextureRect(IntRect(PLAYER_SPRITE_MINIGUN_LEFT, PLAYER_SPRITE_MINIGUN_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
+
+	// set origin
+	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
+
+	// add sprite
+	allPlayerSprite[3] = temp;
+
+	// choose image rectangle of player sniper sprite
+	temp.setTextureRect(IntRect(PLAYER_SPRITE_SNIPER_LEFT, PLAYER_SPRITE_SNIPER_TOP, PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH));
+
+	// set origin
+	temp.setOrigin(PLAYER_SNIPER_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
+
+	// add sprite
+	allPlayerSprite[4] = temp;
+
+	// start with pistol
+	EnviromentSprite.push_back(allPlayerSprite[0]);
 
 	// set origin
 	temp.setOrigin(ENEMY_SPRITE_LENGTH / 2., ENEMY_SPRITE_HIGH / 2.);
@@ -1179,6 +1319,12 @@ State* Game::chooseNext(int next)
 	if (next == 3)
 	{
 		return new RunRandomVectorState();
+	}
+
+	// if next out of visibility state
+	if (next == 4)
+	{
+		return new OutOfVisibilityState();
 	}
 }
 
