@@ -149,6 +149,11 @@ double Player::rotate(RenderWindow & window)
 	// get mouse position inside the window
 	Vector2i mousePosition = Mouse::getPosition(window);
 
+
+	mousePosition.x = mousePosition.x / double(window.getSize().x) * WINDOW_LENGTH;
+	mousePosition.y = mousePosition.y / double(window.getSize().y) * WINDOW_HIGH;
+
+
 	// if mouse inside the widow change - angle of rotation
 	if (mousePosition.x >= 0 && mousePosition.x <= WINDOW_LENGTH && mousePosition.y >= 0 && mousePosition.y <= WINDOW_HIGH)
 	{

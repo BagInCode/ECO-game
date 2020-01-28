@@ -37,7 +37,7 @@ MainMenu::~MainMenu()
 
 void MainMenu::init()
 {
-	font.loadFromFile("E:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
+	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
 }
 
 bool MainMenu::switchEvent(Event event, RenderWindow &window)

@@ -46,7 +46,7 @@ bool Game::initComponents()
 	Enemy enemy;
 	enemy.create(1000, 1000, weapon);
 
-	/*Enemys.push_back(enemy);
+	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
 	Enemys.push_back(enemy);
@@ -56,7 +56,7 @@ bool Game::initComponents()
 	EnemysState.push_back(new OutOfVisibilityState());
 	EnemysState.push_back(new OutOfVisibilityState());
 	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());*/
+	EnemysState.push_back(new OutOfVisibilityState());
 	
 	// start with drawing game scene
 	isMinimapDrawing = 0;
@@ -188,6 +188,8 @@ void Game::drawPicture(RenderWindow & window)
 	// drawingOrder[i] - position of all sprites EnviromentSprite[i] on screen
 	vector < vector < pair < double, double > > > drawingOrder;
 
+	vector <int> storagesToDraw;
+
 	// resize vector to count sprites
 	drawingOrder.resize(EnviromentSprite.size());
 
@@ -212,6 +214,11 @@ void Game::drawPicture(RenderWindow & window)
 			{
 				// add to the order
 				drawingOrder[Field[i][j]].push_back({ playerPositionX + deltX, playerPositionY + deltY });
+			}
+
+			if (storageNumber[i][j] != -1)
+			{
+				storagesToDraw.push_back(storageNumber[i][j]);
 			}
 		}
 	}
@@ -254,25 +261,62 @@ void Game::drawPicture(RenderWindow & window)
 	}
 
 	// for each type of sprites
-	for (int i = 0; i < drawingOrder.size(); i++)
-	{
-		// for each position of this type of sprites
-		for (int j = 0; j < drawingOrder[i].size(); j++)
+
+	{ // draw grounds
+		for (int j = 0; j < drawingOrder[0].size(); j++)
 		{
-			// set position
-			EnviromentSprite[i].setPosition(drawingOrder[i][j].first, drawingOrder[i][j].second);
+			EnviromentSprite[0].setPosition(drawingOrder[0][j].first, drawingOrder[0][j].second);
 
-			// if enemy sprite
-			if (i == 4)
-			{
-				// set sprite rotation
-				EnviromentSprite[i].setRotation(Enemys[j].getAngleWatching() * 180 / acos(-1));
-			}
-
-			// and draw
-			window.draw(EnviromentSprite[i]);
+			window.draw(EnviromentSprite[0]);
 		}
 	}
+
+	{ // draw storages
+		for (auto& storageI : storagesToDraw)
+		{
+			storages[storageI].draw(window, playerGlobalPositionX - playerPositionX, playerGlobalPositionY - playerPositionY,
+				playerGlobalPositionX, playerGlobalPositionY, EnviromentSprite[1]);
+		}
+	}
+
+	{ // draw bullets
+		for (int j = 0; j < drawingOrder[2].size(); j++)
+		{
+			EnviromentSprite[2].setPosition(drawingOrder[2][j].first, drawingOrder[2][j].second);
+
+			window.draw(EnviromentSprite[2]);
+		}
+	}
+
+	{ // draw player
+		for (int j = 0; j < drawingOrder[3].size(); j++)
+		{
+			EnviromentSprite[3].setPosition(drawingOrder[3][j].first, drawingOrder[3][j].second);
+
+			window.draw(EnviromentSprite[3]);
+		}
+	}
+
+	{ // draw enemys
+		for (int j = 0; j < drawingOrder[4].size(); j++)
+		{
+			EnviromentSprite[4].setPosition(drawingOrder[4][j].first, drawingOrder[4][j].second);
+
+			EnviromentSprite[4].setRotation(Enemys[j].getAngleWatching() * 180 / acos(-1));
+
+			window.draw(EnviromentSprite[4]);
+		}
+	}
+
+	{ // draw trees
+		for (int j = 0; j < drawingOrder[5].size(); j++)
+		{
+			EnviromentSprite[5].setPosition(drawingOrder[5][j].first, drawingOrder[5][j].second);
+
+			window.draw(EnviromentSprite[5]);
+		}
+	}
+	
 
 	// set base color to player sprite
 	EnviromentSprite[3].setColor(Color::White);
@@ -463,6 +507,24 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
 		}
 		
+		if (event.key.code == Keyboard::E)
+		{
+			double playerPositionX = playerObject.getPosition().first;
+			double playerPositionY = playerObject.getPosition().second;
+
+			for (int i = max(0, int(playerPositionY / SQUARE_SIZE_PIXIL - 5)); i <= min(99, int(playerPositionY / SQUARE_SIZE_PIXIL + 5)); i++)
+			{
+				for (int j = max(0, int(playerPositionX / SQUARE_SIZE_PIXIL - 5)); j <= min(99, int(playerPositionX / SQUARE_SIZE_PIXIL + 5)); j++)
+				{
+					if (storageNumber[i][j] != -1)
+					{
+						pair<int, int> lootresult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
+
+						// todo smth with lootresult
+					}
+				}
+			}
+		}
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -607,6 +669,11 @@ void Game::doActions()
 		Enemys[i].setAngleWatching(angle);
 	}
 
+	for (auto& storage : storages)
+	{
+		storage.update(timer);
+	}
+
 	return;
 }
 
@@ -619,8 +686,26 @@ void Game::fieldGeneration()
 	/// make random more randomly
 	srand(time(NULL));
 
+	for (auto& row : Field)
+	{
+		for (auto& cell : row)
+		{
+			cell = 0;
+		}
+	}
+
+	for (auto& row : storageNumber)
+	{
+		for (auto& cell : row)
+		{
+			cell = -1;
+		}
+	}
+
 	int x, y;
 
+	storageFont.loadFromFile("D:/ECO Game/ECO Game/Fonts/Roboto-Regular2.ttf");
+	int storageIndex = 0;
 	// divid all fieald on squares 10x10 and random in each square independly
 	for (int i = 0; i < FIELD_SIZE / 10; i++)
 	{
@@ -630,19 +715,19 @@ void Game::fieldGeneration()
 			x = rand() % 7;
 			y = rand() % 7;
 
-			// set pointer of house in the top left corner of house
-			Field[i * 10 + y][j * 10 + x] = 1;
+			storageNumber[i * 10 + y][j * 10 + x] = storageIndex;
+			storageIndex++;
+			storages.push_back(Storage((j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL,
+				(i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL, storageFont));
 
 			// in other square of house set pointer, that they are not empty
+			Field[i * 10 + y][j * 10 + x] = -1;
 			Field[i * 10 + y + 1][j * 10 + x] = -1;
 			Field[i * 10 + y + 2][j * 10 + x] = -1;
 			Field[i * 10 + y][j * 10 + x + 1] = -1;
 			Field[i * 10 + y + 1][j * 10 + x + 1] = -1;
 			Field[i * 10 + y + 2][j * 10 + x + 1] = -1;
 
-			// add to objects list (x1, x2, y1, y2, x1 < x2, y1 < y2)
-			positionOfObjects.push_back({ { (j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL },
-			{ (i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL } });
 
 			// generate tree
 			for (int k = 0; k < COUNT_TREES_IN_SQUARE; k++)
@@ -698,7 +783,7 @@ bool Game::loadSprites()
 	// add sprite
 	EnviromentSprite.push_back(temp);
 
-	// choose image rectangle of home
+	// choose image rectangle of storage
 	temp.setTextureRect(IntRect(HAUSE_SPRITE_POSITION_LEFT, HAUSE_SPRITE_POSITION_TOP, HAUSE_SPRITE_LENGTH, HAUSE_SPRITE_HIGH));
 
 	// add sprite
@@ -883,14 +968,14 @@ void Game::checkIntersectionPlayer()
 	double playerY2 = playerObject.getPosition().second + playerSize / 2;
 
 	// for all objects
-	for (int i = positionOfObjects.size()-1; i >= 0; i--)
+	for (int i = 0; i < storages.size(); i++)
 	{
 		// get coordinats of intersection
-		double x1 = max(playerX1, positionOfObjects[i].first.first);
-		double x2 = min(playerX2, positionOfObjects[i].first.second);
+		double x1 = max(playerX1, storages[i].x1);
+		double x2 = min(playerX2, storages[i].x2);
 
-		double y1 = max(playerY1, positionOfObjects[i].second.first);
-		double y2 = min(playerY2, positionOfObjects[i].second.second);
+		double y1 = max(playerY1, storages[i].y1);
+		double y2 = min(playerY2, storages[i].y2);
 
 		// if rectangle with negative square
 		if (x1 > x2 || y1 > y2)
@@ -949,14 +1034,14 @@ void Game::checkIntersectionEnemy(Enemy & enemy)
 	double enemyY2 = enemy.getPosition().second + enemySize / 2;
 	
 	// for all objects
-	for (int i = 0; i < positionOfObjects.size(); i++)
+	for (int i = 0; i < storages.size(); i++)
 	{
 		// get coordinats of intersection
-		double x1 = max(enemyX1, positionOfObjects[i].first.first);
-		double x2 = min(enemyX2, positionOfObjects[i].first.second);
+		double x1 = max(enemyX1, storages[i].x1);
+		double x2 = min(enemyX2, storages[i].x2);
 
-		double y1 = max(enemyY1, positionOfObjects[i].second.first);
-		double y2 = min(enemyY2, positionOfObjects[i].second.second);
+		double y1 = max(enemyY1, storages[i].y1);
+		double y2 = min(enemyY2, storages[i].y2);
 
 		// if rectangle with negative square
 		if (x1 > x2 || y1 > y2)
@@ -1022,13 +1107,11 @@ bool Game::checkIntersectionBullet(Bullet & bullet)
 	for (int i = 0; i <= COUNT_SEGMENTS_FOR_BULLET_CHECKING; i++)
 	{
 		// check intersection with houses
-		for (int j = 0; j < positionOfObjects.size(); j++)
+		for (int j = 0; j < storages.size(); j++)
 		{
 			// if intersection with houses
-			if (positionOfObjects[j].first.first < currentPosition.first &&
-				positionOfObjects[j].first.second > currentPosition.first &&
-				positionOfObjects[j].second.first < currentPosition.second &&
-				positionOfObjects[j].second.second > currentPosition.second)
+			if (storages[j].x1 < currentPosition.first && storages[j].x2 > currentPosition.first &&
+				storages[j].y1 < currentPosition.second && storages[j].y2 > currentPosition.second)
 			{
 				return 1;
 			}

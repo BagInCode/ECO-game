@@ -5,7 +5,7 @@ GamePausa::GamePausa()
 	haveFocus = 1;
 	continueGame = 0;
 
-	font.loadFromFile("E:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
+	font.loadFromFile("D:/ECO Game/ECO Game/Fonts/Roboto-Regular.ttf");
 
 	continueGameRutton = new Button(WINDOW_LENGTH / 2 - 300, 250, 600, 150, font, "CONTINUE GAME", Color(0, 75, 75), Color(0, 150, 150), Color(0, 225, 225));
 	continueGameRutton->setTextSize(72);

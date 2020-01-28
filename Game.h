@@ -17,6 +17,7 @@
 #include "ShootState.h"
 #include "RunRandomVectorState.h"
 #include "OutOfVisibilityState.h"
+#include "Storage.h"
 
 #include "Constants.db"
 
@@ -25,6 +26,7 @@ class Game
 	int gameOver;
 
 	int Field[FIELD_SIZE][FIELD_SIZE];
+	int storageNumber[FIELD_SIZE][FIELD_SIZE]; // have index of storage in storages (for top left corner) or -1 otherwise
 	Player playerObject;
 
 	bool visionMap[FIELD_SIZE][FIELD_SIZE];
@@ -34,8 +36,11 @@ class Game
 
 	Event event;
 
+	Font storageFont;
+	vector<Storage> storages;
+
 	Texture EnviromentTexture;
-	vector < Sprite > EnviromentSprite;
+	vector < Sprite > EnviromentSprite; // 0 - ground, 1 - storage, 2 - bullet, 3 - player, 4 - enemy, 6 - tree
 
 	Texture MinimapTexture;
 	vector < Sprite > MinimapSprite;
@@ -44,12 +49,10 @@ class Game
 
 	int currentWeaponPointer = 0;
 	Weapon allPlayerWeapon[5];
-	Sprite allPlayerSprite[5];
+	Sprite allPlayerSprite[5]; // 0 - pistol, 1 - shotgun, 2 - ak, 3 - machineGun, 4 - sniperRifle
 
 	Weapon currentPlayerWeapon;
 	vector < Bullet > Bullets;
-
-	vector < pair < pair < double, double >, pair < double, double > > > positionOfObjects;
 
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
