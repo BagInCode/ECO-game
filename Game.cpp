@@ -38,26 +38,30 @@ bool Game::initComponents()
 	allPlayerWeapon[4].create(5000, 1000, 1.5, 1.5 * acos(-1) / 180, 1, 5, 50, &Bullets);
 
 	// start with pistol
-	currentPlayerWeapon = allPlayerWeapon[0];
+	currentWeaponPointer = 0;
 
 	Weapon weapon;
 	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, &Bullets);
 
 	Enemy enemy;
+
 	enemy.create(1000, 1000, weapon);
+	Enemys.push_back(enemy);
+	enemy.create(1050, 1050, weapon);
+	Enemys.push_back(enemy);
+	enemy.create(1000, 1050, weapon);
+	Enemys.push_back(enemy);
+	enemy.create(1050, 1000, weapon);
+	Enemys.push_back(enemy);
+	enemy.create(1025, 1025, weapon);
+	Enemys.push_back(enemy);
 
-	Enemys.push_back(enemy);
-	Enemys.push_back(enemy);
-	Enemys.push_back(enemy);
-	Enemys.push_back(enemy);
-	Enemys.push_back(enemy);
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
+	EnemysState.push_back(new OutOfVisibilityState());
 
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	
 	// start with drawing game scene
 	isMinimapDrawing = 0;
 
@@ -74,7 +78,7 @@ void Game::checkTime(RenderWindow & window)
 	*
 	* @param window - game window
 	*/
-	
+
 	// get time delt
 	double timerDelt = myClock.getElapsedTime().asMicroseconds() / 1000.;
 
@@ -316,7 +320,7 @@ void Game::drawPicture(RenderWindow & window)
 			window.draw(EnviromentSprite[5]);
 		}
 	}
-	
+
 
 	// set base color to player sprite
 	EnviromentSprite[3].setColor(Color::White);
@@ -425,14 +429,10 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// if key 1
 		if (event.key.code == Keyboard::Num1)
 		{
-			// remember this weapon state
-			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
-
 			// update pointer
 			currentWeaponPointer = 0;
 
-			// set pistol gun an sprite
-			currentPlayerWeapon = allPlayerWeapon[0];
+			// set sprite
 			EnviromentSprite[3] = allPlayerSprite[0];
 
 			// set sprite size
@@ -442,14 +442,10 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// if key 2
 		if (event.key.code == Keyboard::Num2)
 		{
-			// remember this weapon state
-			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
-
 			// update pointer
 			currentWeaponPointer = 1;
 
-			// set hunter double gun an sprite
-			currentPlayerWeapon = allPlayerWeapon[1];
+			// set sprite
 			EnviromentSprite[3] = allPlayerSprite[1];
 
 			// set sprite size
@@ -459,14 +455,10 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// if key 3
 		if (event.key.code == Keyboard::Num3)
 		{
-			// remember this weapon state
-			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
-
 			// update pointer
 			currentWeaponPointer = 2;
 
-			// set AK gun an sprite
-			currentPlayerWeapon = allPlayerWeapon[2];
+			// set sprite
 			EnviromentSprite[3] = allPlayerSprite[2];
 
 			// set sprite size
@@ -476,14 +468,10 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// if key 4
 		if (event.key.code == Keyboard::Num4)
 		{
-			// remember this weapon state
-			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
-
 			// update pointer
 			currentWeaponPointer = 3;
 
-			// set minigun gun an sprite
-			currentPlayerWeapon = allPlayerWeapon[3];
+			// set sprite
 			EnviromentSprite[3] = allPlayerSprite[3];
 
 			// set sprite size
@@ -493,20 +481,16 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// if key 5
 		if (event.key.code == Keyboard::Num5)
 		{
-			// remember this weapon state
-			allPlayerWeapon[currentWeaponPointer].setCurrentAmmo(currentPlayerWeapon.getCurrentAmmo());
-
 			// update pointer
 			currentWeaponPointer = 4;
 
-			// set sniper gun an sprite
-			currentPlayerWeapon = allPlayerWeapon[4];
+			// set sniper sprite
 			EnviromentSprite[3] = allPlayerSprite[4];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
 		}
-		
+
 		if (event.key.code == Keyboard::E)
 		{
 			double playerPositionX = playerObject.getPosition().first;
@@ -625,12 +609,12 @@ void Game::doActions()
 	*/
 
 	// increase weapon timer
-	currentPlayerWeapon.increaseTimer(timer);
+	allPlayerWeapon[currentWeaponPointer].increaseTimer(timer);
 
 	// action of shooting
 	if (playerShooting)
 	{
-		currentPlayerWeapon.shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
+		allPlayerWeapon[currentWeaponPointer].shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
 	}
 
 	// update vision
@@ -643,7 +627,7 @@ void Game::doActions()
 		Enemys[i].getWeaponPointer()->increaseTimer(timer);
 
 		// do action
-		EnemysState[i] -> doAction(timer, Enemys[i], playerObject);
+		EnemysState[i]->doAction(timer, Enemys[i], playerObject);
 
 		// try next state
 		int next = EnemysState[i]->goNext(Enemys[i], playerObject);
@@ -704,7 +688,7 @@ void Game::fieldGeneration()
 
 	int x, y;
 
-	storageFont.loadFromFile("D:/ECO Game/ECO Game/Fonts/Roboto-Regular2.ttf");
+	storageFont.loadFromFile(ROBO_REGULAR_2_FILE_PATH);
 	int storageIndex = 0;
 	// divid all fieald on squares 10x10 and random in each square independly
 	for (int i = 0; i < FIELD_SIZE / 10; i++)
@@ -743,7 +727,7 @@ void Game::fieldGeneration()
 					if (Field[i * 10 + x][j * 10 + y] == 0)
 					{
 						// set tree in this square
-						Field[i * 10 + x][j * 10 + y] = EnviromentSprite.size()-1;
+						Field[i * 10 + x][j * 10 + y] = EnviromentSprite.size() - 1;
 
 						//stop generating
 						break;
@@ -768,7 +752,7 @@ bool Game::loadSprites()
 	Sprite temp;
 
 	// if texture does not load 
-	if (!EnviromentTexture.loadFromFile("Textures\\Enviroment.png"))
+	if (!EnviromentTexture.loadFromFile(ENVIROMENT_TEXTURE_FILE_PATH))
 	{
 		// loadging failed
 		return 0;
@@ -868,7 +852,7 @@ bool Game::loadSprites()
 	EnviromentSprite.push_back(temp);
 
 	// if texture does not load
-	if (!MinimapTexture.loadFromFile("Textures\\Minimap.png"))
+	if (!MinimapTexture.loadFromFile(MINIMAP_TEXTURE_FILE_PATH))
 	{
 		// loading failed
 		return 0;
@@ -1032,7 +1016,7 @@ void Game::checkIntersectionEnemy(Enemy & enemy)
 
 	double enemyY1 = enemy.getPosition().second - enemySize / 2;
 	double enemyY2 = enemy.getPosition().second + enemySize / 2;
-	
+
 	// for all objects
 	for (int i = 0; i < storages.size(); i++)
 	{
@@ -1251,7 +1235,7 @@ void Game::drawMinimap(RenderWindow & window)
 				if (abs(Field[i][j]) == 1) pointerSprite = 1;
 
 				// if tree -> set pointer to the tree
-				if (Field[i][j] == EnviromentSprite.size()-1) pointerSprite = 2;
+				if (Field[i][j] == EnviromentSprite.size() - 1) pointerSprite = 2;
 
 				// if invisible -> move pointer to invisible pictures
 				if (!isVisible(playerX, playerY, j, i))

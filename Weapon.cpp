@@ -79,6 +79,9 @@ void Weapon::startReload()
 	* function of starting reloading
 	*/
 
+	// move current bullets to inventar
+	countBullets += currentAmmo;
+
 	// null ammo
 	currentAmmo = 0;
 
@@ -96,8 +99,12 @@ void Weapon::increaseTimer(double _timer)
 	* @param timer - how much time has been passed
 	*/
 
-	// increase timer
-	timer += _timer;
+	// if there are some bullets
+	if (countBullets + currentAmmo > 0)
+	{
+		// increase timer
+		timer += _timer;
+	}
 
 	// if timer value is too big
 	if (timer > reload)
@@ -123,6 +130,9 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 		{
 			// reload ammo
 			currentAmmo = maxAmmo;
+
+			// null timer
+			timer = 0;
 		}
 		else
 		{
@@ -172,4 +182,26 @@ void Weapon::setCurrentAmmo(int _currentAmmo)
 	*/
 
 	currentAmmo = _currentAmmo;
+}
+
+int Weapon::getCountBullets()
+{
+	/*
+	* functionf of gettting count of bullets
+	*
+	* @return count of bullets
+	*/
+
+	return countBullets;
+}
+
+void Weapon::addBullets(int delt)
+{
+	/*
+	* function of increasing count of bullets
+	*
+	* @param delt - increasing count
+	*/
+
+	countBullets += delt;
 }

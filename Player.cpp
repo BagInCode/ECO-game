@@ -9,14 +9,14 @@ void Player::create()
 	// set position
 	playerPositionX = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
 	playerPositionY = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
-	
+
 	// set player sprite size
 	spriteLength = PLAYER_SPRITE_AK_LENGTH;
 	spriteHigh = PLAYER_SPRITE_AK_HIGH;
 
 	// set health points
 	healthPoints = 100;
-	
+
 	return;
 }
 
@@ -44,7 +44,7 @@ void Player::move(double timer)
 	// if player position is out of field - get it inside
 	playerPositionX = max(min(playerPositionX, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteLength / 2.), spriteLength / 2.);
 	playerPositionY = max(min(playerPositionY, FIELD_SIZE * SQUARE_SIZE_PIXIL - spriteHigh / 2.), spriteHigh / 2.);
-	
+
 
 	return;
 }
@@ -79,7 +79,7 @@ pair < double, double > Player::getPosition()
 	* @return player position
 	*/
 
-	return { playerPositionX, playerPositionY };
+	return{ playerPositionX, playerPositionY };
 }
 
 pair < double, double > Player::getPositionInWindow()
@@ -119,7 +119,7 @@ pair < double, double > Player::getPositionInWindow()
 	}
 
 	// return result
-	return { resultPositionX, resultPositionY };
+	return{ resultPositionX, resultPositionY };
 }
 
 pair < double, double > Player::getSize()

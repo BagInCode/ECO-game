@@ -153,7 +153,7 @@ void Enemy::create(double _positionX, double _positionY, Weapon weapon)
 	spriteLength = ENEMY_SPRITE_LENGTH;
 	spriteHigh = ENEMY_SPRITE_HIGH;
 
-	healthPoints = 10;
+	healthPoints = 100;
 
 	myWeapon = weapon;
 }

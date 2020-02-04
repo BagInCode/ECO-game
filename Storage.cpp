@@ -105,7 +105,7 @@ pair <int, int> Storage::tryToLoot(double playerX, double playerY)
 {
 	if (!isLootable(playerX, playerY))
 	{
-		return { -1, 0 };
+		return{ -1, 0 };
 	}
 
 	lootable = 0;
@@ -115,7 +115,7 @@ pair <int, int> Storage::tryToLoot(double playerX, double playerY)
 
 	if (a == 0)
 	{
-		return { 0, 10 };
+		return{ 0, 10 };
 	}
 	else if (a == 1)
 	{

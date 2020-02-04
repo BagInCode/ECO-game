@@ -51,12 +51,11 @@ class Game
 	Weapon allPlayerWeapon[5];
 	Sprite allPlayerSprite[5]; // 0 - pistol, 1 - shotgun, 2 - ak, 3 - machineGun, 4 - sniperRifle
 
-	Weapon currentPlayerWeapon;
 	vector < Bullet > Bullets;
 
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
-	
+
 	bool isMinimapDrawing;
 
 	bool loadSprites();
@@ -83,4 +82,3 @@ class Game
 public:
 	void process(RenderWindow & window);
 };
-

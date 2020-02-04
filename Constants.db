@@ -13,7 +13,7 @@ const double PLAYER_SPRITE_AK_POSITION_LEFT = 200;
 const int PLAYER_SPRITE_AK_LENGTH = 40;
 const int PLAYER_SPRITE_AK_HIGH = 30;
 
-const double PLAYER_SPEED = 1;
+const double PLAYER_SPEED = 0.1;
 const double ENEMY_SPEED = 0.15;
 
 const double TIME_FOR_ACTION = 20;
@@ -93,5 +93,10 @@ const double PLAYER_SNIPER_LENGTH = 50;
 
 const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
 const double CHARACTER_BODY_RADIUS = 10;
+
+#define ROBO_REGULAR_2_FILE_PATH "Fonts/Roboto-Regular2.ttf"
+#define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
+#define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"
+#define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
 
 #endif

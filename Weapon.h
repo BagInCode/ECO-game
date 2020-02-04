@@ -29,6 +29,8 @@ protected:
 
 	int damage;
 
+	int countBullets;
+
 	vector < Bullet >* Bullets;
 
 public:
@@ -42,5 +44,7 @@ public:
 	void startReload();
 	int getCurrentAmmo();
 	void setCurrentAmmo(int _currentAmmo);
+	int getCountBullets();
+	void addBullets(int delt);
 };
 
