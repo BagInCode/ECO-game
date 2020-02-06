@@ -433,7 +433,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 0;
 
 			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[0];
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -446,7 +446,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 1;
 
 			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[1];
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -459,7 +459,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 2;
 
 			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[2];
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -472,7 +472,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 3;
 
 			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[3];
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -485,7 +485,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 4;
 
 			// set sniper sprite
-			EnviromentSprite[3] = allPlayerSprite[4];
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -559,6 +559,48 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		if (event.mouseButton.button == Mouse::Left)
 		{
 			playerShooting = 0;
+		}
+	}
+
+	// if wheel scrolled
+	if (event.type == Event::MouseWheelScrolled)
+	{
+		if (event.mouseWheelScroll.delta > 0)
+		{
+			// get next weapon
+			currentWeaponPointer = (currentWeaponPointer + 1) % 5;
+
+			// set sprite
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+
+			if (currentWeaponPointer == 4)
+			{
+				// set sprite size
+				playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
+			}else
+			{
+				// set sprite size
+				playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+			}
+		}else
+		if (event.mouseWheelScroll.delta < 0)
+		{
+			// get previous weapon
+			currentWeaponPointer = (currentWeaponPointer + 4) % 5;
+
+			// set sprite
+			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+
+			if (currentWeaponPointer == 4)
+			{
+				// set sprite size
+				playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
+			}
+			else
+			{
+				// set sprite size
+				playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
+			}
 		}
 	}
 
