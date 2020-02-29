@@ -12,7 +12,7 @@ using namespace std;
 using namespace sf;
 
 class Player
-{	
+{
 	int spriteHigh;
 	int spriteLength;
 
@@ -27,13 +27,15 @@ class Player
 	int healthPoints;
 	
 public:
+	int isDamaged;
+
 	void create();
 	void move(double timer);
 	void setMoovingVector(int newVectorX, int newVectorY);
 	pair < double, double > getPosition();
 	pair < double, double > getPositionInWindow();
 	pair < double, double > getSize();
-	double rotate(RenderWindow & window);
+	double rotate(RenderWindow* window);
 	double getAngle();
 	void setPosition(double newX, double newY);
 	int getHealthPoints();

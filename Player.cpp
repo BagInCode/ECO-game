@@ -6,6 +6,8 @@ void Player::create()
 	* function of initialization player
 	*/
 
+	isDamaged = 0;
+
 	// set position
 	playerPositionX = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
 	playerPositionY = FIELD_SIZE * SQUARE_SIZE_PIXIL / 2.;
@@ -133,7 +135,7 @@ pair < double, double > Player::getSize()
 	return{ spriteLength, spriteHigh };
 }
 
-double Player::rotate(RenderWindow & window)
+double Player::rotate(RenderWindow* window)
 {
 	/*
 	* function of changing angle to order sprite by mouse
@@ -147,11 +149,11 @@ double Player::rotate(RenderWindow & window)
 	double positionY = getPositionInWindow().second;
 
 	// get mouse position inside the window
-	Vector2i mousePosition = Mouse::getPosition(window);
+	Vector2i mousePosition = Mouse::getPosition(*window);
 
 
-	mousePosition.x = mousePosition.x / double(window.getSize().x) * WINDOW_LENGTH;
-	mousePosition.y = mousePosition.y / double(window.getSize().y) * WINDOW_HIGH;
+	mousePosition.x = mousePosition.x / double(window->getSize().x) * WINDOW_LENGTH;
+	mousePosition.y = mousePosition.y / double(window->getSize().y) * WINDOW_HIGH;
 
 
 	// if mouse inside the widow change - angle of rotation

@@ -23,10 +23,16 @@
 
 class Game
 {
+private:
+
+	class GraphicsManager;
+
+	RenderWindow* window;
+
 	int gameOver;
 
 	int Field[FIELD_SIZE][FIELD_SIZE];
-	int storageNumber[FIELD_SIZE][FIELD_SIZE]; // have index of storage in storages (for top left corner) or -1 otherwise
+	int storageNumber[FIELD_SIZE][FIELD_SIZE]; // hold index of storage in storages (for top left corner) or -1 otherwise
 	Player playerObject;
 
 	bool visionMap[FIELD_SIZE][FIELD_SIZE];
@@ -39,31 +45,22 @@ class Game
 	Font storageFont;
 	vector<Storage> storages;
 
-	Texture EnviromentTexture;
-	vector < Sprite > EnviromentSprite; // 0 - ground, 1 - storage, 2 - bullet, 3 - player, 4 - enemy, 6 - tree
-
-	Texture MinimapTexture;
-	vector < Sprite > MinimapSprite;
-
 	bool playerShooting = 0;
 
 	int currentWeaponPointer = 0;
 	Weapon allPlayerWeapon[5];
-	Sprite allPlayerSprite[5]; // 0 - pistol, 1 - shotgun, 2 - ak, 3 - machineGun, 4 - sniperRifle
 
 	vector < Bullet > Bullets;
 
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
 
-	bool isMinimapDrawing;
+	GraphicsManager* graphics;
 
-	bool loadSprites();
 	bool initComponents();
-	void checkTime(RenderWindow & window);
+	void checkTime();
 	void moveObjects();
-	void drawPicture(RenderWindow & window);
-	void switchEvent(Event event, RenderWindow & window);
+	void switchEvent(Event event);
 	void doActions();
 	void fieldGeneration();
 	void checkIntersection();
@@ -71,7 +68,6 @@ class Game
 	void checkIntersectionEnemy(Enemy & enemy);
 	bool checkIntersectionBullet(Bullet & bullet);
 	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
-	void drawMinimap(RenderWindow & window);
 	void updateVision();
 	int getManhetenDist(int x1, int y1, int x2, int y2);
 	bool isVisible(int playerX, int playerY, int x, int y);
@@ -80,5 +76,9 @@ class Game
 	void checkEnemyAlive();
 
 public:
+
+	Game();
+	~Game();
+
 	void process(RenderWindow & window);
 };

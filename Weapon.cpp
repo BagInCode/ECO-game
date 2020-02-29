@@ -145,7 +145,10 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 	if (timer > shootDelay)
 	{
 		// decrease ammo
-		currentAmmo -= 1;
+		if (!isPlayerTarget)
+		{
+			currentAmmo -= 1;
+		}
 
 		// restart timer
 		timer = 0;

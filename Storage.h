@@ -29,6 +29,6 @@ public:
 	void update(double timer);
 	bool isLootable(double playerX, double playerY);
 	pair <int, int> tryToLoot(double playerX, double playerY); // return {gun type, ammo count}
-	void draw(RenderWindow& window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite);
+	void draw(RenderWindow* window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite);
 
 };

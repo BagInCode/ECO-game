@@ -139,18 +139,18 @@ pair <int, int> Storage::tryToLoot(double playerX, double playerY)
 	}
 }
 
-void Storage::draw(RenderWindow& window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite)
+void Storage::draw(RenderWindow* window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite)
 {
 	double startPositionX = x1 - baseX, startPositionY = y1 - baseY;
 
 	storageSprite.setPosition(startPositionX, startPositionY);
-	window.draw(storageSprite);
+	window->draw(storageSprite);
 
 	textName.setPosition(
 		startPositionX + FIELD_SIZE - textName.getGlobalBounds().width / 2,
 		startPositionY - textName.getGlobalBounds().height / 2 + 100
 		);
-	window.draw(textName);
+	window->draw(textName);
 
 	if (lootable)
 	{
@@ -159,7 +159,7 @@ void Storage::draw(RenderWindow& window, double baseX, double baseY, double play
 			startPositionX + FIELD_SIZE - textInfo.getGlobalBounds().width / 2,
 			startPositionY - textInfo.getGlobalBounds().height / 2 + 150
 			);
-		window.draw(textInfo);
+		window->draw(textInfo);
 
 		if (isLootable(playerX, playerY))
 		{
@@ -167,7 +167,7 @@ void Storage::draw(RenderWindow& window, double baseX, double baseY, double play
 				startPositionX + FIELD_SIZE - textPressKey.getGlobalBounds().width / 2,
 				startPositionY - textPressKey.getGlobalBounds().height / 2 + 190
 				);
-			window.draw(textPressKey);
+			window->draw(textPressKey);
 		}
 	}
 	else
@@ -177,6 +177,6 @@ void Storage::draw(RenderWindow& window, double baseX, double baseY, double play
 			startPositionX + FIELD_SIZE - textInfo.getGlobalBounds().width / 2,
 			startPositionY - textInfo.getGlobalBounds().height / 2 + 150
 			);
-		window.draw(textInfo);
+		window->draw(textInfo);
 	}
 }

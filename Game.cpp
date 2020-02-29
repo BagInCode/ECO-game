@@ -1,5 +1,16 @@
-#include "Game.h"
 #include "Constants.db"
+#include "Game.h"
+#include "GameGraphicsManager.h"
+
+Game::Game()
+{
+	graphics = new GraphicsManager;
+}
+
+Game::~Game()
+{
+	delete graphics;
+}
 
 bool Game::initComponents()
 {
@@ -17,7 +28,7 @@ bool Game::initComponents()
 	playerObject.create();
 
 	// load enviroment sprites
-	if (!loadSprites())
+	if (!graphics->loadSprites())
 	{
 		return 0;
 	}
@@ -63,7 +74,7 @@ bool Game::initComponents()
 	EnemysState.push_back(new OutOfVisibilityState());
 
 	// start with drawing game scene
-	isMinimapDrawing = 0;
+	graphics->isMinimapDrawing = 0;
 
 	// generate field
 	fieldGeneration();
@@ -71,7 +82,7 @@ bool Game::initComponents()
 	return 1;
 }
 
-void Game::checkTime(RenderWindow & window)
+void Game::checkTime()
 {
 	/*
 	* function of checking timer
@@ -107,15 +118,15 @@ void Game::checkTime(RenderWindow & window)
 		checkEnemyAlive();
 
 		// if minimap drawing
-		if (isMinimapDrawing)
+		if (graphics->isMinimapDrawing)
 		{
 			// draw minimap
-			drawMinimap(window);
+			graphics->drawMinimap(this);
 		}
 		else
 		{
 			// draw game scene
-			drawPicture(window);
+			graphics->drawPicture(this);
 		}
 
 		// null timer
@@ -160,178 +171,7 @@ void Game::moveObjects()
 	return;
 }
 
-void Game::drawPicture(RenderWindow & window)
-{
-	/*
-	* function of drawing picture in game window
-	*
-	* @param window - game window
-	*/
-
-	// clear previous picture, set color of background black
-	window.clear(Color::Black);
-
-	// get position of player sprite inside game window
-	double playerPositionX = playerObject.getPositionInWindow().first;
-	double playerPositionY = playerObject.getPositionInWindow().second;
-
-	// get position of player sprite on map
-	double playerGlobalPositionX = playerObject.getPosition().first;
-	double playerGlobalPositionY = playerObject.getPosition().second;
-
-	// get position in array of cell, where player stay
-	int playerCellX = playerGlobalPositionX / SQUARE_SIZE_PIXIL;
-	int playerCellY = playerGlobalPositionY / SQUARE_SIZE_PIXIL;
-
-	// calculate borders of drawing rectangle
-	int Left = max(0, playerCellX - 15);
-	int Right = min(FIELD_SIZE - 1, playerCellX + 15);
-	int Up = max(0, playerCellY - 10);
-	int Down = min(FIELD_SIZE - 1, playerCellY + 10);
-
-	// drawingOrder[i] - position of all sprites EnviromentSprite[i] on screen
-	vector < vector < pair < double, double > > > drawingOrder;
-
-	vector <int> storagesToDraw;
-
-	// resize vector to count sprites
-	drawingOrder.resize(EnviromentSprite.size());
-
-	// draw ground
-	for (int i = Up; i <= Down; i++)
-	{
-		for (int j = Left; j <= Right; j++)
-		{
-			// get global position of cell
-			double cellPositionX = j * SQUARE_SIZE_PIXIL;
-			double cellPositionY = i * SQUARE_SIZE_PIXIL;
-
-			// get difference between player and cell global positions
-			double deltX = cellPositionX - playerGlobalPositionX;
-			double deltY = cellPositionY - playerGlobalPositionY;
-
-			// add ground to drawing order
-			drawingOrder[0].push_back({ playerPositionX + deltX, playerPositionY + deltY });
-
-			// if there is sth in this square
-			if (Field[i][j] > 0)
-			{
-				// add to the order
-				drawingOrder[Field[i][j]].push_back({ playerPositionX + deltX, playerPositionY + deltY });
-			}
-
-			if (storageNumber[i][j] != -1)
-			{
-				storagesToDraw.push_back(storageNumber[i][j]);
-			}
-		}
-	}
-
-	// for all Bullets
-	for (int i = 0; i < Bullets.size(); i++)
-	{
-		// get Bullet position
-		double bulletPositionX = Bullets[i].getPosition().first;
-		double bulletPositionY = Bullets[i].getPosition().second;
-
-		// get difference
-		double deltX = bulletPositionX - playerGlobalPositionX;
-		double deltY = bulletPositionY - playerGlobalPositionY;
-
-		// add to order
-		drawingOrder[2].push_back({ playerPositionX + deltX, playerPositionY + deltY });
-	}
-
-	// add player to order
-	drawingOrder[3].push_back(playerObject.getPositionInWindow());
-
-	// get angle of player sprite
-	double angle = playerObject.rotate(window);
-
-	// set rotation, convert angle from radian to degree
-	EnviromentSprite[3].setRotation(angle * 180 / acos(-1));
-
-	// add enemys
-	for (int i = 0; i < Enemys.size(); i++)
-	{
-		pair < double, double > position;
-
-		// calculate position in window
-		position.first = playerPositionX + Enemys[i].getPosition().first - playerGlobalPositionX;
-		position.second = playerPositionY + Enemys[i].getPosition().second - playerGlobalPositionY;
-
-		// add to order
-		drawingOrder[4].push_back(position);
-	}
-
-	// for each type of sprites
-
-	{ // draw grounds
-		for (int j = 0; j < drawingOrder[0].size(); j++)
-		{
-			EnviromentSprite[0].setPosition(drawingOrder[0][j].first, drawingOrder[0][j].second);
-
-			window.draw(EnviromentSprite[0]);
-		}
-	}
-
-	{ // draw storages
-		for (auto& storageI : storagesToDraw)
-		{
-			storages[storageI].draw(window, playerGlobalPositionX - playerPositionX, playerGlobalPositionY - playerPositionY,
-				playerGlobalPositionX, playerGlobalPositionY, EnviromentSprite[1]);
-		}
-	}
-
-	{ // draw bullets
-		for (int j = 0; j < drawingOrder[2].size(); j++)
-		{
-			EnviromentSprite[2].setPosition(drawingOrder[2][j].first, drawingOrder[2][j].second);
-
-			window.draw(EnviromentSprite[2]);
-		}
-	}
-
-	{ // draw player
-		for (int j = 0; j < drawingOrder[3].size(); j++)
-		{
-			EnviromentSprite[3].setPosition(drawingOrder[3][j].first, drawingOrder[3][j].second);
-
-			window.draw(EnviromentSprite[3]);
-		}
-	}
-
-	{ // draw enemys
-		for (int j = 0; j < drawingOrder[4].size(); j++)
-		{
-			EnviromentSprite[4].setPosition(drawingOrder[4][j].first, drawingOrder[4][j].second);
-
-			EnviromentSprite[4].setRotation(Enemys[j].getAngleWatching() * 180 / acos(-1));
-
-			window.draw(EnviromentSprite[4]);
-		}
-	}
-
-	{ // draw trees
-		for (int j = 0; j < drawingOrder[5].size(); j++)
-		{
-			EnviromentSprite[5].setPosition(drawingOrder[5][j].first, drawingOrder[5][j].second);
-
-			window.draw(EnviromentSprite[5]);
-		}
-	}
-
-
-	// set base color to player sprite
-	EnviromentSprite[3].setColor(Color::White);
-
-	// showing picture
-	window.display();
-
-	return;
-}
-
-void Game::switchEvent(Event event, RenderWindow& window)
+void Game::switchEvent(Event event)
 {
 	/*
 	* function of switching event type and chosing reaction for it
@@ -344,7 +184,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 	if (event.type == Event::Closed)
 	{
 		// close it
-		window.close();
+		window->close();
 	}
 
 	// if window lost focus
@@ -353,7 +193,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		// set pause mod
 		GamePausa gamePausa;
 
-		if (!gamePausa.process(window))
+		if (!gamePausa.process(*window))
 		{
 			gameOver = 1;
 		}
@@ -373,7 +213,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			// set pause mod
 			GamePausa gamePausa;
 
-			if (!gamePausa.process(window))
+			if (!gamePausa.process(*window))
 			{
 				gameOver = 1;
 			}
@@ -416,7 +256,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		if (event.key.code == Keyboard::M)
 		{
 			// drowing minimap/drawing game scene
-			isMinimapDrawing = !isMinimapDrawing;
+			graphics->isMinimapDrawing = !(graphics->isMinimapDrawing);
 		}
 
 		// if key P
@@ -431,9 +271,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		{
 			// update pointer
 			currentWeaponPointer = 0;
-
-			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+			graphics->playerSprite = &graphics->playerPistolSprite;
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -444,9 +282,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		{
 			// update pointer
 			currentWeaponPointer = 1;
-
-			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+			graphics->playerSprite = &graphics->playerShotgunSprite;
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -457,9 +293,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		{
 			// update pointer
 			currentWeaponPointer = 2;
-
-			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+			graphics->playerSprite = &graphics->playerRifleSprite;
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -472,7 +306,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 3;
 
 			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+			graphics->playerSprite = &graphics->playerMachinGunSprite;
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -485,7 +319,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 			currentWeaponPointer = 4;
 
 			// set sniper sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+			graphics->playerSprite = &graphics->playerSniperRifleSprite;
 
 			// set sprite size
 			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
@@ -502,7 +336,7 @@ void Game::switchEvent(Event event, RenderWindow& window)
 				{
 					if (storageNumber[i][j] != -1)
 					{
-						pair<int, int> lootresult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
+						pair<int, int> lootResult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
 
 						// todo smth with lootresult
 					}
@@ -569,38 +403,32 @@ void Game::switchEvent(Event event, RenderWindow& window)
 		{
 			// get next weapon
 			currentWeaponPointer = (currentWeaponPointer + 1) % 5;
-
-			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
-
-			if (currentWeaponPointer == 4)
-			{
-				// set sprite size
-				playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
-			}else
-			{
-				// set sprite size
-				playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
-			}
-		}else
-		if (event.mouseWheelScroll.delta < 0)
+		}
+		else if (event.mouseWheelScroll.delta < 0)
 		{
 			// get previous weapon
 			currentWeaponPointer = (currentWeaponPointer + 4) % 5;
+		}
 
-			// set sprite
-			EnviromentSprite[3] = allPlayerSprite[currentWeaponPointer];
+		// set sprite
+		switch (currentWeaponPointer)
+		{
+		case 0: graphics->playerSprite = &graphics->playerPistolSprite; break;
+		case 1: graphics->playerSprite = &graphics->playerShotgunSprite; break;
+		case 2: graphics->playerSprite = &graphics->playerRifleSprite; break;
+		case 3: graphics->playerSprite = &graphics->playerMachinGunSprite; break;
+		case 4: graphics->playerSprite = &graphics->playerSniperRifleSprite; break;
+		}
 
-			if (currentWeaponPointer == 4)
-			{
-				// set sprite size
-				playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
-			}
-			else
-			{
-				// set sprite size
-				playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
-			}
+		if (currentWeaponPointer == 4)
+		{
+			// set sprite size
+			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
+		}
+		else
+		{
+			// set sprite size
+			playerObject.setSize(PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH);
 		}
 	}
 
@@ -615,6 +443,8 @@ void Game::process(RenderWindow & window)
 	* @param window - game window
 	*/
 
+	this->window = &window;
+
 	// init game components
 	initComponents();
 
@@ -628,11 +458,11 @@ void Game::process(RenderWindow & window)
 		if (window.pollEvent(event))
 		{
 			// make some reaction
-			switchEvent(event, window);
+			switchEvent(event);
 		}
 
 		// checking clock
-		checkTime(window);
+		checkTime();
 
 		// if game over
 		if (gameOver != 0)
@@ -699,6 +529,8 @@ void Game::doActions()
 	{
 		storage.update(timer);
 	}
+
+	playerObject.isDamaged = max(playerObject.isDamaged - 1, 0);
 
 	return;
 }
@@ -769,7 +601,7 @@ void Game::fieldGeneration()
 					if (Field[i * 10 + x][j * 10 + y] == 0)
 					{
 						// set tree in this square
-						Field[i * 10 + x][j * 10 + y] = EnviromentSprite.size() - 1;
+						Field[i * 10 + x][j * 10 + y] = 5;
 
 						//stop generating
 						break;
@@ -780,184 +612,6 @@ void Game::fieldGeneration()
 	}
 
 	return;
-}
-
-bool Game::loadSprites()
-{
-	/*
-	* function of loading sprites
-	*
-	* @return true - if loadding complited
-	*         false - if loading failed
-	*/
-
-	Sprite temp;
-
-	// if texture does not load 
-	if (!EnviromentTexture.loadFromFile(ENVIROMENT_TEXTURE_FILE_PATH))
-	{
-		// loadging failed
-		return 0;
-	}
-
-	// set texture
-	temp.setTexture(EnviromentTexture);
-
-	// choose image rectangle of ground
-	temp.setTextureRect(IntRect(0, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
-	// choose image rectangle of storage
-	temp.setTextureRect(IntRect(HAUSE_SPRITE_POSITION_LEFT, HAUSE_SPRITE_POSITION_TOP, HAUSE_SPRITE_LENGTH, HAUSE_SPRITE_HIGH));
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
-	// choose image rectangle of bullet
-	temp.setTextureRect(IntRect(0, 0, 3, 3));
-
-	// set color of sprite as red
-	temp.setColor(Color::Red);
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
-	// set basic color
-	temp.setColor(Color::White);
-
-	// choose image rectangle of player pistol sprite
-	temp.setTextureRect(IntRect(PLAYER_SPRITE_PISTOL_LEFT, PLAYER_SPRITE_PISTOL_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
-
-	// set origin
-	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
-
-	// add sprite
-	allPlayerSprite[0] = temp;
-
-	// choose image rectangle of player hunter double sprite
-	temp.setTextureRect(IntRect(PLAYER_SPRITE_HUNTER_DOUBLE_LEFT, PLAYER_SPRITE_HUNTER_DOUBLE_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
-
-	// set origin
-	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
-
-	// add sprite
-	allPlayerSprite[1] = temp;
-
-	// choose image rectangle of player AK sprite
-	temp.setTextureRect(IntRect(PLAYER_SPRITE_AK_POSITION_LEFT, PLAYER_SPRITE_AK_POSITION_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
-
-	// set origin
-	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
-
-	// add sprite
-	allPlayerSprite[2] = temp;
-
-	// choose image rectangle of player minigun sprite
-	temp.setTextureRect(IntRect(PLAYER_SPRITE_MINIGUN_LEFT, PLAYER_SPRITE_MINIGUN_TOP, PLAYER_SPRITE_AK_LENGTH, PLAYER_SPRITE_AK_HIGH));
-
-	// set origin
-	temp.setOrigin(PLAYER_SPRITE_AK_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
-
-	// add sprite
-	allPlayerSprite[3] = temp;
-
-	// choose image rectangle of player sniper sprite
-	temp.setTextureRect(IntRect(PLAYER_SPRITE_SNIPER_LEFT, PLAYER_SPRITE_SNIPER_TOP, PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH));
-
-	// set origin
-	temp.setOrigin(PLAYER_SNIPER_LENGTH / 2., PLAYER_SPRITE_AK_HIGH / 2.);
-
-	// add sprite
-	allPlayerSprite[4] = temp;
-
-	// start with pistol
-	EnviromentSprite.push_back(allPlayerSprite[0]);
-
-	// set origin
-	temp.setOrigin(ENEMY_SPRITE_LENGTH / 2., ENEMY_SPRITE_HIGH / 2.);
-
-	// choose image rectangle of enemy
-	temp.setTextureRect(IntRect(ENEMY_SPRITE_LEFT, ENEMY_SPRITE_TOP, ENEMY_SPRITE_LENGTH, ENEMY_SPRITE_HIGH));
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
-	// set basic origin
-	temp.setOrigin(0, 0);
-
-	// choose image rectangle of tree
-	temp.setTextureRect(IntRect(TREE_SPRITE_POSITION_LEFT, TREE_SPRITE_POSITION_TOP, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	EnviromentSprite.push_back(temp);
-
-	// if texture does not load
-	if (!MinimapTexture.loadFromFile(MINIMAP_TEXTURE_FILE_PATH))
-	{
-		// loading failed
-		return 0;
-	}
-
-	// set texture
-	temp.setTexture(MinimapTexture);
-
-	// set image rectangle of active ground
-	temp.setTextureRect(IntRect(MINIMAP_GROUND_ACTIVE_SPRITE_LEFT, MINIMAP_GROUND_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of active house
-	temp.setTextureRect(IntRect(MINIMAP_HOUSE_ACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of active tree
-	temp.setTextureRect(IntRect(MINIMAP_TREE_ACTIVE_SPRITE_LEFT, MINIMAP_TREE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of player
-	temp.setTextureRect(IntRect(MINIMAP_PLAYER_SPRITE_LEFT, MINIMAP_PLAYER_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of enemy
-	temp.setTextureRect(IntRect(MINIMAP_ENEMY_SPRITE_LEFT, MINIMAP_ENEMY_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of invisible
-	temp.setTextureRect(IntRect(MINIMAP_INVISIBLE_SPRITE_LEFT, MINIMAP_INVISIBLE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of inactive ground
-	temp.setTextureRect(IntRect(MINIMAP_GROUND_INACTIVE_SPRITE_LEFT, MINIMAP_GROUND_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of inactive house
-	temp.setTextureRect(IntRect(MINIMAP_HOUSE_INACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	// set image rectangle of inactive tree
-	temp.setTextureRect(IntRect(MINIMAP_TREE_INACTIVE_SPRITE_LEFT, MINIMAP_TREE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// add sprite
-	MinimapSprite.push_back(temp);
-
-	return 1;
 }
 
 void Game::checkIntersection()
@@ -1160,7 +814,7 @@ bool Game::checkIntersectionBullet(Bullet & bullet)
 			{
 				playerObject.getDamage(bullet.getDamage());
 
-				EnviromentSprite[3].setColor(Color::Red);
+				playerObject.isDamaged = 2;
 
 				return 1;
 			}
@@ -1237,94 +891,6 @@ bool Game::isVisible(int playerX, int playerY, int x, int y)
 	*/
 
 	return (abs(playerX - x) <= MAX_VISIBLE_DIST) && (abs(playerY - y) <= MAX_VISIBLE_DIST);
-}
-
-void Game::drawMinimap(RenderWindow & window)
-{
-	/*
-	* function of drawing minimap
-	*
-	* @param window - game window
-	*/
-
-	// clear window, set color of background black
-	window.clear(Color::Black);
-
-	// create pointer of sprite
-	int pointerSprite = 0;
-
-	// get position of player square
-	int playerX = playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
-	int playerY = playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
-
-	// for all square
-	for (int i = 0; i < FIELD_SIZE; i++)
-	{
-		for (int j = 0; j < FIELD_SIZE; j++)
-		{
-			// if not opened square
-			if (!visionMap[i][j])
-			{
-				// set pointer to invisible sprite
-				pointerSprite = 5;
-			}
-			else
-			{
-				// if ground -> set pointer to the ground
-				if (Field[i][j] == 0) pointerSprite = 0;
-
-				// if house -> set pointer to the house
-				if (abs(Field[i][j]) == 1) pointerSprite = 1;
-
-				// if tree -> set pointer to the tree
-				if (Field[i][j] == EnviromentSprite.size() - 1) pointerSprite = 2;
-
-				// if invisible -> move pointer to invisible pictures
-				if (!isVisible(playerX, playerY, j, i))
-				{
-					pointerSprite += 6;
-				}
-			}
-
-			// set position
-			MinimapSprite[pointerSprite].setPosition(MINIMAP_DELT_X + j * MINIMAP_SQUARE_SIZE_PIXIL, i * MINIMAP_SQUARE_SIZE_PIXIL);
-
-			// draw
-			window.draw(MinimapSprite[pointerSprite]);
-		}
-	}
-
-	// fro all enemys
-	for (int i = 0; i < Enemys.size(); i++)
-	{
-		// get cordinates of square
-		int enemyX = Enemys[i].getPosition().first / SQUARE_SIZE_PIXIL;
-		int enemyY = Enemys[i].getPosition().second / SQUARE_SIZE_PIXIL;
-
-		// if square is not visible
-		if (!isVisible(playerX, playerY, enemyX, enemyY))
-		{
-			// go to next enemy
-			continue;
-		}
-
-		// set position
-		MinimapSprite[4].setPosition(MINIMAP_DELT_X + enemyX * MINIMAP_SQUARE_SIZE_PIXIL, enemyY * MINIMAP_SQUARE_SIZE_PIXIL);
-
-		// draw
-		window.draw(MinimapSprite[4]);
-	}
-
-	// set player sprite position
-	MinimapSprite[3].setPosition(MINIMAP_DELT_X + playerX * MINIMAP_SQUARE_SIZE_PIXIL, playerY * MINIMAP_SQUARE_SIZE_PIXIL);
-
-	// draw
-	window.draw(MinimapSprite[3]);
-
-	// sho picture
-	window.display();
-
-	return;
 }
 
 void Game::updateVision()
