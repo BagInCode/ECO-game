@@ -2,11 +2,11 @@
 
 #include "Game.h"
 
-
-
 class Game::GraphicsManager
 {
 public:
+
+	class Interface;
 
 	Texture environmentTexture;
 	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite;
@@ -18,7 +18,17 @@ public:
 
 	int isMinimapDrawing;
 
+	Interface* interface;
+
+
+	GraphicsManager();
+	~GraphicsManager();
+
+	void update(double timer);
+
+	void initComponents();
 	bool loadSprites();
+	void draw(Game* game);
 	void drawPicture(Game* game);
 	void drawMinimap(Game* game);
 };

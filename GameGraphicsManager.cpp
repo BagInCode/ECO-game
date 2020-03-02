@@ -1,6 +1,28 @@
 #include "Game.h"
 #include "GameGraphicsManager.h"
+#include "GameGraphicsManagerInterface.h"
 
+Game::GraphicsManager::GraphicsManager()
+{
+	interface = new GraphicsManager::Interface;
+}
+
+Game::GraphicsManager::~GraphicsManager()
+{
+	delete interface;
+}
+
+void Game::GraphicsManager::update(double timer)
+{
+	interface->update(timer);
+}
+
+void Game::GraphicsManager::initComponents()
+{
+	interface->initComponents();
+
+	loadSprites();
+}
 
 bool Game::GraphicsManager::loadSprites()
 {
@@ -114,6 +136,23 @@ bool Game::GraphicsManager::loadSprites()
 	minimapInactiveTreeSprite.setTextureRect(IntRect(MINIMAP_TREE_INACTIVE_SPRITE_LEFT, MINIMAP_TREE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
 
 	return 1;
+}
+
+void Game::GraphicsManager::draw(Game* game)
+{
+	if (isMinimapDrawing)
+	{
+		// draw minimap
+		drawMinimap(game);
+	}
+	else
+	{
+		// draw game scene
+		drawPicture(game);
+		interface->draw(game);
+	}
+
+	game->window->display();
 }
 
 void Game::GraphicsManager::drawPicture(Game* game)
@@ -262,9 +301,6 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	// set base color to player sprite
 	playerSprite->setColor(Color::White);
 
-	// showing picture
-	game->window->display();
-
 	return;
 }
 
@@ -362,9 +398,6 @@ void Game::GraphicsManager::drawMinimap(Game* game)
 	// set player sprite position
 	minimapPlayerSprite.setPosition(MINIMAP_DELT_X + playerX * MINIMAP_SQUARE_SIZE_PIXIL, playerY * MINIMAP_SQUARE_SIZE_PIXIL);
 	game->window->draw(minimapPlayerSprite);
-
-	// sho picture
-	game->window->display();
 
 	return;
 }

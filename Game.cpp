@@ -1,6 +1,7 @@
 #include "Constants.db"
 #include "Game.h"
 #include "GameGraphicsManager.h"
+#include "GameGraphicsManagerInterface.h"
 
 Game::Game()
 {
@@ -28,10 +29,7 @@ bool Game::initComponents()
 	playerObject.create();
 
 	// load enviroment sprites
-	if (!graphics->loadSprites())
-	{
-		return 0;
-	}
+	graphics->initComponents();
 
 	// init weapon pistol
 	allPlayerWeapon[0].create(3000, 300, 0.7, 3 * acos(-1) / 180, 1, 10, 5, &Bullets);
@@ -117,17 +115,8 @@ void Game::checkTime()
 		// check enemy
 		checkEnemyAlive();
 
-		// if minimap drawing
-		if (graphics->isMinimapDrawing)
-		{
-			// draw minimap
-			graphics->drawMinimap(this);
-		}
-		else
-		{
-			// draw game scene
-			graphics->drawPicture(this);
-		}
+		// draw
+		graphics->draw(this);
 
 		// null timer
 		timer = 0;
@@ -259,13 +248,6 @@ void Game::switchEvent(Event event)
 			graphics->isMinimapDrawing = !(graphics->isMinimapDrawing);
 		}
 
-		// if key P
-		if (event.key.code == Keyboard::P)
-		{
-			// use for debug, if you need to return to mainMenu
-			gameOver = 1;
-		}
-
 		// if key 1
 		if (event.key.code == Keyboard::Num1)
 		{
@@ -336,9 +318,14 @@ void Game::switchEvent(Event event)
 				{
 					if (storageNumber[i][j] != -1)
 					{
-						pair<int, int> lootResult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
+						if (storages[storageNumber[i][j]].isLootable(playerPositionX, playerPositionY))
+						{
+							graphics->interface->addAction("Loot storage", 5.0);
 
-						// todo smth with lootresult
+							pair<int, int> lootResult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
+
+							// todo smth with lootresult
+						}
 					}
 				}
 			}
@@ -479,6 +466,7 @@ void Game::doActions()
 	/*
 	* function of doing some actions
 	*/
+	graphics->update(timer);
 
 	// increase weapon timer
 	allPlayerWeapon[currentWeaponPointer].increaseTimer(timer);
@@ -813,6 +801,7 @@ bool Game::checkIntersectionBullet(Bullet & bullet)
 				playerY2 > currentPosition.second)
 			{
 				playerObject.getDamage(bullet.getDamage());
+				graphics->interface->addAction("Get damage", 1.0);
 
 				playerObject.isDamaged = 2;
 
