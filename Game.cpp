@@ -958,38 +958,56 @@ State* Game::chooseNext(int next)
 	* @return pointer to new state
 	*/
 
+	State* result = nullptr;
+
 	// if next run state
 	if (next == 0)
 	{
-		// return new run state
-		return new RunState();
+		// create new run state
+		result = new RunState();
+
+		// randomize result
+		result->randomizeState();
 	}
 
 	// if next stay state
 	if (next == 1)
 	{
-		// return new stay state
-		return new StayState();
+		// create new stay state
+		result = new StayState();
+
+		// randomize state
+		result->randomizeState();
 	}
 
 	// if next shoot state
 	if (next == 2)
 	{
-		// return new shoo state
-		return new ShootState();
+		// create new shoot state
+		result = new ShootState();
+
+		// randomize state
+		result->randomizeState();
 	}
 
 	// if next run on random vector state
 	if (next == 3)
 	{
-		return new RunRandomVectorState();
+		// create new state
+		result = new RunRandomVectorState();
+
+		// randomize state
+		result->randomizeState();
 	}
 
 	// if next out of visibility state
 	if (next == 4)
 	{
-		return new OutOfVisibilityState();
+		// create new state
+		result = new OutOfVisibilityState();
 	}
+
+	return result;
 }
 
 void Game::checkEnemyAlive()

@@ -51,11 +51,21 @@ int StayState::goNext(Enemy& enemy, Player& player)
 	}
 
 	// if enemy stay too long
-	if (timer > TIME_ENEMY_STAY)
+	if (timer > maxTimer)
 	{
 		// return pointer to shoot state
 		return 2;
 	}
 
 	return -1;
+}
+
+void StayState::randomizeState()
+{
+	/*
+	* function of randomizing state
+	*/
+
+	// randomize max time of stay
+	maxTimer = TIME_ENEMY_STAY + ((rand() % 501) - 250);
 }

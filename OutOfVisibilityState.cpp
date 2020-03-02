@@ -78,3 +78,9 @@ int OutOfVisibilityState::goNext(Enemy& enemy, Player& player)
 
 	return -1;
 }
+
+
+void OutOfVisibilityState::randomizeState()
+{
+
+}

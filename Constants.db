@@ -68,6 +68,7 @@ const int MAX_VISIBLE_DIST = 12;
 
 const double TIME_ENEMY_STAY = 500;
 const double TIME_ENEMY_RUN = 1000;
+const int COUNT_ENEMY_SHOOT = 3;
 
 const double ENDING_RADIUS = 40;
 
@@ -98,5 +99,6 @@ const double CHARACTER_BODY_RADIUS = 10;
 #define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
 #define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
+#define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
 
 #endif

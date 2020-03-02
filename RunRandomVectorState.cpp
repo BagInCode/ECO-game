@@ -67,11 +67,21 @@ int RunRandomVectorState::goNext(Enemy& enemy, Player& player)
 	}
 
 	// if run too long
-	if (timer > TIME_ENEMY_RUN)
+	if (timer > maxTimer)
 	{
 		// return pointer to stay state
 		return 1;
 	}
 
 	return -1;
+}
+
+void RunRandomVectorState::randomizeState()
+{
+	/*
+	* function of randomizing state
+	*/
+
+	// randomize max time of stay
+	maxTimer = TIME_ENEMY_STAY + ((rand() % 501) - 250);
 }

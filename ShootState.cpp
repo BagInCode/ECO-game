@@ -46,7 +46,7 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	enemyPositionInWindow.first += enemy.getPosition().first - player.getPosition().first;
 	enemyPositionInWindow.second += enemy.getPosition().second - player.getPosition().second;
 
-	// if enemy in window
+	// if enemy out of window
 	if (enemyPositionInWindow.first < enemy.getSize().first / 2 || enemyPositionInWindow.first > WINDOW_LENGTH - enemy.getSize().first / 2 ||
 		enemyPositionInWindow.second < enemy.getSize().first / 2 || enemyPositionInWindow.second > WINDOW_HIGH - enemy.getSize().first / 2)
 	{
@@ -55,7 +55,7 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	}
 
 	//if count shoots enough
-	if (countShoots == 3)
+	if (countShoots == maxCountShoots)
 	{
 		// with probability near 25% 
 		if (rand() % 4 == 0)
@@ -69,4 +69,14 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	}
 
 	return -1;
+}
+
+void ShootState::randomizeState()
+{
+	/*
+	* function of randomizing state
+	*/
+
+	// randomize max time of stay
+	maxCountShoots = COUNT_ENEMY_SHOOT + (rand() % 5 - 2);
 }

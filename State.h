@@ -17,10 +17,14 @@ class State
 {
 protected:
 	double timer = 0.000;
+	double maxTimer = 0.000;
+
 	int countShoots = 0;
+	int maxCountShoots = 0;
 
 public:
 	virtual void doAction(double _timer, Enemy& enemy, Player& player) = 0;
 	virtual int goNext(Enemy& enemy, Player& player) = 0;
+	virtual void randomizeState() = 0;
 };
 
