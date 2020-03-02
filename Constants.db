@@ -95,6 +95,8 @@ const double PLAYER_SNIPER_LENGTH = 50;
 const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
 const double CHARACTER_BODY_RADIUS = 10;
 
+const double TIME_BETWEN_WAVE = 120000;
+
 #define ROBO_REGULAR_2_FILE_PATH "Fonts/Roboto-Regular2.ttf"
 #define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
 #define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"

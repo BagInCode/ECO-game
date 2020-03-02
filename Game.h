@@ -26,6 +26,7 @@ class Game
 private:
 
 	class GraphicsManager;
+	class WaveManager;
 
 	RenderWindow* window;
 
@@ -56,6 +57,7 @@ private:
 	vector < State* > EnemysState;
 
 	GraphicsManager* graphics;
+	WaveManager* waves;
 
 	bool initComponents();
 	void checkTime();

@@ -2,15 +2,18 @@
 #include "Game.h"
 #include "GameGraphicsManager.h"
 #include "GameGraphicsManagerInterface.h"
+#include "WaveManager.h"
 
 Game::Game()
 {
 	graphics = new GraphicsManager;
+	waves = new WaveManager;
 }
 
 Game::~Game()
 {
 	delete graphics;
+	delete waves;
 }
 
 bool Game::initComponents()
@@ -100,6 +103,8 @@ void Game::checkTime()
 	// if there is enough time passed
 	if (timer > TIME_FOR_ACTION)
 	{
+		waves->checkTimer(timer, this);
+
 		// do some actions
 		doActions();
 
