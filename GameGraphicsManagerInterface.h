@@ -7,6 +7,10 @@ private:
 	string toString(int val);
 
 public:
+	
+	Texture HPTexture, armorTexture;
+	Sprite HPSprite, armorSprite;
+	Text HPText, armorText;
 
 	Font font;
 

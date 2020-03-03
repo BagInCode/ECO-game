@@ -98,6 +98,6 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 		}
 
 		// return position
-		return { x, y };
+		return{ x, y };
 	}
 }

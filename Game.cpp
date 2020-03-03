@@ -53,7 +53,7 @@ bool Game::initComponents()
 	currentWeaponPointer = 0;
 
 	Weapon weapon;
-	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, &Bullets);
+	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 1, &Bullets);
 
 	Enemy enemy;
 

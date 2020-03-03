@@ -28,6 +28,7 @@ class Player
 	
 public:
 	int isDamaged;
+	int armor;
 
 	void create();
 	void move(double timer);

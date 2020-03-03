@@ -34,6 +34,26 @@ void Game::GraphicsManager::Interface::initComponents()
 	bulletCount.setFillColor(Color::Black);
 	bulletCount.setOutlineThickness(1);
 	bulletCount.setOutlineColor(Color::White);
+
+	HPTexture.loadFromFile("Textures/HP.png");
+	HPSprite.setTexture(HPTexture);
+	HPSprite.setTextureRect(IntRect(0, 0, 45, 45));
+
+	HPText.setFont(font);
+	HPText.setCharacterSize(60);
+	HPText.setFillColor(Color::Black);
+	HPText.setOutlineThickness(1);
+	HPText.setOutlineColor(Color::White);
+
+	armorTexture.loadFromFile("Textures/armor.png");
+	armorSprite.setTexture(armorTexture);
+	armorSprite.setTextureRect(IntRect(0, 0, 45, 45));
+
+	armorText.setFont(font);
+	armorText.setCharacterSize(60);
+	armorText.setFillColor(Color::Black);
+	armorText.setOutlineThickness(1);
+	armorText.setOutlineColor(Color::White);
 }
 
 void Game::GraphicsManager::Interface::addAction(string text, double duration)
@@ -90,5 +110,17 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 	bulletCount.setString(bulletText);
 	bulletCount.setPosition(WINDOW_LENGTH - bulletCount.getGlobalBounds().width - 10, WINDOW_HIGH - 60 - 10);
 	game->window->draw(bulletCount);
+
+	HPSprite.setPosition(110, 645);
+	game->window->draw(HPSprite);
+	HPText.setString(toString(game->playerObject.getHealthPoints()));
+	HPText.setPosition(100 - HPText.getGlobalBounds().width, 630);
+	game->window->draw(HPText);
+
+	armorSprite.setPosition(280, 645);
+	game->window->draw(armorSprite);
+	armorText.setString(toString(game->playerObject.armor));
+	armorText.setPosition(270 - armorText.getGlobalBounds().width, 630);
+	game->window->draw(armorText);
 
 }

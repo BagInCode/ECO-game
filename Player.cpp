@@ -18,6 +18,7 @@ void Player::create()
 
 	// set health points
 	healthPoints = 100;
+	armor = 100;
 
 	return;
 }
