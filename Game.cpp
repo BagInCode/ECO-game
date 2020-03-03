@@ -335,6 +335,13 @@ void Game::switchEvent(Event event)
 				}
 			}
 		}
+
+		// if reload button pressed
+		if (event.key.code == Keyboard::R)
+		{
+			// start reload
+			allPlayerWeapon[currentWeaponPointer].startReload();
+		}
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -857,20 +864,6 @@ bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, d
 	double S = x1*y2 + y1*x3 + x2*y3 - y2*x3 - x2*y1 - x1*y3;
 
 	return (S > 0);
-}
-
-int Game::getManhetenDist(int x1, int y1, int x2, int y2)
-{
-	/*
-	* function of getting manheten dist between two field squares
-	*
-	* @param x1, y1 - coordinate of first square
-	*        x2, y2 - coordinate of second square
-	*
-	* @return manheten dist
-	*/
-
-	return abs(x1 - x2) + abs(y1 - y2);
 }
 
 bool Game::isVisible(int playerX, int playerY, int x, int y)

@@ -41,6 +41,8 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	// at start ammo is full
 	currentAmmo = maxAmmo;
 
+	countBullets = maxAmmo * 4;
+
 	return;
 }
 
@@ -111,6 +113,19 @@ void Weapon::increaseTimer(double _timer)
 	{
 		// leave it in normal range
 		timer = reload + 1;
+
+		// if ammo is empty
+		if (currentAmmo == 0)
+		{
+			// null timer
+			timer = 0;
+
+			// set current ammo
+			currentAmmo = min(countBullets, maxAmmo);
+
+			// decrease count bullets
+			countBullets -= currentAmmo;
+		}
 	}
 
 	return;
@@ -122,27 +137,8 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 	* function of checking ammo and shooting
 	*/
 
-	// if ammo is empty
-	if (currentAmmo == 0)
-	{
-		// if tine for reload has been passed
-		if (timer > reload)
-		{
-			// reload ammo
-			currentAmmo = maxAmmo;
-
-			// null timer
-			timer = 0;
-		}
-		else
-		{
-			// no amo -> can`t shoot
-			return 0;
-		}
-	}
-
 	// if there is some ammo and enough time passed for shooting
-	if (timer > shootDelay)
+	if (timer > shootDelay && currentAmmo > 0)
 	{
 		// decrease ammo
 		if (!isPlayerTarget)
