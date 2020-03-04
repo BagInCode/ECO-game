@@ -47,15 +47,15 @@ void Game::WaveManager::createWave(int numberOfWave, Game* game)
 	*        game - main game class
 	*/
 
-	// create 3 * number of wave bots
-	for (int i = 0; i < 3 * numberOfWave; i++)
+	// create 2 * number of wave bots
+	for (int i = 0; i < 2 * numberOfWave; i++)
 	{
 		// choos spawn square
 		pair < int, int > spawnPoint = randomSpawnPoint(game);
 
 		// create enemy weapon
 		Weapon enemyWeapon;
-		enemyWeapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 0, &(game->Bullets));
+		enemyWeapon.create(1002, 1000, 1, 4 * acos(-1) / 180, 1, 30, 1, &(game->Bullets));
 
 		// create enemy
 		Enemy enemy;

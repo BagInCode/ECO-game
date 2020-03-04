@@ -18,6 +18,7 @@
 #include "RunRandomVectorState.h"
 #include "OutOfVisibilityState.h"
 #include "Storage.h"
+#include "Granade.h"
 
 #include "Constants.db"
 
@@ -56,6 +57,9 @@ private:
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
 
+	int countsGranades = 0;
+	vector < Granade > granades;
+
 	GraphicsManager* graphics;
 	WaveManager* waves;
 
@@ -75,6 +79,7 @@ private:
 	void checkGameOver();
 	State* chooseNext(int next);
 	void checkEnemyAlive();
+	void checkGranades();
 
 public:
 

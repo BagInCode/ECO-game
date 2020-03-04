@@ -8,8 +8,8 @@ public:
 
 	class Interface;
 
-	Texture environmentTexture;
-	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite;
+	Texture environmentTexture, temp, temp1, temp2, temp3;
+	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite, granadeSprite[4];
 	Sprite playerPistolSprite, playerShotgunSprite, playerRifleSprite, playerMachinGunSprite, playerSniperRifleSprite;
 
 	Texture minimapTexture;

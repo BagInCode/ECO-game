@@ -25,7 +25,7 @@ class Player
 	double playerPositionY;
 
 	int healthPoints;
-	
+
 public:
 	int isDamaged;
 	int armor;

@@ -35,23 +35,24 @@ bool Game::initComponents()
 	graphics->initComponents();
 
 	// init weapon pistol
-	allPlayerWeapon[0].create(3000, 300, 0.7, 3 * acos(-1) / 180, 1, 10, 5, &Bullets);
+	allPlayerWeapon[0].create(2000, 300, 0.7, 3 * acos(-1) / 180, 1, 10, 5, &Bullets);
 
 	// init weapon hunter double
-	allPlayerWeapon[1].create(4000, 1000, 0.5, 10 * acos(-1) / 180, 5, 2, 4, &Bullets);
+	allPlayerWeapon[1].create(3000, 1000, 0.5, 10 * acos(-1) / 180, 5, 2, 4, &Bullets);
 
 	// init weapon AK
-	allPlayerWeapon[2].create(5000, 100, 1, 5 * acos(-1) / 180, 1, 30, 10, &Bullets);
+	allPlayerWeapon[2].create(4000, 100, 1, 3 * acos(-1) / 180, 1, 30, 10, &Bullets);
 
 	// init weapon minigan
-	allPlayerWeapon[3].create(10000, 60, 1, 7.5 * acos(-1) / 180, 1, 100, 10, &Bullets);
+	allPlayerWeapon[3].create(6000, 60, 1, 3 * acos(-1) / 180, 1, 100, 10, &Bullets);
 
 	// init weapon sniper
-	allPlayerWeapon[4].create(5000, 1000, 1.5, 1.5 * acos(-1) / 180, 1, 5, 50, &Bullets);
+	allPlayerWeapon[4].create(4000, 1000, 1.5, 1 * acos(-1) / 180, 1, 5, 50, &Bullets);
 
 	// start with pistol
 	currentWeaponPointer = 0;
-
+	
+	/*
 	Weapon weapon;
 	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 1, &Bullets);
 
@@ -73,6 +74,7 @@ bool Game::initComponents()
 	EnemysState.push_back(new OutOfVisibilityState());
 	EnemysState.push_back(new OutOfVisibilityState());
 	EnemysState.push_back(new OutOfVisibilityState());
+	*/
 
 	// start with drawing game scene
 	graphics->isMinimapDrawing = 0;
@@ -135,6 +137,11 @@ void Game::moveObjects()
 	/*
 	* function of moving objects
 	*/
+
+	for (int i = 0; i < granades.size(); i++)
+	{
+		granades[i].move(timer);
+	}
 
 	// move player
 	playerObject.move(timer);
@@ -342,6 +349,14 @@ void Game::switchEvent(Event event)
 			// start reload
 			allPlayerWeapon[currentWeaponPointer].startReload();
 		}
+
+		if (event.key.code == Keyboard::G)
+		{
+			Granade newGranade;
+			newGranade.create(playerObject, window);
+
+			granades.push_back(newGranade);
+		}
 	}
 
 	if (event.type == Event::KeyReleased)
@@ -478,6 +493,9 @@ void Game::doActions()
 	/*
 	* function of doing some actions
 	*/
+
+	checkGranades();
+
 	graphics->update(timer);
 
 	// increase weapon timer
@@ -1030,6 +1048,44 @@ void Game::checkEnemyAlive()
 
 	// overwite previous vector
 	Enemys = newEnemys;
+
+	return;
+}
+
+void Game::checkGranades()
+{
+	vector < Granade > newGranades;
+
+	for (int i = 0; i < granades.size(); i++)
+	{
+		if (granades[i].timeToDelete())
+		{
+			continue;
+		}
+
+		newGranades.push_back(granades[i]);
+	}
+
+	granades = newGranades;
+
+	for (int i = 0; i < granades.size(); i++)
+	{
+		if (granades[i].isDetonate())
+		{
+			for (int j = 0; j < Enemys.size(); j++)
+			{
+				double deltX = Enemys[j].getPosition().first - granades[i].getPosition().first;
+				double deltY = Enemys[j].getPosition().second - granades[i].getPosition().second;
+
+				double len = sqrt(deltX*deltX + deltY*deltY);
+
+				if (len < GRANADE_RADIUS)
+				{
+					Enemys[j].getDamage(GRANADE_DMG);
+				}
+			}
+		}
+	}
 
 	return;
 }

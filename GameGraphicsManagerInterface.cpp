@@ -22,7 +22,7 @@ string Game::GraphicsManager::Interface::toString(int val)
 void Game::GraphicsManager::Interface::initComponents()
 {
 	font.loadFromFile(GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH);
-	
+
 	actionText.setFont(font);
 	actionText.setCharacterSize(30);
 	actionText.setFillColor(Color::Black);
