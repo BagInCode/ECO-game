@@ -1,27 +1,56 @@
 #ifndef CONSTANTS_DB
 #define CONSTANTS_DB
 
+// ---------------------------- Window Constants
 const int WINDOW_LENGTH = 1300;
 const int WINDOW_HIGH = 700;
 
+
+// ---------------------------- Field Constants
 const int FIELD_SIZE = 100;
 const int SQUARE_SIZE_PIXIL = 100;
+const int COUNT_TREES_IN_SQUARE = 3;
 
+// ---------------------------- Player Sprite Constants
 const double PLAYER_SPRITE_AK_POSITION_TOP = 0;
 const double PLAYER_SPRITE_AK_POSITION_LEFT = 200;
+
+const double PLAYER_SPRITE_PISTOL_TOP = 85;
+const double PLAYER_SPRITE_PISTOL_LEFT = 200;
+
+const double PLAYER_SPRITE_HUNTER_TOP = 55;
+const double PLAYER_SPRITE_HUNTER_LEFT = 200;
+
+const double PLAYER_SPRITE_MINIGUN_TOP = 115;
+const double PLAYER_SPRITE_MINIGUN_LEFT = 200;
+
+const double PLAYER_SPRITE_SNIPER_TOP = 145;
+const double PLAYER_SPRITE_SNIPER_LEFT = 200;
+
+const double PLAYER_SNIPER_LENGTH = 50;
 
 const int PLAYER_SPRITE_AK_LENGTH = 40;
 const int PLAYER_SPRITE_AK_HIGH = 30;
 
+
+// ------------------------------ Speed Constants
 const double PLAYER_SPEED = 0.1;
 const double ENEMY_SPEED = 0.15;
 
+
+// ------------------------------ Time Constants
 const double TIME_FOR_ACTION = 20;
+
+const double TIME_ENEMY_STAY = 600;
+const double TIME_ENEMY_RUN = 1200;
+
+const double TIME_BETWEN_WAVE = 60000;
+
+const double TIME_GRANADE_DALAY = 3000;
 
 const double TIME_OF_BULLET_LIFE = 10000;
 
-const int COUNT_TREES_IN_SQUARE = 3;
-
+// ------------------------------- Enviroment Sprite Constants
 const double GROUND_SPRITE_POSITION_TOP = 0;
 const double GROUND_SPRITE_POSITIOM_LEFT = 0;
 
@@ -33,6 +62,7 @@ const double HAUSE_SPRITE_POSITION_LEFT = 0;
 const double HAUSE_SPRITE_LENGTH = 200;
 const double HAUSE_SPRITE_HIGH = 300;
 
+// ------------------------------- Minimap Constants
 const double MINIMAP_SQUARE_SIZE_PIXIL = 7;
 
 const double MINIMAP_GROUND_ACTIVE_SPRITE_TOP = 0;
@@ -66,8 +96,8 @@ const double MINIMAP_DELT_X = 300;
 
 const int MAX_VISIBLE_DIST = 12;
 
-const double TIME_ENEMY_STAY = 600;
-const double TIME_ENEMY_RUN = 1200;
+
+// ------------------------------------ Enemy Constants
 const int COUNT_ENEMY_SHOOT = 3;
 
 const double ENDING_RADIUS = 40;
@@ -78,33 +108,22 @@ const double ENEMY_SPRITE_LEFT = 200;
 const double ENEMY_SPRITE_LENGTH = 35;
 const double ENEMY_SPRITE_HIGH = 25;
 
-const double PLAYER_SPRITE_PISTOL_TOP = 85;
-const double PLAYER_SPRITE_PISTOL_LEFT = 200;
 
-const double PLAYER_SPRITE_HUNTER_TOP = 55;
-const double PLAYER_SPRITE_HUNTER_LEFT = 200;
-
-const double PLAYER_SPRITE_MINIGUN_TOP = 115;
-const double PLAYER_SPRITE_MINIGUN_LEFT = 200;
-
-const double PLAYER_SPRITE_SNIPER_TOP = 145;
-const double PLAYER_SPRITE_SNIPER_LEFT = 200;
-
-const double PLAYER_SNIPER_LENGTH = 50;
-
-const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
-const double CHARACTER_BODY_RADIUS = 10;
-
-const double TIME_BETWEN_WAVE = 60000;
-
-const double TIME_GRANADE_DALAY = 3000;
+// ------------------------------------- Granade Constants
 const double GRANADE_RADIUS = 60;
 const int GRANADE_DMG = 50;
 
+
+// -------------------------------------- Filepath Constants
 #define ROBO_REGULAR_2_FILE_PATH "Fonts/Roboto-Regular2.ttf"
 #define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
 #define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
+
+
+// ------------------------------------- Other Constants
+const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
+const double CHARACTER_BODY_RADIUS = 10;
 
 #endif
