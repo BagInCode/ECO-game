@@ -8,9 +8,10 @@ private:
 
 public:
 
-	Texture HPTexture, armorTexture;
-	Sprite HPSprite, armorSprite;
-	Text HPText, armorText;
+	Texture InterfaceTexture;
+	Sprite HPSprite, armorSprite, granadeSprite;
+	Sprite PistolSprite, DoubleSprite, AKSprite, MinigunSprite, SniperSprite;
+	Text HPText, armorText, granadeText;
 
 	Font font;
 

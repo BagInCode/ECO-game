@@ -35,9 +35,10 @@ void Game::GraphicsManager::Interface::initComponents()
 	bulletCount.setOutlineThickness(1);
 	bulletCount.setOutlineColor(Color::White);
 
-	HPTexture.loadFromFile("Textures/HP.png");
-	HPSprite.setTexture(HPTexture);
-	HPSprite.setTextureRect(IntRect(0, 0, 45, 45));
+	InterfaceTexture.loadFromFile(INTERFACE_TEXTURE);
+
+	HPSprite.setTexture(InterfaceTexture);
+	HPSprite.setTextureRect(IntRect(HP_INTERFACE_LEFT, HP_INTERFACE_TOP, INTERFACE_SPRITE_LENGTH, INTERFACE_SPRITE_HIGH));
 
 	HPText.setFont(font);
 	HPText.setCharacterSize(60);
@@ -45,15 +46,38 @@ void Game::GraphicsManager::Interface::initComponents()
 	HPText.setOutlineThickness(1);
 	HPText.setOutlineColor(Color::White);
 
-	armorTexture.loadFromFile("Textures/armor.png");
-	armorSprite.setTexture(armorTexture);
-	armorSprite.setTextureRect(IntRect(0, 0, 45, 45));
+	armorSprite.setTexture(InterfaceTexture);
+	armorSprite.setTextureRect(IntRect(ARMOR_INTERFACE_LEFT, ARMOR_INTERFACE_TOP, INTERFACE_SPRITE_LENGTH, INTERFACE_SPRITE_HIGH));
 
 	armorText.setFont(font);
 	armorText.setCharacterSize(60);
 	armorText.setFillColor(Color::Black);
 	armorText.setOutlineThickness(1);
 	armorText.setOutlineColor(Color::White);
+
+	granadeSprite.setTexture(InterfaceTexture);
+	granadeSprite.setTextureRect(IntRect(GRANADE_INTERFACE_LEFT, GRANADE_INTERFACE_TOP, INTERFACE_SPRITE_LENGTH, INTERFACE_SPRITE_HIGH));
+
+	granadeText.setFont(font);
+	granadeText.setCharacterSize(60);
+	granadeText.setFillColor(Color::Black);
+	granadeText.setOutlineThickness(1);
+	granadeText.setOutlineColor(Color::White);
+
+	PistolSprite.setTexture(InterfaceTexture);
+	PistolSprite.setTextureRect(IntRect(PISTOL_INTERFACE_POSITION_LEFT, PISTOL_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+
+	DoubleSprite.setTexture(InterfaceTexture);
+	DoubleSprite.setTextureRect(IntRect(DOUBLE_INTERFACE_POSITION_LEFT, DOUBLE_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+
+	AKSprite.setTexture(InterfaceTexture);
+	AKSprite.setTextureRect(IntRect(AK_INTERFACE_POSITION_LEFT, AK_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+
+	MinigunSprite.setTexture(InterfaceTexture);
+	MinigunSprite.setTextureRect(IntRect(MINIGUN_INTERFACE_POSITION_LEFT, MINIGUN_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+
+	SniperSprite.setTexture(InterfaceTexture);
+	SniperSprite.setTextureRect(IntRect(SNIPER_INTERFACE_POSITION_LEFT, SNIPER_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 }
 
 void Game::GraphicsManager::Interface::addAction(string text, double duration)

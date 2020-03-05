@@ -123,6 +123,7 @@ const int GRANADE_DMG = 50;
 #define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
+#define INTERFACE_TEXTURE "Textures/Interface.png"
 
 
 // ------------------------------------- Other Constants -----|
@@ -171,5 +172,36 @@ const int SNIPER_BULLET_PER_SHOOT = 1;
 const int SNIPER_MAX_AMMO = 10;
 const int SNIPER_DMG = 50;
 
+
+// ---------------------------------- Interface Sprite Constants -----|
+const double PISTOL_INTERFACE_POSITION_TOP = 0;
+const double PISTOL_INTERFACE_POSITION_LEFT = 0;
+
+const double DOUBLE_INTERFACE_POSITION_TOP = 40;
+const double DOUBLE_INTERFACE_POSITION_LEFT = 0;
+
+const double AK_INTERFACE_POSITION_TOP = 80;
+const double AK_INTERFACE_POSITION_LEFT = 0;
+
+const double MINIGUN_INTERFACE_POSITION_TOP = 120;
+const double MINIGUN_INTERFACE_POSITION_LEFT = 0;
+
+const double SNIPER_INTERFACE_POSITION_TOP = 160;
+const double SNIPER_INTERFACE_POSITION_LEFT = 0;
+
+const double INTERFACE_WEAPON_LENGTH = 135;
+const double INTERFACE_WEAPON_HIGH = 40;
+
+const double HP_INTERFACE_TOP = 200;
+const double HP_INTERFACE_LEFT = 0;
+
+const double ARMOR_INTERFACE_TOP = 200;
+const double ARMOR_INTERFACE_LEFT = 45;
+
+const double GRANADE_INTERFACE_TOP = 200;
+const double GRANADE_INTERFACE_LEFT = 90;
+
+const double INTERFACE_SPRITE_LENGTH = 45;
+const double INTERFACE_SPRITE_HIGH = 45;
 
 #endif
