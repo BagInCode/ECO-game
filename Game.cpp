@@ -35,19 +35,19 @@ bool Game::initComponents()
 	graphics->initComponents();
 
 	// init weapon pistol
-	allPlayerWeapon[0].create(2000, 300, 0.7, 3 * acos(-1) / 180, 1, 10, 5, &Bullets);
+	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets);
 
 	// init weapon hunter double
-	allPlayerWeapon[1].create(3000, 1000, 0.5, 10 * acos(-1) / 180, 5, 2, 4, &Bullets);
+	allPlayerWeapon[1].create(DOUBLE_RELOAD_TIME, DOUBLE_SHOOT_DELAY_TIME, DOUBLE_BULLET_SPEED, DOUBLE_BULLET_PER_SHOOT, DOUBLE_BULLET_PER_SHOOT, DOUBLE_MAX_AMMO, DOUBLE_DMG, &Bullets);
 
 	// init weapon AK
-	allPlayerWeapon[2].create(4000, 100, 1, 3 * acos(-1) / 180, 1, 30, 10, &Bullets);
+	allPlayerWeapon[2].create(AK_RELOAD_TIME, AK_SHOOT_DELAY_TIME, AK_BULLET_SPEED, AK_ACCURASY, AK_BULLET_PER_SHOOT, AK_MAX_AMMO, AK_DMG, &Bullets);
 
 	// init weapon minigan
-	allPlayerWeapon[3].create(6000, 60, 1, 3 * acos(-1) / 180, 1, 100, 10, &Bullets);
+	allPlayerWeapon[3].create(MINIGUN_RELOAD_TIME, MINIGUN_SHOOT_DELAY_TIME, MINIGUN_BULLET_SPEED, MINIGUN_ACCURASY, MINIGUN_BULLET_PER_SHOOT, MINIGUN_MAX_AMMO, MINIGUN_DMG, &Bullets);
 
 	// init weapon sniper
-	allPlayerWeapon[4].create(4000, 1000, 1.5, 1 * acos(-1) / 180, 1, 5, 50, &Bullets);
+	allPlayerWeapon[4].create(SNIPER_RELOAD_TIME, SNIPER_SHOOT_DELAY_TIME, SNIPER_BULLET_SPEED, SNIPER_ACCURASY, SNIPER_BULLET_PER_SHOOT, SNIPER_MAX_AMMO, SNIPER_DMG, &Bullets);
 
 	// start with pistol
 	currentWeaponPointer = 0;
