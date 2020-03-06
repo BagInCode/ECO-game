@@ -49,11 +49,11 @@ const double TIME_ENEMY_RUN = 1200;
 
 const double TIME_BETWEN_WAVE = 90000;
 
-const double TIME_GRANADE_DALAY = 3000;
+const double TIME_GRENADE_DALAY = 3000;
 
 const double TIME_OF_BULLET_LIFE = 10000;
 
-// ------------------------------- Enviroment Sprite Constants -----|
+// ------------------------------- Environment Sprite Constants -----|
 const double GROUND_SPRITE_POSITION_TOP = 0;
 const double GROUND_SPRITE_POSITIOM_LEFT = 0;
 
@@ -65,10 +65,10 @@ const double HAUSE_SPRITE_POSITION_LEFT = 0;
 const double HAUSE_SPRITE_LENGTH = 200;
 const double HAUSE_SPRITE_HIGH = 300;
 
-const double GRANADE_SPRITE_POSITION_TOP = 180;
-const double GRANADE_SPRITE_POSITION_LEFT = 200;
-const double GRANADE_SPRITE_LENGTH = 10;
-const double GRANADE_SPRITE_HIGH = 10;
+const double GRENADE_SPRITE_POSITION_TOP = 180;
+const double GRENADE_SPRITE_POSITION_LEFT = 200;
+const double GRENADE_SPRITE_LENGTH = 10;
+const double GRENADE_SPRITE_HIGH = 10;
 
 const double FIRST_FIRE_SPRITE_POSITION_TOP = 190;
 const double FIRST_FIRE_SPRITE_POSITION_LEFT = 200;
@@ -218,8 +218,8 @@ const double HP_INTERFACE_LEFT = 0;
 const double ARMOR_INTERFACE_TOP = 200;
 const double ARMOR_INTERFACE_LEFT = 45;
 
-const double GRANADE_INTERFACE_TOP = 200;
-const double GRANADE_INTERFACE_LEFT = 90;
+const double GRENADE_INTERFACE_TOP = 200;
+const double GRENADE_INTERFACE_LEFT = 90;
 
 const double INTERFACE_SPRITE_LENGTH = 45;
 const double INTERFACE_SPRITE_HIGH = 45;

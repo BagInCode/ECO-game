@@ -39,12 +39,12 @@ double Granade::calculteSpeed(Player& player, RenderWindow* window)
 
 	double len = sqrt(deltX*deltX + deltY*deltY);
 
-	return (len / TIME_GRANADE_DALAY);
+	return (len / TIME_GRENADE_DALAY);
 }
 
 void Granade::move(double _timer)
 {
-	if (timer < TIME_GRANADE_DALAY && timer + _timer > TIME_GRANADE_DALAY)
+	if (timer < TIME_GRENADE_DALAY && timer + _timer > TIME_GRENADE_DALAY)
 	{
 		detonate = 1;
 	}else
@@ -54,7 +54,7 @@ void Granade::move(double _timer)
 
 	timer += _timer;
 
-	if (timer > TIME_GRANADE_DALAY)
+	if (timer > TIME_GRENADE_DALAY)
 	{
 		return;
 	}
@@ -72,17 +72,17 @@ pair < double, double > Granade::getPosition()
 
 int Granade::getNumberOfPicture()
 {
-	if (timer < TIME_GRANADE_DALAY)
+	if (timer < TIME_GRENADE_DALAY)
 	{
 		return 0;
 	}
 
-	return 1 + (int)(timer - TIME_GRANADE_DALAY) / 100;
+	return 1 + (int)(timer - TIME_GRENADE_DALAY) / 100;
 }
 
 bool Granade::timeToDelete()
 {
-	return timer > TIME_GRANADE_DALAY + 300;
+	return timer > TIME_GRENADE_DALAY + 300;
 }
 
 bool Granade::isDetonate()

@@ -9,7 +9,7 @@ public:
 	class Interface;
 
 	Texture environmentTexture;
-	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite, granadeSprite[4];
+	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite, grenadeSprite[4];
 	Sprite playerPistolSprite, playerShotgunSprite, playerRifleSprite, playerMachinGunSprite, playerSniperRifleSprite;
 
 	Texture minimapTexture;
@@ -24,7 +24,7 @@ public:
 	GraphicsManager();
 	~GraphicsManager();
 
-	void update(double timer);
+	void update(Game *game, double timer);
 
 	void initComponents();
 	bool loadSprites();

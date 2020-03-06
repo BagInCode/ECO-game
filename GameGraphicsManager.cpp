@@ -12,9 +12,9 @@ Game::GraphicsManager::~GraphicsManager()
 	delete interface;
 }
 
-void Game::GraphicsManager::update(double timer)
+void Game::GraphicsManager::update(Game* game, double timer)
 {
-	interface->update(timer);
+	interface->update(game, timer);
 }
 
 void Game::GraphicsManager::initComponents()
@@ -92,24 +92,24 @@ bool Game::GraphicsManager::loadSprites()
 	treeSprite.setTextureRect(IntRect(TREE_SPRITE_POSITION_LEFT, TREE_SPRITE_POSITION_TOP, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
 
 	// choose image of granade
-	granadeSprite[0].setTexture(environmentTexture);
-	granadeSprite[0].setTextureRect(IntRect(GRANADE_SPRITE_POSITION_LEFT, GRANADE_SPRITE_POSITION_TOP, GRANADE_SPRITE_LENGTH, GRANADE_SPRITE_HIGH));
-	granadeSprite[0].setOrigin(GRANADE_SPRITE_LENGTH / 2, GRANADE_SPRITE_HIGH / 2);
+	grenadeSprite[0].setTexture(environmentTexture);
+	grenadeSprite[0].setTextureRect(IntRect(GRENADE_SPRITE_POSITION_LEFT, GRENADE_SPRITE_POSITION_TOP, GRENADE_SPRITE_LENGTH, GRENADE_SPRITE_HIGH));
+	grenadeSprite[0].setOrigin(GRENADE_SPRITE_LENGTH / 2, GRENADE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[1].setTexture(environmentTexture);
-	granadeSprite[1].setTextureRect(IntRect(FIRST_FIRE_SPRITE_POSITION_LEFT, FIRST_FIRE_SPRITE_POSITION_TOP, FIRST_FIRE_SPRITE_LENGTH, FIRST_FIRE_SPRITE_HIGH));
-	granadeSprite[1].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, FIRST_FIRE_SPRITE_HIGH / 2);
+	grenadeSprite[1].setTexture(environmentTexture);
+	grenadeSprite[1].setTextureRect(IntRect(FIRST_FIRE_SPRITE_POSITION_LEFT, FIRST_FIRE_SPRITE_POSITION_TOP, FIRST_FIRE_SPRITE_LENGTH, FIRST_FIRE_SPRITE_HIGH));
+	grenadeSprite[1].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, FIRST_FIRE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[2].setTexture(environmentTexture);
-	granadeSprite[2].setTextureRect(IntRect(SECOND_FIRE_SPRITE_POSITION_LEFT, SECOND_FIRE_SPRITE_POSITION_TOP, SECOND_FIRE_SPRITE_LENGTH, SECOND_FIRE_SPRITE_HIGH));
-	granadeSprite[2].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, SECOND_FIRE_SPRITE_HIGH / 2);
+	grenadeSprite[2].setTexture(environmentTexture);
+	grenadeSprite[2].setTextureRect(IntRect(SECOND_FIRE_SPRITE_POSITION_LEFT, SECOND_FIRE_SPRITE_POSITION_TOP, SECOND_FIRE_SPRITE_LENGTH, SECOND_FIRE_SPRITE_HIGH));
+	grenadeSprite[2].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, SECOND_FIRE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[3].setTexture(environmentTexture);
-	granadeSprite[3].setTextureRect(IntRect(THIRD_FIRE_SPRITE_POSITION_LEFT, THIRD_FIRE_SPRITE_POSITION_TOP, THIRD_FIRE_SPRITE_LENGTH, THIRD_FIRE_SPRITE_HIGH));
-	granadeSprite[3].setOrigin(THIRD_FIRE_SPRITE_LENGTH / 2, THIRD_FIRE_SPRITE_HIGH / 2);
+	grenadeSprite[3].setTexture(environmentTexture);
+	grenadeSprite[3].setTextureRect(IntRect(THIRD_FIRE_SPRITE_POSITION_LEFT, THIRD_FIRE_SPRITE_POSITION_TOP, THIRD_FIRE_SPRITE_LENGTH, THIRD_FIRE_SPRITE_HIGH));
+	grenadeSprite[3].setOrigin(THIRD_FIRE_SPRITE_LENGTH / 2, THIRD_FIRE_SPRITE_HIGH / 2);
 
 	// if texture does not load
 	if (!minimapTexture.loadFromFile(MINIMAP_TEXTURE_FILE_PATH))
@@ -322,8 +322,8 @@ void Game::GraphicsManager::drawPicture(Game* game)
 			continue;
 		}
 
-		granadeSprite[pictureNumber].setPosition(granadesToDraw[j].first, granadesToDraw[j].second);
-		game->window->draw(granadeSprite[pictureNumber]);
+		grenadeSprite[pictureNumber].setPosition(granadesToDraw[j].first, granadesToDraw[j].second);
+		game->window->draw(grenadeSprite[pictureNumber]);
 	}
 
 	// draw player
