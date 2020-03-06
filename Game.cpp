@@ -199,7 +199,12 @@ void Game::switchEvent(Event event)
 			gameOver = 1;
 		}
 
-		playerObject.setMoovingVector(0, 0);
+		isKeyAPressed = 0;
+		isKeySPressed = 0;
+		isKeyWPressed = 0;
+		isKeyDPressed = 0;
+
+		playerObject.setMovingVector(0, 0);
 		playerShooting = 0;
 		timer = 0;
 		myClock.restart();
@@ -219,7 +224,12 @@ void Game::switchEvent(Event event)
 				gameOver = 1;
 			}
 
-			playerObject.setMoovingVector(0, 0);
+			isKeyAPressed = 0;
+			isKeySPressed = 0;
+			isKeyWPressed = 0;
+			isKeyDPressed = 0;
+
+			playerObject.setMovingVector(0, 0);
 			playerShooting = 0;
 			timer = 0;
 			myClock.restart();
@@ -228,29 +238,53 @@ void Game::switchEvent(Event event)
 		// if key A
 		if (event.key.code == Keyboard::A)
 		{
-			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
-			playerObject.setMoovingVector(-1, 2);
+			// if key A has not been pressed
+			if (!isKeyAPressed)
+			{
+				isKeyAPressed = 1;
+
+				// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+				playerObject.updateMovingVector(-1, 2);
+			}
 		}
 
 		// if key S
 		if (event.key.code == Keyboard::S)
 		{
-			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
-			playerObject.setMoovingVector(2, 1);
+			// if key S has not been pressed
+			if (!isKeySPressed)
+			{
+				isKeySPressed = 1;
+
+				// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+				playerObject.updateMovingVector(2, 1);
+			}
 		}
 
 		// if key W
 		if (event.key.code == Keyboard::W)
 		{
-			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
-			playerObject.setMoovingVector(2, -1);
+			// if key W has not been pressed
+			if (!isKeyWPressed)
+			{
+				isKeyWPressed = 1;
+
+				// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+				playerObject.updateMovingVector(2, -1);
+			}
 		}
 
 		// if key D
 		if (event.key.code == Keyboard::D)
 		{
-			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
-			playerObject.setMoovingVector(1, 2);
+			// if key D has not been pressed
+			if (!isKeyDPressed)
+			{
+				isKeyDPressed = 1;
+
+				// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+				playerObject.updateMovingVector(1, 2);
+			}
 		}
 
 		// if key M
@@ -364,29 +398,53 @@ void Game::switchEvent(Event event)
 		// if key A
 		if (event.key.code == Keyboard::A)
 		{
-			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
-			playerObject.setMoovingVector(0, 2);
+			// if key A has been pressed
+			if (isKeyAPressed)
+			{
+				isKeyAPressed = 0;
+
+				// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+				playerObject.updateMovingVector(1, 2);
+			}
 		}
 
 		// if key S
 		if (event.key.code == Keyboard::S)
 		{
-			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
-			playerObject.setMoovingVector(2, 0);
+			// if key S has been pressed
+			if (isKeySPressed)
+			{
+				isKeySPressed = 0;
+
+				// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+				playerObject.updateMovingVector(2, -1);
+			}
 		}
 
 		// if key W
 		if (event.key.code == Keyboard::W)
 		{
-			// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
-			playerObject.setMoovingVector(2, 0);
+			// if key W has been pressed
+			if (isKeyWPressed)
+			{
+				isKeyWPressed = 0;
+			
+				// set new speed vector, value 2 is out of possibility range, so X-vector will be unchanged
+				playerObject.updateMovingVector(2, 1);
+			}
 		}
 
 		// if key D
 		if (event.key.code == Keyboard::D)
 		{
-			// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
-			playerObject.setMoovingVector(0, 2);
+			// if key D has been pressed
+			if (isKeyDPressed)
+			{
+				isKeyDPressed = 0;
+
+				// set new speed vector, value 2 is out of possibility range, so Y-vector will be unchanged
+				playerObject.updateMovingVector(-1, 2);
+			}
 		}
 	}
 

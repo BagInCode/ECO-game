@@ -32,7 +32,8 @@ public:
 
 	void create();
 	void move(double timer);
-	void setMoovingVector(int newVectorX, int newVectorY);
+	void setMovingVector(int newVectorX, int newVectorY);
+	void updateMovingVector(int deltX, int deltY);
 	pair < double, double > getPosition();
 	pair < double, double > getPositionInWindow();
 	pair < double, double > getSize();

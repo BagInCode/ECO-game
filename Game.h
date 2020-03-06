@@ -63,6 +63,11 @@ private:
 	GraphicsManager* graphics;
 	WaveManager* waves;
 
+	bool isKeyAPressed = 0;
+	bool isKeySPressed = 0;
+	bool isKeyWPressed = 0;
+	bool isKeyDPressed = 0;
+
 	bool initComponents();
 	void checkTime();
 	void moveObjects();

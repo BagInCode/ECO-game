@@ -52,7 +52,27 @@ void Player::move(double timer)
 	return;
 }
 
-void Player::setMoovingVector(int newVectorX, int newVectorY)
+void Player::setMovingVector(int newVectorX, int newVectorY)
+{
+	/*
+	* function of setting moving vector
+	*
+	* @param newVectorX, newVectorY - new mooving vector
+	*/
+
+	// if new vector in range {-1, 0, 1} - change it
+	if (newVectorX > -2 && newVectorX < 2)
+	{
+		vectorX = newVectorX;
+	}
+
+	if (newVectorY > -2 && newVectorY < 2)
+	{
+		vectorY = newVectorY;
+	}
+}
+
+void Player::updateMovingVector(int deltX, int deltY)
 {
 	/*
 	* function of updating speed vector
@@ -61,14 +81,14 @@ void Player::setMoovingVector(int newVectorX, int newVectorY)
 	*/
 
 	// if new vector in range {-1, 0, 1} - change it
-	if (newVectorX < 2 && newVectorX > -2)
+	if (deltX > -2 && deltX < 2)
 	{
-		vectorX = newVectorX;
+		vectorX += deltX;
 	}
 
-	if (newVectorY < 2 && newVectorY > -2)
+	if (deltY > -2 && deltY < 2)
 	{
-		vectorY = newVectorY;
+		vectorY += deltY;
 	}
 
 	return;
