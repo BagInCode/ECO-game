@@ -12,9 +12,9 @@ Game::GraphicsManager::~GraphicsManager()
 	delete interface;
 }
 
-void Game::GraphicsManager::update(double timer)
+void Game::GraphicsManager::update(Game* game, double timer)
 {
-	interface->update(timer);
+	interface->update(game, timer);
 }
 
 void Game::GraphicsManager::initComponents()

@@ -24,7 +24,7 @@ public:
 	GraphicsManager();
 	~GraphicsManager();
 
-	void update(double timer);
+	void update(Game *game, double timer);
 
 	void initComponents();
 	bool loadSprites();

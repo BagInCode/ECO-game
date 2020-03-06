@@ -496,7 +496,7 @@ void Game::doActions()
 
 	checkGranades();
 
-	graphics->update(timer);
+	graphics->update(this, timer);
 
 	// increase weapon timer
 	allPlayerWeapon[currentWeaponPointer].increaseTimer(timer);
