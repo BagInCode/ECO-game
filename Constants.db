@@ -65,6 +65,26 @@ const double HAUSE_SPRITE_POSITION_LEFT = 0;
 const double HAUSE_SPRITE_LENGTH = 200;
 const double HAUSE_SPRITE_HIGH = 300;
 
+const double GRANADE_SPRITE_POSITION_TOP = 180;
+const double GRANADE_SPRITE_POSITION_LEFT = 200;
+const double GRANADE_SPRITE_LENGTH = 10;
+const double GRANADE_SPRITE_HIGH = 10;
+
+const double FIRST_FIRE_SPRITE_POSITION_TOP = 190;
+const double FIRST_FIRE_SPRITE_POSITION_LEFT = 200;
+const double FIRST_FIRE_SPRITE_LENGTH = 15;
+const double FIRST_FIRE_SPRITE_HIGH = 15;
+
+const double SECOND_FIRE_SPRITE_POSITION_TOP = 205;
+const double SECOND_FIRE_SPRITE_POSITION_LEFT = 200;
+const double SECOND_FIRE_SPRITE_LENGTH = 20;
+const double SECOND_FIRE_SPRITE_HIGH = 20;
+
+const double THIRD_FIRE_SPRITE_POSITION_TOP = 225;
+const double THIRD_FIRE_SPRITE_POSITION_LEFT = 200;
+const double THIRD_FIRE_SPRITE_LENGTH = 25;
+const double THIRD_FIRE_SPRITE_HIGH = 25;
+
 // ------------------------------- Minimap Constants -----|
 const double MINIMAP_SQUARE_SIZE_PIXIL = 7;
 

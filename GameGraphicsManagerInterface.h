@@ -9,9 +9,9 @@ private:
 public:
 
 	Texture InterfaceTexture;
-	Sprite HPSprite, armorSprite, grenadeSprite;
-	Sprite pistolSprite, shotgunSprite, AKSprite, minigunSprite, sniperSprite, *weaponInconPointer;
-	Text HPText, armorText, grenadeText;
+	Sprite HPSprite, armorSprite, granadeSprite;
+	Sprite PistolSprite, DoubleSprite, AKSprite, MinigunSprite, SniperSprite;
+	Text HPText, armorText, granadeText;
 
 	Font font;
 
@@ -25,6 +25,6 @@ public:
 
 	void addAction(string text, double duration);
 
-	void update(Game* game, double timer);
+	void update(double timer);
 	void draw(Game* game);
 };

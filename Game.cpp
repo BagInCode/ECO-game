@@ -38,7 +38,7 @@ bool Game::initComponents()
 	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets);
 
 	// init weapon hunter double
-	allPlayerWeapon[1].create(DOUBLE_RELOAD_TIME, DOUBLE_SHOOT_DELAY_TIME, DOUBLE_BULLET_SPEED, DOUBLE_BULLET_PER_SHOOT, DOUBLE_BULLET_PER_SHOOT, DOUBLE_MAX_AMMO, DOUBLE_DMG, &Bullets);
+	allPlayerWeapon[1].create(DOUBLE_RELOAD_TIME, DOUBLE_SHOOT_DELAY_TIME, DOUBLE_BULLET_SPEED, DOUBLE_ACCURASY, DOUBLE_BULLET_PER_SHOOT, DOUBLE_MAX_AMMO, DOUBLE_DMG, &Bullets);
 
 	// init weapon AK
 	allPlayerWeapon[2].create(AK_RELOAD_TIME, AK_SHOOT_DELAY_TIME, AK_BULLET_SPEED, AK_ACCURASY, AK_BULLET_PER_SHOOT, AK_MAX_AMMO, AK_DMG, &Bullets);
@@ -496,7 +496,7 @@ void Game::doActions()
 
 	checkGranades();
 
-	graphics->update(this, timer);
+	graphics->update(timer);
 
 	// increase weapon timer
 	allPlayerWeapon[currentWeaponPointer].increaseTimer(timer);

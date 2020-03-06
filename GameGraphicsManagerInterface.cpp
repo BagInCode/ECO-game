@@ -55,31 +55,29 @@ void Game::GraphicsManager::Interface::initComponents()
 	armorText.setOutlineThickness(1);
 	armorText.setOutlineColor(Color::White);
 
-	grenadeSprite.setTexture(InterfaceTexture);
-	grenadeSprite.setTextureRect(IntRect(GRENADE_INTERFACE_LEFT, GRENADE_INTERFACE_TOP, INTERFACE_SPRITE_LENGTH, INTERFACE_SPRITE_HIGH));
+	granadeSprite.setTexture(InterfaceTexture);
+	granadeSprite.setTextureRect(IntRect(GRANADE_INTERFACE_LEFT, GRANADE_INTERFACE_TOP, INTERFACE_SPRITE_LENGTH, INTERFACE_SPRITE_HIGH));
 
-	grenadeText.setFont(font);
-	grenadeText.setCharacterSize(60);
-	grenadeText.setFillColor(Color::Black);
-	grenadeText.setOutlineThickness(1);
-	grenadeText.setOutlineColor(Color::White);
+	granadeText.setFont(font);
+	granadeText.setCharacterSize(60);
+	granadeText.setFillColor(Color::Black);
+	granadeText.setOutlineThickness(1);
+	granadeText.setOutlineColor(Color::White);
 
-	pistolSprite.setTexture(InterfaceTexture);
-	pistolSprite.setTextureRect(IntRect(PISTOL_INTERFACE_POSITION_LEFT, PISTOL_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+	PistolSprite.setTexture(InterfaceTexture);
+	PistolSprite.setTextureRect(IntRect(PISTOL_INTERFACE_POSITION_LEFT, PISTOL_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
-	shotgunSprite.setTexture(InterfaceTexture);
-	shotgunSprite.setTextureRect(IntRect(DOUBLE_INTERFACE_POSITION_LEFT, DOUBLE_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+	DoubleSprite.setTexture(InterfaceTexture);
+	DoubleSprite.setTextureRect(IntRect(DOUBLE_INTERFACE_POSITION_LEFT, DOUBLE_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
 	AKSprite.setTexture(InterfaceTexture);
 	AKSprite.setTextureRect(IntRect(AK_INTERFACE_POSITION_LEFT, AK_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
-	minigunSprite.setTexture(InterfaceTexture);
-	minigunSprite.setTextureRect(IntRect(MINIGUN_INTERFACE_POSITION_LEFT, MINIGUN_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+	MinigunSprite.setTexture(InterfaceTexture);
+	MinigunSprite.setTextureRect(IntRect(MINIGUN_INTERFACE_POSITION_LEFT, MINIGUN_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
-	sniperSprite.setTexture(InterfaceTexture);
-	sniperSprite.setTextureRect(IntRect(SNIPER_INTERFACE_POSITION_LEFT, SNIPER_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
-
-	weaponInconPointer = &pistolSprite;
+	SniperSprite.setTexture(InterfaceTexture);
+	SniperSprite.setTextureRect(IntRect(SNIPER_INTERFACE_POSITION_LEFT, SNIPER_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 }
 
 void Game::GraphicsManager::Interface::addAction(string text, double duration)
@@ -98,7 +96,7 @@ void Game::GraphicsManager::Interface::addAction(string text, double duration)
 	actions.push_back({ { text, duration }, 1 });
 }
 
-void Game::GraphicsManager::Interface::update(Game* game, double timer)
+void Game::GraphicsManager::Interface::update(double timer)
 {
 	for (int i = int(actions.size()) - 1; i >= 0; i--)
 	{
@@ -107,27 +105,6 @@ void Game::GraphicsManager::Interface::update(Game* game, double timer)
 		{
 			actions.erase(actions.begin() + i);
 		}
-	}
-
-	if (game->currentWeaponPointer == 0)
-	{
-		weaponInconPointer = &pistolSprite;
-	}
-	else if (game->currentWeaponPointer == 1)
-	{
-		weaponInconPointer = &shotgunSprite;
-	}
-	else if (game->currentWeaponPointer == 2)
-	{
-		weaponInconPointer = &AKSprite;
-	}
-	else if (game->currentWeaponPointer == 3)
-	{
-		weaponInconPointer = &minigunSprite;
-	}
-	else if (game->currentWeaponPointer == 4)
-	{
-		weaponInconPointer = &sniperSprite;
 	}
 }
 
@@ -156,7 +133,7 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 	bulletText += toString(game->allPlayerWeapon[game->currentWeaponPointer].getCountBullets());
 	bulletCount.setString(bulletText);
 	bulletCount.setPosition(WINDOW_LENGTH - bulletCount.getGlobalBounds().width - 10, WINDOW_HIGH - 60 - 10);
-	game->window->draw(bulletCount); 
+	game->window->draw(bulletCount);
 
 	HPSprite.setPosition(110, 645);
 	game->window->draw(HPSprite);
@@ -170,13 +147,4 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 	armorText.setPosition(270 - armorText.getGlobalBounds().width, 630);
 	game->window->draw(armorText);
 
-	weaponInconPointer->setPosition(WINDOW_LENGTH - 10 - INTERFACE_WEAPON_LENGTH, WINDOW_HIGH - 60 - INTERFACE_WEAPON_HIGH);
-	game->window->draw(*weaponInconPointer);
-	// todo if reloading
-
-	grenadeSprite.setPosition(WINDOW_LENGTH - INTERFACE_SPRITE_LENGTH - 10, WINDOW_HIGH - 130 - INTERFACE_SPRITE_HIGH);
-	game->window->draw(grenadeSprite);
-	grenadeText.setString("5"); // todo
-	grenadeText.setPosition(WINDOW_LENGTH - INTERFACE_SPRITE_LENGTH - 15 - grenadeText.getGlobalBounds().width, WINDOW_HIGH - 147 - INTERFACE_SPRITE_HIGH);
-	game->window->draw(grenadeText);
 }

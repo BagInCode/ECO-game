@@ -12,9 +12,9 @@ Game::GraphicsManager::~GraphicsManager()
 	delete interface;
 }
 
-void Game::GraphicsManager::update(Game* game, double timer)
+void Game::GraphicsManager::update(double timer)
 {
-	interface->update(game, timer);
+	interface->update(timer);
 }
 
 void Game::GraphicsManager::initComponents()
@@ -91,33 +91,25 @@ bool Game::GraphicsManager::loadSprites()
 	treeSprite.setTexture(environmentTexture);
 	treeSprite.setTextureRect(IntRect(TREE_SPRITE_POSITION_LEFT, TREE_SPRITE_POSITION_TOP, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
 
-	temp.loadFromFile("Textures/Granade.png");
-
 	// choose image of granade
-	granadeSprite[0].setTexture(temp);
-	granadeSprite[0].setTextureRect(IntRect(0, 0, 10, 10));
-	granadeSprite[0].setOrigin(5, 5);
-
-	temp1.loadFromFile("Textures\\Fire1.png");
+	granadeSprite[0].setTexture(environmentTexture);
+	granadeSprite[0].setTextureRect(IntRect(GRANADE_SPRITE_POSITION_LEFT, GRANADE_SPRITE_POSITION_TOP, GRANADE_SPRITE_LENGTH, GRANADE_SPRITE_HIGH));
+	granadeSprite[0].setOrigin(GRANADE_SPRITE_LENGTH / 2, GRANADE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[1].setTexture(temp1);
-	granadeSprite[1].setTextureRect(IntRect(0, 0, 15, 15));
-	granadeSprite[1].setOrigin(7.5, 7.5);
-
-	temp2.loadFromFile("Textures\\Fire2.png");
+	granadeSprite[1].setTexture(environmentTexture);
+	granadeSprite[1].setTextureRect(IntRect(FIRST_FIRE_SPRITE_POSITION_LEFT, FIRST_FIRE_SPRITE_POSITION_TOP, FIRST_FIRE_SPRITE_LENGTH, FIRST_FIRE_SPRITE_HIGH));
+	granadeSprite[1].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, FIRST_FIRE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[2].setTexture(temp2);
-	granadeSprite[2].setTextureRect(IntRect(0, 0, 20, 20));
-	granadeSprite[2].setOrigin(10, 10);
-
-	temp3.loadFromFile("Textures\\Fire3.png");
+	granadeSprite[2].setTexture(environmentTexture);
+	granadeSprite[2].setTextureRect(IntRect(SECOND_FIRE_SPRITE_POSITION_LEFT, SECOND_FIRE_SPRITE_POSITION_TOP, SECOND_FIRE_SPRITE_LENGTH, SECOND_FIRE_SPRITE_HIGH));
+	granadeSprite[2].setOrigin(SECOND_FIRE_SPRITE_LENGTH / 2, SECOND_FIRE_SPRITE_HIGH / 2);
 
 	// choose inmage of fire
-	granadeSprite[3].setTexture(temp3);
-	granadeSprite[3].setTextureRect(IntRect(0, 0, 25, 25));
-	granadeSprite[3].setOrigin(12.5, 12.5);
+	granadeSprite[3].setTexture(environmentTexture);
+	granadeSprite[3].setTextureRect(IntRect(THIRD_FIRE_SPRITE_POSITION_LEFT, THIRD_FIRE_SPRITE_POSITION_TOP, THIRD_FIRE_SPRITE_LENGTH, THIRD_FIRE_SPRITE_HIGH));
+	granadeSprite[3].setOrigin(THIRD_FIRE_SPRITE_LENGTH / 2, THIRD_FIRE_SPRITE_HIGH / 2);
 
 	// if texture does not load
 	if (!minimapTexture.loadFromFile(MINIMAP_TEXTURE_FILE_PATH))
