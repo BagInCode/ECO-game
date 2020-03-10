@@ -26,6 +26,8 @@ class Player
 
 	int healthPoints;
 
+	int engramPoints;
+
 public:
 	int isDamaged;
 	int armor;
@@ -41,6 +43,9 @@ public:
 	double getAngle();
 	void setPosition(double newX, double newY);
 	int getHealthPoints();
+	int getEngramPoints();
+	void addEngramPoints(int value);
+	void decrEngramPoints(int value);
 	void getDamage(int damage);
 	void setSize(double length, double high);
 };

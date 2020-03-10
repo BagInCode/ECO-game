@@ -35,6 +35,11 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	damage = _damage;
 	Bullets = _bullets;
 
+	reloadEngrams = 0;
+	accuracyEngrams = 0;
+	damageEngrams = 0;
+	gainingAmmoEngrams = 0;
+
 	// null timer
 	timer = 0;
 
@@ -118,7 +123,7 @@ void Weapon::increaseTimer(double _timer)
 		if (currentAmmo == 0)
 		{
 			// null timer
-			timer = 0;
+			timer = shootDelay;
 
 			// set current ammo
 			currentAmmo = min(countBullets, maxAmmo);
@@ -138,7 +143,7 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 	*/
 
 	// if there is some ammo and enough time passed for shooting
-	if (timer > shootDelay && currentAmmo > 0)
+	if (timer >= shootDelay && currentAmmo > 0)
 	{
 		// decrease ammo
 		if (!isPlayerTarget)
@@ -159,6 +164,16 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 	}
 
 	return 0;
+}
+
+double Weapon::getReloadingTime()
+{
+	return reload;
+}
+
+double Weapon::getTimer()
+{
+	return timer;
 }
 
 int Weapon::getCurrentAmmo()

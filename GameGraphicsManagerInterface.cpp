@@ -1,5 +1,15 @@
 #include "GameGraphicsManagerInterface.h"
 
+Game::GraphicsManager::Interface::Interface()
+{
+	reloadingProgressBar = new ProgressBar(1150, 588, 140, 5, 2, 0);
+}
+
+Game::GraphicsManager::Interface::~Interface()
+{
+	delete reloadingProgressBar;
+}
+
 string Game::GraphicsManager::Interface::toString(int val)
 {
 	if (val == 0)
@@ -129,6 +139,18 @@ void Game::GraphicsManager::Interface::update(Game* game, double timer)
 	{
 		weaponInconPointer = &sniperSprite;
 	}
+
+	double reloadingPercentage = game->allPlayerWeapon[game->currentWeaponPointer].getTimer() /
+		game->allPlayerWeapon[game->currentWeaponPointer].getReloadingTime();
+
+	if (game->allPlayerWeapon[game->currentWeaponPointer].getCurrentAmmo() > 0 || reloadingPercentage >= 1.0)
+	{
+		reloadingProgressBar->update(1.0);
+	}
+	else
+	{
+		reloadingProgressBar->update(reloadingPercentage);
+	}
 }
 
 void Game::GraphicsManager::Interface::draw(Game* game)
@@ -144,7 +166,7 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 		{
 			actionText.setString(action.first.first);
 		}
-		actionText.setPosition(5, actionXPosition);
+		actionText.setPosition(5, float(actionXPosition));
 
 		game->window->draw(actionText);
 
@@ -179,4 +201,6 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 	grenadeText.setString("5"); // todo
 	grenadeText.setPosition(WINDOW_LENGTH - INTERFACE_SPRITE_LENGTH - 15 - grenadeText.getGlobalBounds().width, WINDOW_HIGH - 147 - INTERFACE_SPRITE_HIGH);
 	game->window->draw(grenadeText);
+
+	reloadingProgressBar->draw(game->window);
 }

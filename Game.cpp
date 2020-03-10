@@ -2,17 +2,22 @@
 #include "Game.h"
 #include "GameGraphicsManager.h"
 #include "GameGraphicsManagerInterface.h"
+#include "GameGraphicsManagerCraftingTable.h"
+#include "GameEnvironmentManager.h"
+#include "GameEnvironmentManagerStorage.h"
 #include "WaveManager.h"
 
 Game::Game()
 {
 	graphics = new GraphicsManager;
+	environment = new EnvironmentManager;
 	waves = new WaveManager;
 }
 
 Game::~Game()
 {
 	delete graphics;
+	delete environment;
 	delete waves;
 }
 
@@ -31,8 +36,10 @@ bool Game::initComponents()
 	// init player
 	playerObject.create();
 
+	environment->initComponents();
+
 	// load enviroment sprites
-	graphics->initComponents();
+	graphics->initComponents(this);
 
 	// init weapon pistol
 	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets);
@@ -75,12 +82,6 @@ bool Game::initComponents()
 	EnemysState.push_back(new OutOfVisibilityState());
 	EnemysState.push_back(new OutOfVisibilityState());
 	*/
-
-	// start with drawing game scene
-	graphics->isMinimapDrawing = 0;
-
-	// generate field
-	fieldGeneration();
 
 	return 1;
 }
@@ -138,13 +139,16 @@ void Game::moveObjects()
 	* function of moving objects
 	*/
 
-	for (int i = 0; i < granades.size(); i++)
+	for (int i = 0; i < int(granades.size()); i++)
 	{
 		granades[i].move(timer);
 	}
 
 	// move player
-	playerObject.move(timer);
+	if (graphics->drawSwitcher == 0 || graphics->drawSwitcher == 1)
+	{
+		playerObject.move(timer);
+	}
 
 	// if there are some bullets 
 	if (Bullets.size() > 0)
@@ -152,7 +156,7 @@ void Game::moveObjects()
 		// create new vector
 		vector < Bullet > newBullets;
 
-		for (int i = 0; i < Bullets.size(); i++)
+		for (int i = 0; i < int(Bullets.size()); i++)
 		{
 			// move bullet
 			Bullets[i].move(timer);
@@ -291,7 +295,15 @@ void Game::switchEvent(Event event)
 		if (event.key.code == Keyboard::M)
 		{
 			// drowing minimap/drawing game scene
-			graphics->isMinimapDrawing = !(graphics->isMinimapDrawing);
+
+			if (graphics->drawSwitcher == 0)
+			{
+				graphics->drawSwitcher = 1;
+			}
+			else if (graphics->drawSwitcher == 1)
+			{
+				graphics->drawSwitcher = 0;
+			}
 		}
 
 		// if key 1
@@ -358,22 +370,19 @@ void Game::switchEvent(Event event)
 			double playerPositionX = playerObject.getPosition().first;
 			double playerPositionY = playerObject.getPosition().second;
 
-			for (int i = max(0, int(playerPositionY / SQUARE_SIZE_PIXIL - 5)); i <= min(99, int(playerPositionY / SQUARE_SIZE_PIXIL + 5)); i++)
+			environment->checkStoragesAction(this, playerPositionX, playerPositionY);
+
+			if (graphics->drawSwitcher == 0)
 			{
-				for (int j = max(0, int(playerPositionX / SQUARE_SIZE_PIXIL - 5)); j <= min(99, int(playerPositionX / SQUARE_SIZE_PIXIL + 5)); j++)
+				if (environment->isNearCraftingTable(playerPositionX, playerPositionY))
 				{
-					if (storageNumber[i][j] != -1)
-					{
-						if (storages[storageNumber[i][j]].isLootable(playerPositionX, playerPositionY))
-						{
-							graphics->interface->addAction("Loot storage", 5.0);
-
-							pair<int, int> lootResult = storages[storageNumber[i][j]].tryToLoot(playerPositionX, playerPositionY);
-
-							// todo smth with lootresult
-						}
-					}
+					graphics->drawSwitcher = 2;
+					graphics->craftingTable->open(this);
 				}
+			}
+			else if (graphics->drawSwitcher == 2)
+			{
+				graphics->drawSwitcher = 0;
 			}
 		}
 
@@ -565,11 +574,8 @@ void Game::doActions()
 		allPlayerWeapon[currentWeaponPointer].shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
 	}
 
-	// update vision
-	updateVision();
-
 	// for all enemys
-	for (int i = 0; i < Enemys.size(); i++)
+	for (int i = 0; i < int(Enemys.size()); i++)
 	{
 		// increase weapon timer
 		Enemys[i].getWeaponPointer()->increaseTimer(timer);
@@ -601,91 +607,9 @@ void Game::doActions()
 		Enemys[i].setAngleWatching(angle);
 	}
 
-	for (auto& storage : storages)
-	{
-		storage.update(timer);
-	}
+	environment->update(timer);
 
 	playerObject.isDamaged = max(playerObject.isDamaged - 1, 0);
-
-	return;
-}
-
-void Game::fieldGeneration()
-{
-	/*
-	* function of generating field
-	*/
-
-	/// make random more randomly
-	srand(time(NULL));
-
-	for (auto& row : Field)
-	{
-		for (auto& cell : row)
-		{
-			cell = 0;
-		}
-	}
-
-	for (auto& row : storageNumber)
-	{
-		for (auto& cell : row)
-		{
-			cell = -1;
-		}
-	}
-
-	int x, y;
-
-	storageFont.loadFromFile(ROBO_REGULAR_2_FILE_PATH);
-	int storageIndex = 0;
-	// divid all fieald on squares 10x10 and random in each square independly
-	for (int i = 0; i < FIELD_SIZE / 10; i++)
-	{
-		for (int j = 0; j < FIELD_SIZE / 10; j++)
-		{
-			// random position of house
-			x = rand() % 7;
-			y = rand() % 7;
-
-			storageNumber[i * 10 + y][j * 10 + x] = storageIndex;
-			storageIndex++;
-			storages.push_back(Storage((j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL,
-				(i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL, storageFont));
-
-			// in other square of house set pointer, that they are not empty
-			Field[i * 10 + y][j * 10 + x] = -1;
-			Field[i * 10 + y + 1][j * 10 + x] = -1;
-			Field[i * 10 + y + 2][j * 10 + x] = -1;
-			Field[i * 10 + y][j * 10 + x + 1] = -1;
-			Field[i * 10 + y + 1][j * 10 + x + 1] = -1;
-			Field[i * 10 + y + 2][j * 10 + x + 1] = -1;
-
-
-			// generate tree
-			for (int k = 0; k < COUNT_TREES_IN_SQUARE; k++)
-			{
-				// generete while not get empty square
-				while (1)
-				{
-					// random position
-					x = rand() % 10;
-					y = rand() % 10;
-
-					// if square is empty
-					if (Field[i * 10 + x][j * 10 + y] == 0)
-					{
-						// set tree in this square
-						Field[i * 10 + x][j * 10 + y] = 5;
-
-						//stop generating
-						break;
-					}
-				}
-			}
-		}
-	}
 
 	return;
 }
@@ -700,7 +624,7 @@ void Game::checkIntersection()
 	checkIntersectionPlayer();
 
 	// check all enemys
-	for (int i = 0; i < Enemys.size(); i++)
+	for (int i = 0; i < int(Enemys.size()); i++)
 	{
 		checkIntersectionEnemy(Enemys[i]);
 	}
@@ -724,14 +648,14 @@ void Game::checkIntersectionPlayer()
 	double playerY2 = playerObject.getPosition().second + playerSize / 2;
 
 	// for all objects
-	for (int i = 0; i < storages.size(); i++)
+	for (int i = 0; i < int(environment->storages.size()); i++)
 	{
 		// get coordinats of intersection
-		double x1 = max(playerX1, storages[i].x1);
-		double x2 = min(playerX2, storages[i].x2);
+		double x1 = max(playerX1, environment->storages[i]->x1);
+		double x2 = min(playerX2, environment->storages[i]->x2);
 
-		double y1 = max(playerY1, storages[i].y1);
-		double y2 = min(playerY2, storages[i].y2);
+		double y1 = max(playerY1, environment->storages[i]->y1);
+		double y2 = min(playerY2, environment->storages[i]->y2);
 
 		// if rectangle with negative square
 		if (x1 > x2 || y1 > y2)
@@ -790,14 +714,14 @@ void Game::checkIntersectionEnemy(Enemy & enemy)
 	double enemyY2 = enemy.getPosition().second + enemySize / 2;
 
 	// for all objects
-	for (int i = 0; i < storages.size(); i++)
+	for (int i = 0; i < int(environment->storages.size()); i++)
 	{
 		// get coordinats of intersection
-		double x1 = max(enemyX1, storages[i].x1);
-		double x2 = min(enemyX2, storages[i].x2);
+		double x1 = max(enemyX1, environment->storages[i]->x1);
+		double x2 = min(enemyX2, environment->storages[i]->x2);
 
-		double y1 = max(enemyY1, storages[i].y1);
-		double y2 = min(enemyY2, storages[i].y2);
+		double y1 = max(enemyY1, environment->storages[i]->y1);
+		double y2 = min(enemyY2, environment->storages[i]->y2);
 
 		// if rectangle with negative square
 		if (x1 > x2 || y1 > y2)
@@ -863,11 +787,11 @@ bool Game::checkIntersectionBullet(Bullet & bullet)
 	for (int i = 0; i <= COUNT_SEGMENTS_FOR_BULLET_CHECKING; i++)
 	{
 		// check intersection with houses
-		for (int j = 0; j < storages.size(); j++)
+		for (int j = 0; j < int(environment->storages.size()); j++)
 		{
 			// if intersection with houses
-			if (storages[j].x1 < currentPosition.first && storages[j].x2 > currentPosition.first &&
-				storages[j].y1 < currentPosition.second && storages[j].y2 > currentPosition.second)
+			if (environment->storages[j]->x1 < currentPosition.first && environment->storages[j]->x2 > currentPosition.first &&
+				environment->storages[j]->y1 < currentPosition.second && environment->storages[j]->y2 > currentPosition.second)
 			{
 				return 1;
 			}
@@ -898,7 +822,7 @@ bool Game::checkIntersectionBullet(Bullet & bullet)
 		}
 		else
 		{
-			for (int j = 0; j < Enemys.size(); j++)
+			for (int j = 0; j < int(Enemys.size()); j++)
 			{
 				// calculate position of body rectangle
 				double enemyX1 = Enemys[j].getPosition().first - CHARACTER_BODY_RADIUS;
@@ -942,49 +866,6 @@ bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, d
 	return (S > 0);
 }
 
-bool Game::isVisible(int playerX, int playerY, int x, int y)
-{
-	/*
-	* function of checking is square visible for player
-	*
-	* @param playerX, playerY - coordinate of player square
-	*        x, y - coordinate of square for checking
-	*
-	* @return true - if square is visible for player
-	*/
-
-	return (abs(playerX - x) <= MAX_VISIBLE_DIST) && (abs(playerY - y) <= MAX_VISIBLE_DIST);
-}
-
-void Game::updateVision()
-{
-	/*
-	* function of updating minimap vision
-	*/
-
-	// get position of player square
-	int playerX = playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
-	int playerY = playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
-
-	// get coordinate of square
-	int Up = min(FIELD_SIZE - 1, playerY + MAX_VISIBLE_DIST);
-	int Down = max(0, playerY - MAX_VISIBLE_DIST);
-	int Left = max(playerX - MAX_VISIBLE_DIST, 0);
-	int Right = min(playerX + MAX_VISIBLE_DIST, FIELD_SIZE - 1);
-
-	// for each square
-	for (int i = Down; i <= Up; i++)
-	{
-		for (int j = Left; j <= Right; j++)
-		{
-			// set visibility
-			visionMap[i][j] = 1;
-		}
-	}
-
-	return;
-}
-
 void Game::checkGameOver()
 {
 	/*
@@ -1001,7 +882,7 @@ void Game::checkGameOver()
 	double playerX = playerObject.getPosition().first;
 	double playerY = playerObject.getPosition().second;
 
-	for (int i = 0; i < Enemys.size(); i++)
+	for (int i = 0; i < int(Enemys.size()); i++)
 	{
 		// get enemy position
 		double enemyX = Enemys[i].getPosition().first;
@@ -1094,7 +975,7 @@ void Game::checkEnemyAlive()
 	vector < Enemy > newEnemys;
 
 	// for all enemys
-	for (int i = 0; i < Enemys.size(); i++)
+	for (int i = 0; i < int(Enemys.size()); i++)
 	{
 		// if enemy alive
 		if (!Enemys[i].isDead())
@@ -1114,7 +995,7 @@ void Game::checkGranades()
 {
 	vector < Granade > newGranades;
 
-	for (int i = 0; i < granades.size(); i++)
+	for (int i = 0; i < int(granades.size()); i++)
 	{
 		if (granades[i].timeToDelete())
 		{
@@ -1126,11 +1007,11 @@ void Game::checkGranades()
 
 	granades = newGranades;
 
-	for (int i = 0; i < granades.size(); i++)
+	for (int i = 0; i < int(granades.size()); i++)
 	{
 		if (granades[i].isDetonate())
 		{
-			for (int j = 0; j < Enemys.size(); j++)
+			for (int j = 0; j < int(Enemys.size()); j++)
 			{
 				double deltX = Enemys[j].getPosition().first - granades[i].getPosition().first;
 				double deltY = Enemys[j].getPosition().second - granades[i].getPosition().second;

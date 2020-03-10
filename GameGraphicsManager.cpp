@@ -1,27 +1,51 @@
 #include "Game.h"
 #include "GameGraphicsManager.h"
 #include "GameGraphicsManagerInterface.h"
+#include "GameGraphicsManagerMinimap.h"
+#include "GameGraphicsManagerCraftingTable.h"
+#include "GameEnvironmentManager.h"
+#include "GameEnvironmentManagerStorage.h"
 
 Game::GraphicsManager::GraphicsManager()
 {
 	interface = new GraphicsManager::Interface;
+	minimap = new Minimap;
+	craftingTable = new CraftingTable;
 }
 
 Game::GraphicsManager::~GraphicsManager()
 {
 	delete interface;
+	delete minimap;
+	delete craftingTable;
 }
 
 void Game::GraphicsManager::update(Game* game, double timer)
 {
 	interface->update(game, timer);
+	minimap->update(game);
+
+	if (drawSwitcher == 2)
+	{
+		craftingTable->update(game);
+	}
 }
 
-void Game::GraphicsManager::initComponents()
+void Game::GraphicsManager::initComponents(Game* game)
 {
+	storageFont.loadFromFile(ROBO_REGULAR_2_FILE_PATH);
+	for (auto& storage : game->environment->storages)
+	{
+		storage->setFont(storageFont);
+	}
+
 	interface->initComponents();
+	minimap->initComponents();
+	craftingTable->initComponents(game);
 
 	loadSprites();
+
+	drawSwitcher = 0;
 }
 
 bool Game::GraphicsManager::loadSprites()
@@ -111,64 +135,30 @@ bool Game::GraphicsManager::loadSprites()
 	grenadeSprite[3].setTextureRect(IntRect(THIRD_FIRE_SPRITE_POSITION_LEFT, THIRD_FIRE_SPRITE_POSITION_TOP, THIRD_FIRE_SPRITE_LENGTH, THIRD_FIRE_SPRITE_HIGH));
 	grenadeSprite[3].setOrigin(THIRD_FIRE_SPRITE_LENGTH / 2, THIRD_FIRE_SPRITE_HIGH / 2);
 
-	// if texture does not load
-	if (!minimapTexture.loadFromFile(MINIMAP_TEXTURE_FILE_PATH))
-	{
-		// loading failed
-		return 0;
-	}
 
-	// set image of active ground
-	minimapActiveGroundSprite.setTexture(minimapTexture);
-	minimapActiveGroundSprite.setTextureRect(IntRect(MINIMAP_GROUND_ACTIVE_SPRITE_LEFT, MINIMAP_GROUND_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of active house
-	minimapActiveHouseSprite.setTexture(minimapTexture);
-	minimapActiveHouseSprite.setTextureRect(IntRect(MINIMAP_HOUSE_ACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of active tree
-	minimapActiveTreeSprite.setTexture(minimapTexture);
-	minimapActiveTreeSprite.setTextureRect(IntRect(MINIMAP_TREE_ACTIVE_SPRITE_LEFT, MINIMAP_TREE_ACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of player
-	minimapPlayerSprite.setTexture(minimapTexture);
-	minimapPlayerSprite.setTextureRect(IntRect(MINIMAP_PLAYER_SPRITE_LEFT, MINIMAP_PLAYER_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of enemy
-	minimapEnemySprite.setTexture(minimapTexture);
-	minimapEnemySprite.setTextureRect(IntRect(MINIMAP_ENEMY_SPRITE_LEFT, MINIMAP_ENEMY_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of invisible
-	minimapInvisibleSprite.setTexture(minimapTexture);
-	minimapInvisibleSprite.setTextureRect(IntRect(MINIMAP_INVISIBLE_SPRITE_LEFT, MINIMAP_INVISIBLE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of inactive ground
-	minimapInactiveGroundSprite.setTexture(minimapTexture);
-	minimapInactiveGroundSprite.setTextureRect(IntRect(MINIMAP_GROUND_INACTIVE_SPRITE_LEFT, MINIMAP_GROUND_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of inactive house
-	minimapInactiveHouseSprite.setTexture(minimapTexture);
-	minimapInactiveHouseSprite.setTextureRect(IntRect(MINIMAP_HOUSE_INACTIVE_SPRITE_LEFT, MINIMAP_HOUSE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
-
-	// set image of inactive tree
-	minimapInactiveTreeSprite.setTexture(minimapTexture);
-	minimapInactiveTreeSprite.setTextureRect(IntRect(MINIMAP_TREE_INACTIVE_SPRITE_LEFT, MINIMAP_TREE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+	craftingTableTexture.loadFromFile("Textures\\craftingTable.png");
+	craftingTableSprite.setTexture(craftingTableTexture);
+	craftingTableSprite.setTextureRect(IntRect(0, 0, 100, 100));
 
 	return 1;
 }
 
 void Game::GraphicsManager::draw(Game* game)
 {
-	if (isMinimapDrawing)
-	{
-		// draw minimap
-		drawMinimap(game);
-	}
-	else
+	if (drawSwitcher == 0)
 	{
 		// draw game scene
 		drawPicture(game);
 		interface->draw(game);
+	}
+	else if (drawSwitcher == 1)
+	{
+		// draw minimap
+		minimap->draw(game);
+	}
+	else if (drawSwitcher == 2)
+	{
+		craftingTable->draw(game);
 	}
 
 	game->window->display();
@@ -192,8 +182,8 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	double playerGlobalPositionY = game->playerObject.getPosition().second;
 
 	// get position in array of cell, where player stay
-	int playerCellX = playerGlobalPositionX / SQUARE_SIZE_PIXIL;
-	int playerCellY = playerGlobalPositionY / SQUARE_SIZE_PIXIL;
+	int playerCellX = int(playerGlobalPositionX) / SQUARE_SIZE_PIXIL;
+	int playerCellY = int(playerGlobalPositionY) / SQUARE_SIZE_PIXIL;
 
 	// calculate borders of drawing rectangle
 	int Left = max(0, playerCellX - 15);
@@ -204,6 +194,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	//vector < vector < pair < double, double > > > drawingOrder;
 	vector<pair<double, double> > groundsToDraw;
 	vector <int> storagesToDraw;
+	vector<pair<double, double> > craftingTablesToDraw;
 	vector<pair<double, double> > bulletsToDraw;
 	vector<pair<double, double> > enemiesToDraw;
 	vector<pair<double, double> > treesToDraw;
@@ -225,21 +216,25 @@ void Game::GraphicsManager::drawPicture(Game* game)
 			groundsToDraw.push_back({ playerPositionX + deltX, playerPositionY + deltY });
 
 			// if there is smth in this square
-			if (game->Field[i][j] == 5)
+			if (game->environment->field[i][j] == 5)
 			{
 				// add to the order
 				treesToDraw.push_back({ playerPositionX + deltX, playerPositionY + deltY });
 			}
-
-			if (game->storageNumber[i][j] != -1)
+			else if (game->environment->field[i][j] == 4)
 			{
-				storagesToDraw.push_back(game->storageNumber[i][j]);
+				craftingTablesToDraw.push_back({ playerPositionX + deltX, playerPositionY + deltY });
+			}
+
+			if (game->environment->storageNumber[i][j] != -1)
+			{
+				storagesToDraw.push_back(game->environment->storageNumber[i][j]);
 			}
 		}
 	}
 
 	// for all Bullets
-	for (int i = 0; i < game->Bullets.size(); i++)
+	for (int i = 0; i < int(game->Bullets.size()); i++)
 	{
 		// get Bullet position
 		double bulletPositionX = game->Bullets[i].getPosition().first;
@@ -255,7 +250,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 
 	// get angle of player sprite
 	double angle = game->playerObject.rotate(game->window);
-	playerSprite->setRotation(angle * 180 / acos(-1));
+	playerSprite->setRotation(float(angle * 180 / acos(-1)));
 
 	if (game->playerObject.isDamaged > 0)
 	{
@@ -263,7 +258,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	}
 
 	// add enemys
-	for (int i = 0; i < game->Enemys.size(); i++)
+	for (int i = 0; i < int(game->Enemys.size()); i++)
 	{
 		pair < double, double > position;
 
@@ -276,7 +271,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	}
 
 	// add granades 
-	for (int i = 0; i < game->granades.size(); i++)
+	for (int i = 0; i < int(game->granades.size()); i++)
 	{
 		pair < double, double > position;
 		
@@ -292,28 +287,35 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	// for each type of sprites
 
 	// draw grounds
-	for (int j = 0; j < groundsToDraw.size(); j++)
+	for (int j = 0; j < int(groundsToDraw.size()); j++)
 	{
-		groundSprite.setPosition(groundsToDraw[j].first, groundsToDraw[j].second);
+		groundSprite.setPosition(float(groundsToDraw[j].first), float(groundsToDraw[j].second));
 		game->window->draw(groundSprite);
 	}
 
 	// draw storages
 	for (auto& storageI : storagesToDraw)
 	{
-		game->storages[storageI].draw(game->window, playerGlobalPositionX - playerPositionX, playerGlobalPositionY - playerPositionY,
+		game->environment->storages[storageI]->draw(game->window, playerGlobalPositionX - playerPositionX, playerGlobalPositionY - playerPositionY,
 			playerGlobalPositionX, playerGlobalPositionY, storageSprite);
 	}
 
-	// draw bullets
-	for (int j = 0; j < bulletsToDraw.size(); j++)
+	// draw craftingTables
+	for (int j = 0; j < int(craftingTablesToDraw.size()); j++)
 	{
-		bulletSprite.setPosition(bulletsToDraw[j].first, bulletsToDraw[j].second);
+		craftingTableSprite.setPosition(float(craftingTablesToDraw[j].first), float(craftingTablesToDraw[j].second));
+		game->window->draw(craftingTableSprite);
+	}
+
+	// draw bullets
+	for (int j = 0; j < int(bulletsToDraw.size()); j++)
+	{
+		bulletSprite.setPosition(float(bulletsToDraw[j].first), float(bulletsToDraw[j].second));
 		game->window->draw(bulletSprite);
 	}
 
 	// draw granades
-	for (int j = 0; j < granadesToDraw.size(); j++)
+	for (int j = 0; j < int(granadesToDraw.size()); j++)
 	{
 		int pictureNumber = game->granades[j].getNumberOfPicture();
 		
@@ -322,129 +324,31 @@ void Game::GraphicsManager::drawPicture(Game* game)
 			continue;
 		}
 
-		grenadeSprite[pictureNumber].setPosition(granadesToDraw[j].first, granadesToDraw[j].second);
+		grenadeSprite[pictureNumber].setPosition(float(granadesToDraw[j].first), float(granadesToDraw[j].second));
 		game->window->draw(grenadeSprite[pictureNumber]);
 	}
 
 	// draw player
-	playerSprite->setPosition(game->playerObject.getPositionInWindow().first, game->playerObject.getPositionInWindow().second);
+	playerSprite->setPosition(float(game->playerObject.getPositionInWindow().first), float(game->playerObject.getPositionInWindow().second));
 	game->window->draw(*playerSprite);
 
 	// draw enemys
-	for (int j = 0; j < enemiesToDraw.size(); j++)
+	for (int j = 0; j < int(enemiesToDraw.size()); j++)
 	{
-		enemySprite.setPosition(enemiesToDraw[j].first, enemiesToDraw[j].second);
-		enemySprite.setRotation(game->Enemys[j].getAngleWatching() * 180 / acos(-1));
+		enemySprite.setPosition(float(enemiesToDraw[j].first), float(enemiesToDraw[j].second));
+		enemySprite.setRotation(float(game->Enemys[j].getAngleWatching() * 180 / acos(-1)));
 		game->window->draw(enemySprite);
 	}
 
 	// draw trees
-	for (int j = 0; j < treesToDraw.size(); j++)
+	for (int j = 0; j < int(treesToDraw.size()); j++)
 	{
-		treeSprite.setPosition(treesToDraw[j].first, treesToDraw[j].second);
+		treeSprite.setPosition(float(treesToDraw[j].first), float(treesToDraw[j].second));
 		game->window->draw(treeSprite);
 	}
 
 	// set base color to player sprite
 	playerSprite->setColor(Color::White);
-
-	return;
-}
-
-void Game::GraphicsManager::drawMinimap(Game* game)
-{
-	/*
-	* function of drawing minimap
-	*
-	*/
-
-	// clear window, set color of background black
-	game->window->clear(Color::Black);
-
-	// get position of player square
-	int playerX = game->playerObject.getPosition().first / SQUARE_SIZE_PIXIL;
-	int playerY = game->playerObject.getPosition().second / SQUARE_SIZE_PIXIL;
-
-	// for all square
-	Sprite* spritePointer = nullptr;
-	for (int i = 0; i < FIELD_SIZE; i++)
-	{
-		for (int j = 0; j < FIELD_SIZE; j++)
-		{
-			// if not opened square
-			if (!game->visionMap[i][j])
-			{
-				// set pointer to invisible sprite
-				spritePointer = &minimapInvisibleSprite;
-			}
-			else
-			{
-				if (game->isVisible(playerX, playerY, j, i))
-				{
-					// if ground -> set pointer to the ground
-					if (game->Field[i][j] == 0)
-					{
-						spritePointer = &minimapActiveGroundSprite;
-					}// if house -> set pointer to the house
-					else if (game->Field[i][j] == -1)
-					{
-						spritePointer = &minimapActiveHouseSprite;
-					}// if tree -> set pointer to the tree
-					else if (game->Field[i][j] == 5)
-					{
-						spritePointer = &minimapActiveTreeSprite;
-					}
-				}
-				else
-				{
-					// if ground -> set pointer to the ground
-					if (game->Field[i][j] == 0)
-					{
-						spritePointer = &minimapInactiveGroundSprite;
-					}// if house -> set pointer to the house
-					else if (game->Field[i][j] == -1)
-					{
-						spritePointer = &minimapInactiveHouseSprite;
-					}// if tree -> set pointer to the tree
-					else if (game->Field[i][j] == 5)
-					{
-						spritePointer = &minimapInactiveTreeSprite;
-					}
-				}
-			}
-
-			// set position
-			spritePointer->setPosition(MINIMAP_DELT_X + j * MINIMAP_SQUARE_SIZE_PIXIL, i * MINIMAP_SQUARE_SIZE_PIXIL);
-
-			// draw
-			game->window->draw(*spritePointer);
-		}
-	}
-
-	// fro all enemys
-	for (int i = 0; i < game->Enemys.size(); i++)
-	{
-		// get cordinates of square
-		int enemyX = game->Enemys[i].getPosition().first / SQUARE_SIZE_PIXIL;
-		int enemyY = game->Enemys[i].getPosition().second / SQUARE_SIZE_PIXIL;
-
-		// if square is not visible
-		if (!game->isVisible(playerX, playerY, enemyX, enemyY))
-		{
-			// go to next enemy
-			continue;
-		}
-
-		// set position
-		minimapEnemySprite.setPosition(MINIMAP_DELT_X + enemyX * MINIMAP_SQUARE_SIZE_PIXIL, enemyY * MINIMAP_SQUARE_SIZE_PIXIL);
-
-		// draw
-		game->window->draw(minimapEnemySprite);
-	}
-
-	// set player sprite position
-	minimapPlayerSprite.setPosition(MINIMAP_DELT_X + playerX * MINIMAP_SQUARE_SIZE_PIXIL, playerY * MINIMAP_SQUARE_SIZE_PIXIL);
-	game->window->draw(minimapPlayerSprite);
 
 	return;
 }

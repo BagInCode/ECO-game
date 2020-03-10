@@ -7,18 +7,20 @@ class Game::GraphicsManager
 public:
 
 	class Interface;
+	class Minimap;
+	class CraftingTable;
 
-	Texture environmentTexture;
-	Sprite groundSprite, storageSprite, bulletSprite,* playerSprite, enemySprite, treeSprite, grenadeSprite[4];
+	Texture environmentTexture, craftingTableTexture;
+	Sprite groundSprite, storageSprite, bulletSprite, *playerSprite, enemySprite, treeSprite, grenadeSprite[4], craftingTableSprite;
 	Sprite playerPistolSprite, playerShotgunSprite, playerRifleSprite, playerMachinGunSprite, playerSniperRifleSprite;
 
-	Texture minimapTexture;
-	Sprite minimapActiveGroundSprite, minimapActiveHouseSprite, minimapActiveTreeSprite, minimapPlayerSprite, minimapEnemySprite;
-	Sprite minimapInvisibleSprite, minimapInactiveGroundSprite, minimapInactiveHouseSprite, minimapInactiveTreeSprite;
+	Font storageFont;
 
-	int isMinimapDrawing;
+	int drawSwitcher;
 
 	Interface* interface;
+	Minimap* minimap;
+	CraftingTable* craftingTable;
 
 
 	GraphicsManager();
@@ -26,9 +28,8 @@ public:
 
 	void update(Game *game, double timer);
 
-	void initComponents();
+	void initComponents(Game* game);
 	bool loadSprites();
 	void draw(Game* game);
 	void drawPicture(Game* game);
-	void drawMinimap(Game* game);
 };

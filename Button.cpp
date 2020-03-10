@@ -15,9 +15,11 @@ Button::Button(float x, float y, float width, float height, Font font, string te
 	this->text.setFillColor(Color::White);
 	this->text.setCharacterSize(12);
 	this->text.setPosition(
-		shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - this->text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height
+		float(shape.getPosition().x + shape.getGlobalBounds().width / 2.0 - this->text.getGlobalBounds().width / 2.0),
+		float(shape.getPosition().y + shape.getGlobalBounds().height / 2.0 - this->text.getGlobalBounds().height)
 		);
+
+	drawBackgroundImage = 0;
 }
 
 Button::~Button()
@@ -29,8 +31,8 @@ void Button::setTextSize(int textSize)
 {
 	text.setCharacterSize(textSize);
 	text.setPosition(
-		shape.getPosition().x + shape.getGlobalBounds().width / 2. - text.getGlobalBounds().width / 2.0,
-		shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height
+		float(shape.getPosition().x + shape.getGlobalBounds().width / 2. - text.getGlobalBounds().width / 2.0),
+		float(shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height)
 		);
 }
 
@@ -81,13 +83,29 @@ void Button::updateState(Vector2f mousePosition)
 	}
 }
 
+void Button::setBackgroundImage(Sprite newBackgroundImage)
+{
+	drawBackgroundImage = 1;
+	backgroundImage = newBackgroundImage;
+	backgroundImage.setPosition(shape.getGlobalBounds().left, shape.getGlobalBounds().top);
+
+	float scaleY = shape.getGlobalBounds().height / backgroundImage.getGlobalBounds().height;
+	float scaleX = shape.getGlobalBounds().width / backgroundImage.getGlobalBounds().width;
+
+	backgroundImage.setScale(scaleX, scaleY);
+}
+
 void Button::draw(RenderWindow& window)
 {
 	window.draw(shape);
+	if (drawBackgroundImage == 1)
+	{
+		window.draw(backgroundImage);
+	}
 	window.draw(text);
 }
 
 void Button::setTextThickness(int thicknessSize)
 {
-	text.setOutlineThickness(thicknessSize);
+	text.setOutlineThickness(float(thicknessSize));
 }

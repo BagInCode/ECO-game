@@ -59,8 +59,8 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 	}
 
 	Vector2f mousePosition(Mouse::getPosition(window));
-	mousePosition.x *= double(WINDOW_LENGTH) / double(window.getSize().x);
-	mousePosition.y *= double(WINDOW_HIGH) / double(window.getSize().y);
+	mousePosition.x *= float(WINDOW_LENGTH) / float(window.getSize().x);
+	mousePosition.y *= float(WINDOW_HIGH) / float(window.getSize().y);
 
 
 	newGame->updateState(mousePosition);

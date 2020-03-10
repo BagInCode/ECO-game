@@ -20,6 +20,8 @@ void Player::create()
 	healthPoints = 100;
 	armor = 100;
 
+	engramPoints = 10; // todo 0 for real game
+
 	return;
 }
 
@@ -114,8 +116,8 @@ pair < double, double > Player::getPositionInWindow()
 	*/
 
 	// set position in centre of window
-	double resultPositionX = (WINDOW_LENGTH - spriteLength) / 2;
-	double resultPositionY = (WINDOW_HIGH - spriteHigh) / 2;
+	double resultPositionX = WINDOW_LENGTH / 2;
+	double resultPositionY = WINDOW_HIGH / 2;
 
 	// if player is to close to left border - move position
 	if (playerPositionX < resultPositionX)
@@ -173,8 +175,8 @@ double Player::rotate(RenderWindow* window)
 	Vector2i mousePosition = Mouse::getPosition(*window);
 
 
-	mousePosition.x = mousePosition.x / double(window->getSize().x) * WINDOW_LENGTH;
-	mousePosition.y = mousePosition.y / double(window->getSize().y) * WINDOW_HIGH;
+	mousePosition.x = int(mousePosition.x / double(window->getSize().x) * WINDOW_LENGTH);
+	mousePosition.y = int(mousePosition.y / double(window->getSize().y) * WINDOW_HIGH);
 
 
 	// if mouse inside the widow change - angle of rotation
@@ -227,6 +229,21 @@ int Player::getHealthPoints()
 	return healthPoints;
 }
 
+int Player::getEngramPoints()
+{
+	return engramPoints;
+}
+
+void Player::addEngramPoints(int value)
+{
+	engramPoints += value;
+}
+
+void Player::decrEngramPoints(int value)
+{
+	engramPoints -= value;
+}
+
 void Player::getDamage(int damage)
 {
 	/*
@@ -249,6 +266,6 @@ void Player::setSize(double length, double high)
 	*        high - new high
 	*/
 
-	spriteLength = length;
-	spriteHigh = high;
+	spriteLength = int(length);
+	spriteHigh = int(high);
 }

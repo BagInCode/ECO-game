@@ -34,6 +34,12 @@ protected:
 	vector < Bullet >* Bullets;
 
 public:
+
+	int reloadEngrams;
+	int accuracyEngrams;
+	int damageEngrams;
+	int gainingAmmoEngrams;
+
 	Weapon();
 	~Weapon();
 
@@ -42,6 +48,8 @@ public:
 	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget);
 	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget);
 	void startReload();
+	double getReloadingTime();
+	double getTimer();
 	int getCurrentAmmo();
 	void setCurrentAmmo(int _currentAmmo);
 	int getCountBullets();

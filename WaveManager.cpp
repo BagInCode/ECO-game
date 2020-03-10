@@ -1,4 +1,5 @@
 #include "WaveManager.h"
+#include "GameGraphicsManagerMinimap.h"
 
 
 Game::WaveManager::WaveManager()
@@ -72,8 +73,8 @@ void Game::WaveManager::createWave(int numberOfWave, Game* game)
 pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 {
 	// get player cell position
-	int playerX = game->playerObject.getPosition().first / FIELD_SIZE;
-	int playerY = game->playerObject.getPosition().second / FIELD_SIZE;
+	double playerX = game->playerObject.getPosition().first / FIELD_SIZE;
+	double playerY = game->playerObject.getPosition().second / FIELD_SIZE;
 
 	// while true
 	for (;;)
@@ -91,7 +92,7 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 		}
 
 		// if this sqaure is visible for player
-		if (game->isVisible(playerX, playerY, x, y))
+		if (game->graphics->minimap->isVisible(int(playerX), int(playerY), x, y))
 		{
 			// continue
 			continue;

@@ -19,7 +19,7 @@ GamePausa::GamePausa()
 	pausaText.setOutlineThickness(5);
 	pausaText.setOutlineColor(Color::Black);
 	pausaText.setCharacterSize(200);
-	pausaText.setPosition(WINDOW_LENGTH / 2.0 - pausaText.getGlobalBounds().width / 2.0, 0);
+	pausaText.setPosition(float(WINDOW_LENGTH / 2.0 - pausaText.getGlobalBounds().width / 2.0), 0.0);
 }
 
 GamePausa::~GamePausa()
@@ -36,8 +36,8 @@ bool GamePausa::process(RenderWindow& window)
 	screenTexture.update(window);
 	screenSprite.setTexture(screenTexture);
 	screenSprite.setScale(
-		double(WINDOW_LENGTH) / screenSprite.getGlobalBounds().width,
-		double(WINDOW_HIGH) / screenSprite.getGlobalBounds().height
+		float(WINDOW_LENGTH) / screenSprite.getGlobalBounds().width,
+		float(WINDOW_HIGH) / screenSprite.getGlobalBounds().height
 		);
 	screenSprite.setPosition(0, 0);
 
@@ -107,8 +107,8 @@ bool GamePausa::switchEvent(Event event, RenderWindow &window)
 	}
 
 	Vector2f mousePosition(Mouse::getPosition(window));
-	mousePosition.x *= double(WINDOW_LENGTH) / double(window.getSize().x);
-	mousePosition.y *= double(WINDOW_HIGH) / double(window.getSize().y);
+	mousePosition.x *= float(WINDOW_LENGTH) / float(window.getSize().x);
+	mousePosition.y *= float(WINDOW_HIGH) / float(window.getSize().y);
 
 	backToMenuButton->updateState(mousePosition);
 	continueGameRutton->updateState(mousePosition);

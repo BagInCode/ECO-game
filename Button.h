@@ -38,6 +38,9 @@ private:
 	Color hoverColor;
 	Color activeColor;
 
+	int drawBackgroundImage;
+	Sprite backgroundImage;
+
 public:
 
 	Button(float x, float y, float width, float height, Font font, string text,
@@ -49,6 +52,8 @@ public:
 	void setTextThickness(int thicknessSize);
 
 	bool isPressed();
+
+	void setBackgroundImage(Sprite newBackgroundImage);
 
 	void updateState(Vector2f mousePosition);
 	void draw(RenderWindow& window);
