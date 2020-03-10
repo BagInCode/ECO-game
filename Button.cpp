@@ -20,6 +20,7 @@ Button::Button(float x, float y, float width, float height, Font font, string te
 		);
 
 	drawBackgroundImage = 0;
+	textSpacing = 0;
 }
 
 Button::~Button()
@@ -32,13 +33,23 @@ void Button::setTextSize(int textSize)
 	text.setCharacterSize(textSize);
 	text.setPosition(
 		float(shape.getPosition().x + shape.getGlobalBounds().width / 2. - text.getGlobalBounds().width / 2.0),
-		float(shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height)
+		float(shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height + textSpacing)
 		);
 }
 
 void Button::setTextColor(Color color)
 {
 	text.setFillColor(color);
+}
+
+void Button::setTextSpacing(int spacing)
+{
+	textSpacing = spacing;
+
+	text.setPosition(
+		float(shape.getPosition().x + shape.getGlobalBounds().width / 2. - text.getGlobalBounds().width / 2.0),
+		float(shape.getPosition().y + shape.getGlobalBounds().height / 2. - text.getGlobalBounds().height + textSpacing)
+		);
 }
 
 bool Button::isPressed()
@@ -108,4 +119,9 @@ void Button::draw(RenderWindow& window)
 void Button::setTextThickness(int thicknessSize)
 {
 	text.setOutlineThickness(float(thicknessSize));
+}
+
+void Button::setTextThicknessColor(Color color)
+{
+	text.setOutlineColor(color);
 }

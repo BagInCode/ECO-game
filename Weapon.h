@@ -54,5 +54,10 @@ public:
 	void setCurrentAmmo(int _currentAmmo);
 	int getCountBullets();
 	void addBullets(int delt);
+	
+	void improveReloading(double multiplayer);
+	void improveAccuracy(double multiplayer);
+	void improveDamage(int add);
+	void improveAmmoLoot();
 };
 

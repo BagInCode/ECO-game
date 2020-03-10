@@ -41,6 +41,8 @@ private:
 	int drawBackgroundImage;
 	Sprite backgroundImage;
 
+	int textSpacing;
+
 public:
 
 	Button(float x, float y, float width, float height, Font font, string text,
@@ -50,6 +52,8 @@ public:
 	void setTextSize(int textSize);
 	void setTextColor(Color color);
 	void setTextThickness(int thicknessSize);
+	void setTextThicknessColor(Color color);
+	void setTextSpacing(int spacing);
 
 	bool isPressed();
 

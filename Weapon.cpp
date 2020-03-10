@@ -219,3 +219,23 @@ void Weapon::addBullets(int delt)
 
 	countBullets += delt;
 }
+
+void Weapon::improveReloading(double multiplayer)
+{
+	reload *= multiplayer;
+}
+
+void Weapon::improveAccuracy(double multiplayer)
+{
+	accuracy *= multiplayer;
+}
+
+void Weapon::improveDamage(int add)
+{
+	damage += add;
+}
+
+void Weapon::improveAmmoLoot()
+{
+
+}

@@ -9,17 +9,24 @@ class Game::GraphicsManager::CraftingTable
 {
 public:
 
-	ProgressBar* reloadProgressBar, *accuracyProgressBar, *damageProgressBar, *gainingAmmoProgressBar;
 	Button* pistolButton, *shotgunButton, *AKButton, *minigunButton, *sniperButton;
+	ProgressBar* reloadProgressBar, *accuracyProgressBar, *damageProgressBar, *gainingAmmoProgressBar;
+	Button* reloadButton, *accuracyButton, *damageButton, *gainingAmmoButton;
+	Button* improveButton;
 
 	Texture weaponTextures;
 	Sprite pistolSprite, shotgunSprite, AKSprite, minigunSprite, sniperSprite, *weaponInconPointer;
+
+	Text engramPointsText;
+
+	int weaponIndex, skillIndex;
 
 	Font * font;
 
 	CraftingTable();
 	~CraftingTable();
 
+	string toString(int val);
 
 	void initComponents(Game* game);
 
