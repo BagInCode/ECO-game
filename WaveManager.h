@@ -12,6 +12,9 @@ public:
 	void createWave(int numberOfWave, Game* game);
 	pair < int, int > randomSpawnPoint(Game* game);
 
+	double getTimeToWave();
+	int getNumberOfWave();
+
 	WaveManager();
 	~WaveManager();
 };

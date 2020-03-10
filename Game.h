@@ -17,7 +17,7 @@
 #include "ShootState.h"
 #include "RunRandomVectorState.h"
 #include "OutOfVisibilityState.h"
-#include "Granade.h"
+#include "Grenade.h"
 
 #include "Constants.db"
 
@@ -50,8 +50,8 @@ private:
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
 
-	int countsGranades = 0;
-	vector < Granade > granades;
+	int countsGrenades = 10;
+	vector < Grenade > grenades;
 
 	GraphicsManager* graphics;
 	EnvironmentManager* environment;

@@ -12,24 +12,26 @@ const int WINDOW_HIGH = 700;
 // ---------------------------- Field Constants -----|
 const int FIELD_SIZE = 100;
 const int SQUARE_SIZE_PIXIL = 100;
-const int COUNT_TREES_IN_SQUARE = 3;
+
+const int BLOCK_SIZE = 20;
+const int COUNT_TREES_IN_BLOCK = 5;
 
 // ---------------------------- Player Sprite Constants -----|
 const int PLAYER_SPRITE_AK_POSITION_TOP = 0;
 const int PLAYER_SPRITE_AK_POSITION_LEFT = 200;
-
+	  
 const int PLAYER_SPRITE_PISTOL_TOP = 85;
 const int PLAYER_SPRITE_PISTOL_LEFT = 200;
-
+	  
 const int PLAYER_SPRITE_HUNTER_TOP = 55;
 const int PLAYER_SPRITE_HUNTER_LEFT = 200;
-
+	  
 const int PLAYER_SPRITE_MINIGUN_TOP = 115;
 const int PLAYER_SPRITE_MINIGUN_LEFT = 200;
-
+	  
 const int PLAYER_SPRITE_SNIPER_TOP = 145;
 const int PLAYER_SPRITE_SNIPER_LEFT = 200;
-
+	  
 const int PLAYER_SNIPER_LENGTH = 50;
 
 const int PLAYER_SPRITE_AK_LENGTH = 40;
@@ -49,73 +51,75 @@ const double TIME_ENEMY_RUN = 1200;
 
 const double TIME_BETWEN_WAVE = 90000;
 
-const double TIME_GRENADE_DALAY = 3000;
+const double TIME_GRENADE_DALAY = 2000;
 
 const double TIME_OF_BULLET_LIFE = 10000;
+
 
 // ------------------------------- Environment Sprite Constants -----|
 const int GROUND_SPRITE_POSITION_TOP = 0;
 const int GROUND_SPRITE_POSITIOM_LEFT = 0;
-
+	  
 const int TREE_SPRITE_POSITION_TOP = 0;
 const int TREE_SPRITE_POSITION_LEFT = 100;
-
+	  
 const int HAUSE_SPRITE_POSITION_TOP = 100;
 const int HAUSE_SPRITE_POSITION_LEFT = 0;
 const int HAUSE_SPRITE_LENGTH = 200;
 const int HAUSE_SPRITE_HIGH = 300;
-
+	  
 const int GRENADE_SPRITE_POSITION_TOP = 180;
 const int GRENADE_SPRITE_POSITION_LEFT = 200;
 const int GRENADE_SPRITE_LENGTH = 10;
 const int GRENADE_SPRITE_HIGH = 10;
-
+	  
 const int FIRST_FIRE_SPRITE_POSITION_TOP = 190;
 const int FIRST_FIRE_SPRITE_POSITION_LEFT = 200;
 const int FIRST_FIRE_SPRITE_LENGTH = 15;
 const int FIRST_FIRE_SPRITE_HIGH = 15;
-
+	  
 const int SECOND_FIRE_SPRITE_POSITION_TOP = 205;
 const int SECOND_FIRE_SPRITE_POSITION_LEFT = 200;
 const int SECOND_FIRE_SPRITE_LENGTH = 20;
 const int SECOND_FIRE_SPRITE_HIGH = 20;
-
+	  
 const int THIRD_FIRE_SPRITE_POSITION_TOP = 225;
 const int THIRD_FIRE_SPRITE_POSITION_LEFT = 200;
 const int THIRD_FIRE_SPRITE_LENGTH = 25;
 const int THIRD_FIRE_SPRITE_HIGH = 25;
 
+
 // ------------------------------- Minimap Constants -----|
 const int MINIMAP_SQUARE_SIZE_PIXIL = 7;
-
+	  
 const int MINIMAP_GROUND_ACTIVE_SPRITE_TOP = 0;
 const int MINIMAP_GROUND_ACTIVE_SPRITE_LEFT = 0;
-
+	  
 const int MINIMAP_GROUND_INACTIVE_SPRITE_TOP = 7;
 const int MINIMAP_GROUND_INACTIVE_SPRITE_LEFT = 0;
-
+	  
 const int MINIMAP_HOUSE_ACTIVE_SPRITE_TOP = 0;
 const int MINIMAP_HOUSE_ACTIVE_SPRITE_LEFT = 7;
-
+	  
 const int MINIMAP_HOUSE_INACTIVE_SPRITE_TOP = 7;
 const int MINIMAP_HOUSE_INACTIVE_SPRITE_LEFT = 7;
-
+	  
 const int MINIMAP_TREE_ACTIVE_SPRITE_TOP = 0;
 const int MINIMAP_TREE_ACTIVE_SPRITE_LEFT = 14;
-
+	  
 const int MINIMAP_TREE_INACTIVE_SPRITE_TOP = 7;
 const int MINIMAP_TREE_INACTIVE_SPRITE_LEFT = 14;
-
+	  
 const int MINIMAP_PLAYER_SPRITE_TOP = 0;
 const int MINIMAP_PLAYER_SPRITE_LEFT = 21;
-
+	  
 const int MINIMAP_ENEMY_SPRITE_TOP = 7;
 const int MINIMAP_ENEMY_SPRITE_LEFT = 21;
-
+	  
 const int MINIMAP_INVISIBLE_SPRITE_TOP = 0;
 const int MINIMAP_INVISIBLE_SPRITE_LEFT = 28;
-
-const float MINIMAP_DELT_X = 300;
+	 
+const int MINIMAP_DELT_X = 300;
 
 const int MAX_VISIBLE_DIST = 12;
 
@@ -127,20 +131,20 @@ const double ENDING_RADIUS = 40;
 
 const int ENEMY_SPRITE_TOP = 30;
 const int ENEMY_SPRITE_LEFT = 200;
-
+	  
 const int ENEMY_SPRITE_LENGTH = 35;
 const int ENEMY_SPRITE_HIGH = 25;
 
 
-// ------------------------------------- Granade Constants -----|
-const double GRANADE_RADIUS = 60;
-const int GRANADE_DMG = 50;
+// ------------------------------------- Grenade Constants -----|
+const double GRENADE_RADIUS = 60;
+const int GRENADE_DMG = 50;
 
 
 // -------------------------------------- Filepath Constants -----|
 #define ROBO_REGULAR_2_FILE_PATH "Fonts/Roboto-Regular2.ttf"
 #define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
-#define ENVIROMENT_TEXTURE_FILE_PATH "Textures\\Enviroment.png"
+#define ENVIRONMENT_TEXTURE_FILE_PATH "Textures\\Environment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
 #define INTERFACE_TEXTURE "Textures/Interface.png"
@@ -158,15 +162,15 @@ const double PISTOL_BULLET_SPEED = 0.7;
 const double PISTOL_ACCURASY = 3 * acos(-1) / 180;
 const int PISTOL_BULLET_PER_SHOOT = 1;
 const int PISTOL_MAX_AMMO = 10;
-const int PISTOL_DMG = 5;
+const int PISTOL_DMG = 10;
 
-const double DOUBLE_RELOAD_TIME = 1500;
-const double DOUBLE_SHOOT_DELAY_TIME = 1000; 
-const double DOUBLE_BULLET_SPEED = 0.5;
-const double DOUBLE_ACCURASY = 10 * acos(-1) / 180;
-const int DOUBLE_BULLET_PER_SHOOT = 5;
-const int DOUBLE_MAX_AMMO = 2;
-const int DOUBLE_DMG = 4;
+const double SHOTGUN_RELOAD_TIME = 4000;
+const double SHOTGUN_SHOOT_DELAY_TIME = 1000; 
+const double SHOTGUN_BULLET_SPEED = 0.5;
+const double SHOTGUN_ACCURASY = 10 * acos(-1) / 180;
+const int SHOTGUN_BULLET_PER_SHOOT = 5;
+const int SHOTGUN_MAX_AMMO = 2;
+const int SHOTGUN_DMG = 20;
 
 const double AK_RELOAD_TIME = 4000;
 const double AK_SHOOT_DELAY_TIME = 100; 
@@ -174,7 +178,7 @@ const double AK_BULLET_SPEED = 1;
 const double AK_ACCURASY = 3 * acos(-1) / 180;
 const int AK_BULLET_PER_SHOOT = 1;
 const int AK_MAX_AMMO = 30;
-const int AK_DMG = 10;
+const int AK_DMG = 20;
 
 const double MINIGUN_RELOAD_TIME = 6000;
 const double MINIGUN_SHOOT_DELAY_TIME = 60; 
@@ -182,7 +186,7 @@ const double MINIGUN_BULLET_SPEED = 1;
 const double MINIGUN_ACCURASY = 3 * acos(-1) / 180;
 const int MINIGUN_BULLET_PER_SHOOT = 1;
 const int MINIGUN_MAX_AMMO = 100;
-const int MINIGUN_DMG = 10;
+const int MINIGUN_DMG = 20;
 
 const double SNIPER_RELOAD_TIME = 4000;
 const double SNIPER_SHOOT_DELAY_TIME = 1000; 
@@ -196,31 +200,31 @@ const int SNIPER_DMG = 50;
 // ---------------------------------- Interface Sprite Constants -----|
 const int PISTOL_INTERFACE_POSITION_TOP = 0;
 const int PISTOL_INTERFACE_POSITION_LEFT = 0;
-
-const int DOUBLE_INTERFACE_POSITION_TOP = 40;
-const int DOUBLE_INTERFACE_POSITION_LEFT = 0;
-
+	  
+const int SHOTGUN_INTERFACE_POSITION_TOP = 40;
+const int SHOTGUN_INTERFACE_POSITION_LEFT = 0;
+	  
 const int AK_INTERFACE_POSITION_TOP = 80;
 const int AK_INTERFACE_POSITION_LEFT = 0;
-
+	  
 const int MINIGUN_INTERFACE_POSITION_TOP = 120;
 const int MINIGUN_INTERFACE_POSITION_LEFT = 0;
-
+	  
 const int SNIPER_INTERFACE_POSITION_TOP = 160;
 const int SNIPER_INTERFACE_POSITION_LEFT = 0;
-
+	  
 const int INTERFACE_WEAPON_LENGTH = 135;
 const int INTERFACE_WEAPON_HIGH = 40;
-
+	  
 const int HP_INTERFACE_TOP = 200;
 const int HP_INTERFACE_LEFT = 0;
-
+	  
 const int ARMOR_INTERFACE_TOP = 200;
 const int ARMOR_INTERFACE_LEFT = 45;
-
+	  
 const int GRENADE_INTERFACE_TOP = 200;
 const int GRENADE_INTERFACE_LEFT = 90;
-
+	  
 const int INTERFACE_SPRITE_LENGTH = 45;
 const int INTERFACE_SPRITE_HIGH = 45;
 

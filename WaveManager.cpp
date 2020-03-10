@@ -102,3 +102,13 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 		return{ x, y };
 	}
 }
+
+double Game::WaveManager::getTimeToWave()
+{
+	return TIME_BETWEN_WAVE - timer;
+}
+
+int Game::WaveManager::getNumberOfWave()
+{
+	return numberOfWave;
+}

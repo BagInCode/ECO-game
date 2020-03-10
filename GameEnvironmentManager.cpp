@@ -36,43 +36,43 @@ void Game::EnvironmentManager::fieldGeneration()
 
 	int storageIndex = 0;
 	// divide all fieald on squares 10x10 and random in each square independly
-	for (int i = 0; i < FIELD_SIZE / 10; i++)
+	for (int i = 0; i < FIELD_SIZE / BLOCK_SIZE; i++)
 	{
-		for (int j = 0; j < FIELD_SIZE / 10; j++)
+		for (int j = 0; j < FIELD_SIZE / BLOCK_SIZE; j++)
 		{
 			// random position of house
-			x = rand() % 7;
-			y = rand() % 7;
+			x = rand() % (BLOCK_SIZE-3);
+			y = rand() % (BLOCK_SIZE-3);
 
-			storageNumber[i * 10 + y][j * 10 + x] = storageIndex;
+			storageNumber[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x] = storageIndex;
 			storageIndex++;
-			storages.push_back(new Game::EnvironmentManager::Storage((j * 10 + x) * SQUARE_SIZE_PIXIL, (j * 10 + x + 2) * SQUARE_SIZE_PIXIL,
-				(i * 10 + y) * SQUARE_SIZE_PIXIL, (i * 10 + y + 3) * SQUARE_SIZE_PIXIL));
+			storages.push_back(new Game::EnvironmentManager::Storage((j * BLOCK_SIZE + x) * SQUARE_SIZE_PIXIL, (j * BLOCK_SIZE + x + 2) * SQUARE_SIZE_PIXIL,
+				(i * BLOCK_SIZE + y) * SQUARE_SIZE_PIXIL, (i * BLOCK_SIZE + y + 3) * SQUARE_SIZE_PIXIL));
 
 			// in other square of house set pointer, that they are not empty
-			field[i * 10 + y][j * 10 + x] = -1;
-			field[i * 10 + y + 1][j * 10 + x] = -1;
-			field[i * 10 + y + 2][j * 10 + x] = -1;
-			field[i * 10 + y][j * 10 + x + 1] = -1;
-			field[i * 10 + y + 1][j * 10 + x + 1] = -1;
-			field[i * 10 + y + 2][j * 10 + x + 1] = -1;
+			field[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x] = -1;
+			field[i * BLOCK_SIZE + y + 1][j * BLOCK_SIZE + x] = -1;
+			field[i * BLOCK_SIZE + y + 2][j * BLOCK_SIZE + x] = -1;
+			field[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x + 1] = -1;
+			field[i * BLOCK_SIZE + y + 1][j * BLOCK_SIZE + x + 1] = -1;
+			field[i * BLOCK_SIZE + y + 2][j * BLOCK_SIZE + x + 1] = -1;
 
 
 			// generate tree
-			for (int k = 0; k < COUNT_TREES_IN_SQUARE; k++)
+			for (int k = 0; k < COUNT_TREES_IN_BLOCK; k++)
 			{
 				// generete while not get empty square
 				while (1)
 				{
 					// random position
-					x = rand() % 10;
-					y = rand() % 10;
+					x = rand() % BLOCK_SIZE;
+					y = rand() % BLOCK_SIZE;
 
 					// if square is empty
-					if (field[i * 10 + x][j * 10 + y] == 0)
+					if (field[i * BLOCK_SIZE + x][j * BLOCK_SIZE + y] == 0)
 					{
 						// set tree in this square
-						field[i * 10 + x][j * 10 + y] = 5;
+						field[i * BLOCK_SIZE + x][j * BLOCK_SIZE + y] = 5;
 
 						//stop generating
 						break;

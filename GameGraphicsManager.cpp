@@ -58,7 +58,7 @@ bool Game::GraphicsManager::loadSprites()
 	*/
 
 	// if texture does not load 
-	if (!environmentTexture.loadFromFile(ENVIROMENT_TEXTURE_FILE_PATH))
+	if (!environmentTexture.loadFromFile(ENVIRONMENT_TEXTURE_FILE_PATH))
 	{
 		// loading failed
 		return 0;
@@ -143,13 +143,13 @@ bool Game::GraphicsManager::loadSprites()
 	return 1;
 }
 
-void Game::GraphicsManager::draw(Game* game)
+void Game::GraphicsManager::draw(Game* game, WaveManager* waveManager)
 {
 	if (drawSwitcher == 0)
 	{
 		// draw game scene
 		drawPicture(game);
-		interface->draw(game);
+		interface->draw(game, waveManager);
 	}
 	else if (drawSwitcher == 1)
 	{
@@ -198,7 +198,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	vector<pair<double, double> > bulletsToDraw;
 	vector<pair<double, double> > enemiesToDraw;
 	vector<pair<double, double> > treesToDraw;
-	vector<pair<double, double> > granadesToDraw;
+	vector<pair<double, double> > grenadesToDraw;
 
 	for (int i = Up; i <= Down; i++)
 	{
@@ -270,17 +270,17 @@ void Game::GraphicsManager::drawPicture(Game* game)
 		enemiesToDraw.push_back(position);
 	}
 
-	// add granades 
-	for (int i = 0; i < int(game->granades.size()); i++)
+	// add grenades 
+	for (int i = 0; i < int(game->grenades.size()); i++)
 	{
 		pair < double, double > position;
 		
 		// calculate position in window
-		position.first = playerPositionX + game->granades[i].getPosition().first - playerGlobalPositionX;
-		position.second = playerPositionY + game->granades[i].getPosition().second - playerGlobalPositionY;
+		position.first = playerPositionX + game->grenades[i].getPosition().first - playerGlobalPositionX;
+		position.second = playerPositionY + game->grenades[i].getPosition().second - playerGlobalPositionY;
 
 		// add to order
-		granadesToDraw.push_back(position);
+		grenadesToDraw.push_back(position);
 	}
 
 
@@ -314,17 +314,17 @@ void Game::GraphicsManager::drawPicture(Game* game)
 		game->window->draw(bulletSprite);
 	}
 
-	// draw granades
-	for (int j = 0; j < int(granadesToDraw.size()); j++)
+	// draw grenades
+	for (int j = 0; j < int(grenadesToDraw.size()); j++)
 	{
-		int pictureNumber = game->granades[j].getNumberOfPicture();
+		int pictureNumber = game->grenades[j].getNumberOfPicture();
 		
 		if (pictureNumber > 3)
 		{
 			continue;
 		}
 
-		grenadeSprite[pictureNumber].setPosition(float(granadesToDraw[j].first), float(granadesToDraw[j].second));
+		grenadeSprite[pictureNumber].setPosition(float(grenadesToDraw[j].first), float(grenadesToDraw[j].second));
 		game->window->draw(grenadeSprite[pictureNumber]);
 	}
 

@@ -65,7 +65,7 @@ void Game::GraphicsManager::CraftingTable::initComponents(Game* game)
 	pistolButton->setBackgroundImage(pistolSprite);
 
 	shotgunSprite.setTexture(weaponTextures);
-	shotgunSprite.setTextureRect(IntRect(DOUBLE_INTERFACE_POSITION_LEFT, DOUBLE_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+	shotgunSprite.setTextureRect(IntRect(SHOTGUN_INTERFACE_POSITION_LEFT, SHOTGUN_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 	shotgunButton->setBackgroundImage(shotgunSprite);
 
 	AKSprite.setTexture(weaponTextures);

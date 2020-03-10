@@ -39,6 +39,12 @@ void Game::GraphicsManager::Interface::initComponents()
 	actionText.setOutlineThickness(2);
 	actionText.setOutlineColor(Color::White);
 
+	waveText.setFont(font);
+	waveText.setCharacterSize(30);
+	waveText.setFillColor(Color::Black);
+	waveText.setOutlineThickness(2);
+	waveText.setOutlineColor(Color::White);
+
 	bulletCount.setFont(font);
 	bulletCount.setCharacterSize(60);
 	bulletCount.setFillColor(Color::Black);
@@ -78,7 +84,7 @@ void Game::GraphicsManager::Interface::initComponents()
 	pistolSprite.setTextureRect(IntRect(PISTOL_INTERFACE_POSITION_LEFT, PISTOL_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
 	shotgunSprite.setTexture(InterfaceTexture);
-	shotgunSprite.setTextureRect(IntRect(DOUBLE_INTERFACE_POSITION_LEFT, DOUBLE_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
+	shotgunSprite.setTextureRect(IntRect(SHOTGUN_INTERFACE_POSITION_LEFT, SHOTGUN_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
 
 	AKSprite.setTexture(InterfaceTexture);
 	AKSprite.setTextureRect(IntRect(AK_INTERFACE_POSITION_LEFT, AK_INTERFACE_POSITION_TOP, INTERFACE_WEAPON_LENGTH, INTERFACE_WEAPON_HIGH));
@@ -153,7 +159,7 @@ void Game::GraphicsManager::Interface::update(Game* game, double timer)
 	}
 }
 
-void Game::GraphicsManager::Interface::draw(Game* game)
+void Game::GraphicsManager::Interface::draw(Game* game, WaveManager* waveManager)
 {
 	int actionXPosition = 5;
 	for (auto action : actions)
@@ -196,11 +202,33 @@ void Game::GraphicsManager::Interface::draw(Game* game)
 	game->window->draw(*weaponInconPointer);
 	// todo if reloading
 
-	grenadeSprite.setPosition(WINDOW_LENGTH - INTERFACE_SPRITE_LENGTH - 10, WINDOW_HIGH - 130 - INTERFACE_SPRITE_HIGH);
+	grenadeSprite.setPosition(950, 645);
 	game->window->draw(grenadeSprite);
-	grenadeText.setString("5"); // todo
-	grenadeText.setPosition(WINDOW_LENGTH - INTERFACE_SPRITE_LENGTH - 15 - grenadeText.getGlobalBounds().width, WINDOW_HIGH - 147 - INTERFACE_SPRITE_HIGH);
+	grenadeText.setString(toString(game->countsGrenades)); // todo
+	grenadeText.setPosition(grenadeSprite.getPosition().x -10 - grenadeText.getGlobalBounds().width, 630);
 	game->window->draw(grenadeText);
 
 	reloadingProgressBar->draw(game->window);
+
+	string waveString = "Wave #" + toString(waveManager->getNumberOfWave()) + ": ";
+	
+	int Seconds = int(waveManager->getTimeToWave());
+	Seconds /= 1000;
+	
+	int Minutes = Seconds / 60;
+	Seconds %= 60;
+
+	if (Seconds > 9)
+	{
+		waveString = waveString + toString(Minutes) + ":" + toString(Seconds);
+	}
+	else
+	{
+		waveString = waveString + toString(Minutes) + ":0" + toString(Seconds);
+	}
+
+	waveText.setString(waveString);
+	waveText.setPosition(1080, 5);
+
+	game->window->draw(waveText);
 }

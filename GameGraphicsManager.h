@@ -30,6 +30,6 @@ public:
 
 	void initComponents(Game* game);
 	bool loadSprites();
-	void draw(Game* game);
+	void draw(Game* game, WaveManager* waveManager);
 	void drawPicture(Game* game);
 };

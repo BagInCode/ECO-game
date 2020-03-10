@@ -1,5 +1,6 @@
 #include "GameGraphicsManager.h"
 #include "ProgressBar.h"
+#include "WaveManager.h"
 
 class Game::GraphicsManager::Interface
 {
@@ -12,7 +13,7 @@ public:
 	Texture InterfaceTexture;
 	Sprite HPSprite, armorSprite, grenadeSprite;
 	Sprite pistolSprite, shotgunSprite, AKSprite, minigunSprite, sniperSprite, *weaponInconPointer;
-	Text HPText, armorText, grenadeText;
+	Text HPText, armorText, grenadeText, waveText;
 
 	Font font;
 
@@ -32,5 +33,5 @@ public:
 	void addAction(string text, double duration);
 
 	void update(Game* game, double timer);
-	void draw(Game* game);
+	void draw(Game* game, WaveManager* waveManager);
 };

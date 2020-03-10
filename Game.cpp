@@ -45,7 +45,7 @@ bool Game::initComponents()
 	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets);
 
 	// init weapon hunter double
-	allPlayerWeapon[1].create(DOUBLE_RELOAD_TIME, DOUBLE_SHOOT_DELAY_TIME, DOUBLE_BULLET_SPEED, DOUBLE_ACCURASY, DOUBLE_BULLET_PER_SHOOT, DOUBLE_MAX_AMMO, DOUBLE_DMG, &Bullets);
+	allPlayerWeapon[1].create(SHOTGUN_RELOAD_TIME, SHOTGUN_SHOOT_DELAY_TIME, SHOTGUN_BULLET_SPEED, SHOTGUN_ACCURASY, SHOTGUN_BULLET_PER_SHOOT, SHOTGUN_MAX_AMMO, SHOTGUN_DMG, &Bullets);
 
 	// init weapon AK
 	allPlayerWeapon[2].create(AK_RELOAD_TIME, AK_SHOOT_DELAY_TIME, AK_BULLET_SPEED, AK_ACCURASY, AK_BULLET_PER_SHOOT, AK_MAX_AMMO, AK_DMG, &Bullets);
@@ -124,7 +124,7 @@ void Game::checkTime()
 		checkEnemyAlive();
 
 		// draw
-		graphics->draw(this);
+		graphics->draw(this, waves);
 
 		// null timer
 		timer = 0;
@@ -139,9 +139,9 @@ void Game::moveObjects()
 	* function of moving objects
 	*/
 
-	for (int i = 0; i < int(granades.size()); i++)
+	for (int i = 0; i < int(grenades.size()); i++)
 	{
-		granades[i].move(timer);
+		grenades[i].move(timer);
 	}
 
 	// move player
@@ -395,10 +395,17 @@ void Game::switchEvent(Event event)
 
 		if (event.key.code == Keyboard::G)
 		{
-			Granade newGranade;
+			if (countsGrenades == 0)
+			{
+				return;
+			}
+
+			countsGrenades--;
+
+			Grenade newGranade;
 			newGranade.create(playerObject, window);
 
-			granades.push_back(newGranade);
+			grenades.push_back(newGranade);
 		}
 	}
 
@@ -993,34 +1000,34 @@ void Game::checkEnemyAlive()
 
 void Game::checkGranades()
 {
-	vector < Granade > newGranades;
+	vector < Grenade > newGrenades;
 
-	for (int i = 0; i < int(granades.size()); i++)
+	for (int i = 0; i < int(grenades.size()); i++)
 	{
-		if (granades[i].timeToDelete())
+		if (grenades[i].timeToDelete())
 		{
 			continue;
 		}
 
-		newGranades.push_back(granades[i]);
+		newGrenades.push_back(grenades[i]);
 	}
 
-	granades = newGranades;
+	grenades = newGrenades;
 
-	for (int i = 0; i < int(granades.size()); i++)
+	for (int i = 0; i < int(grenades.size()); i++)
 	{
-		if (granades[i].isDetonate())
+		if (grenades[i].isDetonate())
 		{
 			for (int j = 0; j < int(Enemys.size()); j++)
 			{
-				double deltX = Enemys[j].getPosition().first - granades[i].getPosition().first;
-				double deltY = Enemys[j].getPosition().second - granades[i].getPosition().second;
+				double deltX = Enemys[j].getPosition().first - grenades[i].getPosition().first;
+				double deltY = Enemys[j].getPosition().second - grenades[i].getPosition().second;
 
 				double len = sqrt(deltX*deltX + deltY*deltY);
 
-				if (len < GRANADE_RADIUS)
+				if (len < GRENADE_RADIUS)
 				{
-					Enemys[j].getDamage(GRANADE_DMG);
+					Enemys[j].getDamage(GRENADE_DMG);
 				}
 			}
 		}
