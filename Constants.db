@@ -50,7 +50,7 @@ const double TIME_ENEMY_STAY = 600;
 const double TIME_ENEMY_RUN = 1200;
 
 const double TIME_BASE_BETWEEN_WAVE = 60000;
-const double TIME_DIFF_BETWEEN_WAVE = 7500;
+const double TIME_DIFF_BETWEEN_WAVE = 3000;
 
 const double TIME_GRENADE_DALAY = 2000;
 
