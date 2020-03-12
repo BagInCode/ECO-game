@@ -195,7 +195,7 @@ const double SNIPER_BULLET_SPEED = 1.5;
 const double SNIPER_ACCURASY = 0.8 * acos(-1) / 180;
 const int SNIPER_BULLET_PER_SHOOT = 1;
 const int SNIPER_MAX_AMMO = 10;
-const int SNIPER_DMG = 50;
+const int SNIPER_DMG = 75;
 
 
 // ---------------------------------- Interface Sprite Constants -----|
