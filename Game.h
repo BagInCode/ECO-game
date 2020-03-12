@@ -7,6 +7,8 @@
 #include <math.h>
 #include <cmath>
 #include <vector>
+#include <random>
+#include <time.h>
 
 #include "Player.h"
 #include "Bullet.h"
@@ -29,6 +31,8 @@ private:
 	class EnvironmentManager;
 	class WaveManager;
 
+	mt19937 rnd;
+
 	RenderWindow* window;
 
 	int gameOver;
@@ -50,7 +54,7 @@ private:
 	vector < Enemy > Enemys;
 	vector < State* > EnemysState;
 
-	int countsGrenades = 10;
+	int countsGrenades;
 	vector < Grenade > grenades;
 
 	GraphicsManager* graphics;

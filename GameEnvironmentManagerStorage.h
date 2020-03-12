@@ -20,6 +20,7 @@ class Game::EnvironmentManager::Storage
 	Text textName, textInfo, textPressKey;
 
 	string doubleToString(double a);
+	string intToString(int val);
 
 public:
 

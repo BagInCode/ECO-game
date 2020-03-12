@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <random>
 
 #include "Player.h"
 #include "Bullet.h"
@@ -35,6 +36,8 @@ protected:
 
 public:
 
+	mt19937* rnd;
+
 	int reloadEngrams;
 	int accuracyEngrams;
 	int damageEngrams;
@@ -44,7 +47,8 @@ public:
 	~Weapon();
 
 	void increaseTimer(double _timer);
-	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, vector < Bullet >* _bullets);
+	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, 
+		int _maxAmmo, int _damage, vector < Bullet >* _bullets, mt19937* _rnd);
 	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget);
 	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget);
 	void startReload();

@@ -43,6 +43,7 @@ public:
 	double getAngle();
 	void setPosition(double newX, double newY);
 	int getHealthPoints();
+	void addHealthPoints(int value);
 	int getEngramPoints();
 	void addEngramPoints(int value);
 	void decrEngramPoints(int value);

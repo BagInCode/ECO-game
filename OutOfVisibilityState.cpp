@@ -80,7 +80,7 @@ int OutOfVisibilityState::goNext(Enemy& enemy, Player& player)
 }
 
 
-void OutOfVisibilityState::randomizeState()
+void OutOfVisibilityState::randomizeState(mt19937* rnd)
 {
 
 }

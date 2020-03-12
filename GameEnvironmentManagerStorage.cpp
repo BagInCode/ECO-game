@@ -1,4 +1,5 @@
 #include "GameEnvironmentManagerStorage.h"
+#include "GameGraphicsManagerInterface.h"
 
 Game::EnvironmentManager::Storage::Storage(double x1, double x2, double y1, double y2) : x1(x1), x2(x2), y1(y1), y2(y2)
 {
@@ -42,6 +43,26 @@ string Game::EnvironmentManager::Storage::doubleToString(double a)
 	{
 		return "0";
 	}
+
+	while (val > 0)
+	{
+		res += char(val % 10 + '0');
+		val /= 10;
+	}
+
+	reverse(res.begin(), res.end());
+
+	return res;
+}
+
+string Game::EnvironmentManager::Storage::intToString(int val)
+{
+	if (val == 0)
+	{
+		return "0";
+	}
+
+	string res;
 
 	while (val > 0)
 	{
@@ -114,35 +135,67 @@ void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, do
 	lootable = 0;
 	remainingTime = 300.0;
 
-	// todo loting process
-	int a = rand() % 7;
-	
-	/*
-	if (a == 0)
+	int weaponAmmo = game->rnd() % 100, firstAidKit = game->rnd() % 3, grenades = min(int(game->rnd() % 2 + 1), 10 - game->countsGrenades), bullets;
+
+	if (weaponAmmo < 5)
 	{
-		return{ 0, 10 };
+		bullets = PISTOL_MAX_AMMO / 2 * (2 + game->allPlayerWeapon[0].gainingAmmoEngrams);
+		game->allPlayerWeapon[0].addBullets(bullets);
+		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for pistol", 5);
 	}
-	else if (a == 1)
+	else if (weaponAmmo < 20)
 	{
-		return{ 1, 2 };
+		bullets = SHOTGUN_MAX_AMMO / 2 * (6 + game->allPlayerWeapon[1].gainingAmmoEngrams);
+		game->allPlayerWeapon[1].addBullets(bullets);
+		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for shotgun", 5);
 	}
-	else if (a == 2)
+	else if (weaponAmmo < 60)
 	{
-		return{ 2, 30 };
+		bullets = AK_MAX_AMMO / 2 * (2 + game->allPlayerWeapon[2].gainingAmmoEngrams);
+		game->allPlayerWeapon[2].addBullets(bullets);
+		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for AK", 5);
 	}
-	else if (a == 3)
+	else if (weaponAmmo < 80)
 	{
-		return{ 3, 100 };
+		bullets = MINIGUN_MAX_AMMO / 2 * (1 + game->allPlayerWeapon[3].gainingAmmoEngrams);
+		game->allPlayerWeapon[3].addBullets(bullets);
+		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for minigun", 5);
 	}
-	else if (a == 4)
+	else if (weaponAmmo < 100)
 	{
-		return{ 4, 5 };
+		bullets = SNIPER_MAX_AMMO / 2 * (2 + game->allPlayerWeapon[4].gainingAmmoEngrams);
+		game->allPlayerWeapon[4].addBullets(bullets);
+		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for sniper rifle", 5);
 	}
-	else
+
+	if (firstAidKit == 0 || game->playerObject.getHealthPoints() == 100)
 	{
-		return{ -1, 0 };
+
 	}
-	*/
+	else if (firstAidKit == 1)
+	{
+		game->playerObject.addHealthPoints(10);
+		game->graphics->interface->addAction("find small first aid kit", 5);
+	}
+	else if (firstAidKit == 2)
+	{
+		game->playerObject.addHealthPoints(20);
+		game->graphics->interface->addAction("find big first aid kit", 5);
+	}
+
+	if (grenades != 0)
+	{
+		game->countsGrenades += grenades;
+
+		if (grenades == 1)
+		{
+			game->graphics->interface->addAction("find 1 grenade", 5);
+		}
+		else
+		{
+			game->graphics->interface->addAction("find " + intToString(grenades) + " grenades", 5);
+		}
+	}
 }
 
 void Game::EnvironmentManager::Storage::draw(RenderWindow* window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite)

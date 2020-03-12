@@ -49,7 +49,8 @@ const double TIME_FOR_ACTION = 20;
 const double TIME_ENEMY_STAY = 600;
 const double TIME_ENEMY_RUN = 1200;
 
-const double TIME_BETWEN_WAVE = 90000;
+const double TIME_BASE_BETWEEN_WAVE = 60000;
+const double TIME_DIFF_BETWEEN_WAVE = 7500;
 
 const double TIME_GRENADE_DALAY = 2000;
 
@@ -162,20 +163,20 @@ const double PISTOL_BULLET_SPEED = 0.7;
 const double PISTOL_ACCURASY = 3 * acos(-1) / 180;
 const int PISTOL_BULLET_PER_SHOOT = 1;
 const int PISTOL_MAX_AMMO = 10;
-const int PISTOL_DMG = 10;
+const int PISTOL_DMG = 25;
 
-const double SHOTGUN_RELOAD_TIME = 4000;
+const double SHOTGUN_RELOAD_TIME = 2000;
 const double SHOTGUN_SHOOT_DELAY_TIME = 1000; 
 const double SHOTGUN_BULLET_SPEED = 0.5;
 const double SHOTGUN_ACCURASY = 10 * acos(-1) / 180;
-const int SHOTGUN_BULLET_PER_SHOOT = 5;
+const int SHOTGUN_BULLET_PER_SHOOT = 10;
 const int SHOTGUN_MAX_AMMO = 2;
-const int SHOTGUN_DMG = 20;
+const int SHOTGUN_DMG = 15;
 
 const double AK_RELOAD_TIME = 4000;
 const double AK_SHOOT_DELAY_TIME = 100; 
 const double AK_BULLET_SPEED = 1;
-const double AK_ACCURASY = 3 * acos(-1) / 180;
+const double AK_ACCURASY = 1.6 * acos(-1) / 180;
 const int AK_BULLET_PER_SHOOT = 1;
 const int AK_MAX_AMMO = 30;
 const int AK_DMG = 20;
@@ -186,12 +187,12 @@ const double MINIGUN_BULLET_SPEED = 1;
 const double MINIGUN_ACCURASY = 3 * acos(-1) / 180;
 const int MINIGUN_BULLET_PER_SHOOT = 1;
 const int MINIGUN_MAX_AMMO = 100;
-const int MINIGUN_DMG = 20;
+const int MINIGUN_DMG = 15;
 
 const double SNIPER_RELOAD_TIME = 4000;
 const double SNIPER_SHOOT_DELAY_TIME = 1000; 
 const double SNIPER_BULLET_SPEED = 1.5;
-const double SNIPER_ACCURASY = 1 * acos(-1) / 180;
+const double SNIPER_ACCURASY = 0.8 * acos(-1) / 180;
 const int SNIPER_BULLET_PER_SHOOT = 1;
 const int SNIPER_MAX_AMMO = 10;
 const int SNIPER_DMG = 50;

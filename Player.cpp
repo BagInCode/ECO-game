@@ -20,7 +20,7 @@ void Player::create()
 	healthPoints = 100;
 	armor = 100;
 
-	engramPoints = 10; // todo 0 for real game
+	engramPoints = 0;
 
 	return;
 }
@@ -227,6 +227,11 @@ int Player::getHealthPoints()
 	*/
 
 	return healthPoints;
+}
+
+void Player::addHealthPoints(int value)
+{
+	healthPoints = min(healthPoints + value, 100);
 }
 
 int Player::getEngramPoints()

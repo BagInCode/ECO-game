@@ -28,8 +28,8 @@ void Grenade::create(Player& player, RenderWindow* window)
 double Grenade::calculteSpeed(Player& player, RenderWindow* window)
 {
 	Vector2i mousePosition = Mouse::getPosition(*window);
-	mousePosition.x *= double(WINDOW_LENGTH) / double(window->getSize().x);
-	mousePosition.y *= double(WINDOW_HIGH) / double(window->getSize().y);
+	mousePosition.x = int(mousePosition.x * double(WINDOW_LENGTH) / double(window->getSize().x));
+	mousePosition.y = int(mousePosition.y * double(WINDOW_HIGH) / double(window->getSize().y));
 
 
 	pair < double, double > playerPosition = player.getPositionInWindow();

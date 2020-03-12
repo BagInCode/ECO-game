@@ -13,8 +13,8 @@ public:
 
 	vector<Storage*> storages;
 
-	void initComponents();
-	void fieldGeneration();
+	void initComponents(Game* game);
+	void fieldGeneration(Game* game);
 	void update(double timer);
 
 	int isNearCraftingTable(double playerPositionX, double playerPositionY);

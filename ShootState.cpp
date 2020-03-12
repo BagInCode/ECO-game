@@ -58,7 +58,7 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	if (countShoots == maxCountShoots)
 	{
 		// with probability near 25% 
-		if (rand() % 4 == 0)
+		if (enemy.getWeaponPointer()->rnd->operator()() % 4 == 0)
 		{
 			// next state is run on random vector
 			return 3;
@@ -71,12 +71,12 @@ int ShootState::goNext(Enemy& enemy, Player& player)
 	return -1;
 }
 
-void ShootState::randomizeState()
+void ShootState::randomizeState(mt19937* rnd)
 {
 	/*
 	* function of randomizing state
 	*/
 
 	// randomize max time of stay
-	maxCountShoots = COUNT_ENEMY_SHOOT + (rand() % 5 - 2);
+	maxCountShoots = COUNT_ENEMY_SHOOT + (int(rnd->operator()() % 5) - 2);
 }

@@ -2,19 +2,16 @@
 #include "GameEnvironmentManagerStorage.h"
 #include "GameGraphicsManagerInterface.h"
 
-void Game::EnvironmentManager::initComponents()
+void Game::EnvironmentManager::initComponents(Game* game)
 {
-	fieldGeneration();
+	fieldGeneration(game);
 }
 
-void Game::EnvironmentManager::fieldGeneration()
+void Game::EnvironmentManager::fieldGeneration(Game* game)
 {
 	/*
 	* function of generating field
 	*/
-
-	/// make random more randomly
-	srand((unsigned int)time(NULL));
 
 	for (auto& row : field)
 	{
@@ -41,8 +38,8 @@ void Game::EnvironmentManager::fieldGeneration()
 		for (int j = 0; j < FIELD_SIZE / BLOCK_SIZE; j++)
 		{
 			// random position of house
-			x = rand() % (BLOCK_SIZE-3);
-			y = rand() % (BLOCK_SIZE-3);
+			x = game->rnd() % (BLOCK_SIZE-3);
+			y = game->rnd() % (BLOCK_SIZE - 3);
 
 			storageNumber[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x] = storageIndex;
 			storageIndex++;
@@ -65,8 +62,8 @@ void Game::EnvironmentManager::fieldGeneration()
 				while (1)
 				{
 					// random position
-					x = rand() % BLOCK_SIZE;
-					y = rand() % BLOCK_SIZE;
+					x = game->rnd() % BLOCK_SIZE;
+					y = game->rnd() % BLOCK_SIZE;
 
 					// if square is empty
 					if (field[i * BLOCK_SIZE + x][j * BLOCK_SIZE + y] == 0)
@@ -88,8 +85,8 @@ void Game::EnvironmentManager::fieldGeneration()
 		{
 			while (1)
 			{
-				x = rand() % 34;
-				y = rand() % 34;
+				x = game->rnd() % 34;
+				y = game->rnd() % 34;
 
 				if (field[i * 33 + x][j * 33 + y] == 0)
 				{

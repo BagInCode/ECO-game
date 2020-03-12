@@ -72,12 +72,12 @@ int RunState::goNext(Enemy& enemy, Player& player)
 	return -1;
 }
 
-void RunState::randomizeState()
+void RunState::randomizeState(mt19937* rnd)
 {
 	/*
 	* function of randomizing state
 	*/
 
 	// randomize max time of stay
-	maxTimer = TIME_ENEMY_STAY + ((rand() % 501) - 250);
+	maxTimer = TIME_ENEMY_STAY + (int(rnd->operator()() % 501) - 250);
 }

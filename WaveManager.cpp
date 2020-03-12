@@ -24,7 +24,7 @@ void Game::WaveManager::checkTimer(double _timer, Game* game)
 	timer += _timer;
 
 	// if there is time for new wave
-	if (timer > TIME_BETWEN_WAVE)
+	if (timer > TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1))
 	{
 		// null timer
 		timer = 0;
@@ -56,16 +56,19 @@ void Game::WaveManager::createWave(int numberOfWave, Game* game)
 
 		// create enemy weapon
 		Weapon enemyWeapon;
-		enemyWeapon.create(1002, 1000, 1, 4 * acos(-1) / 180, 1, 30, 1, &(game->Bullets));
+		enemyWeapon.create(1002, 1000, 1, 4 * acos(-1) / 180, 1, 30, 1, &(game->Bullets), &(game->rnd));
+		enemyWeapon.addBullets(1000);
 
 		// create enemy
 		Enemy enemy;
-		enemy.create(spawnPoint.first * SQUARE_SIZE_PIXIL + rand() % SQUARE_SIZE_PIXIL, spawnPoint.second * SQUARE_SIZE_PIXIL + rand() % SQUARE_SIZE_PIXIL, enemyWeapon);
+		enemy.create(spawnPoint.first * SQUARE_SIZE_PIXIL + game->rnd() % SQUARE_SIZE_PIXIL, spawnPoint.second * SQUARE_SIZE_PIXIL + game->rnd() % SQUARE_SIZE_PIXIL, enemyWeapon);
 
 		// add enemy to game
 		game->Enemys.push_back(enemy);
 		game->EnemysState.push_back(new OutOfVisibilityState());
 	}
+
+	game->playerObject.addEngramPoints(1);
 
 	return;
 }
@@ -80,8 +83,8 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 	for (;;)
 	{
 		// random position
-		int x = rand() % FIELD_SIZE;
-		int y = rand() % FIELD_SIZE;
+		int x = game->rnd() % FIELD_SIZE;
+		int y = game->rnd() % FIELD_SIZE;
 
 		// if it is too close to borders
 		if (x < 3 || x > FIELD_SIZE - 3 ||
@@ -105,7 +108,7 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 
 double Game::WaveManager::getTimeToWave()
 {
-	return TIME_BETWEN_WAVE - timer;
+	return TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1) - timer;
 }
 
 int Game::WaveManager::getNumberOfWave()

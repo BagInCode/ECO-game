@@ -7,7 +7,7 @@
 #include "GameEnvironmentManagerStorage.h"
 #include "WaveManager.h"
 
-Game::Game()
+Game::Game() : rnd((unsigned int)time(NULL))
 {
 	graphics = new GraphicsManager;
 	environment = new EnvironmentManager;
@@ -36,52 +36,31 @@ bool Game::initComponents()
 	// init player
 	playerObject.create();
 
-	environment->initComponents();
+	environment->initComponents(this);
 
 	// load enviroment sprites
 	graphics->initComponents(this);
 
 	// init weapon pistol
-	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets);
+	allPlayerWeapon[0].create(PISTOL_RELOAD_TIME, PISTOL_SHOOT_DELAY_TIME, PISTOL_BULLET_SPEED, PISTOL_ACCURASY, PISTOL_BULLET_PER_SHOOT, PISTOL_MAX_AMMO, PISTOL_DMG, &Bullets, &rnd);
+	allPlayerWeapon[0].addBullets(4 * PISTOL_MAX_AMMO);
 
 	// init weapon hunter double
-	allPlayerWeapon[1].create(SHOTGUN_RELOAD_TIME, SHOTGUN_SHOOT_DELAY_TIME, SHOTGUN_BULLET_SPEED, SHOTGUN_ACCURASY, SHOTGUN_BULLET_PER_SHOOT, SHOTGUN_MAX_AMMO, SHOTGUN_DMG, &Bullets);
+	allPlayerWeapon[1].create(SHOTGUN_RELOAD_TIME, SHOTGUN_SHOOT_DELAY_TIME, SHOTGUN_BULLET_SPEED, SHOTGUN_ACCURASY, SHOTGUN_BULLET_PER_SHOOT, SHOTGUN_MAX_AMMO, SHOTGUN_DMG, &Bullets, &rnd);
 
 	// init weapon AK
-	allPlayerWeapon[2].create(AK_RELOAD_TIME, AK_SHOOT_DELAY_TIME, AK_BULLET_SPEED, AK_ACCURASY, AK_BULLET_PER_SHOOT, AK_MAX_AMMO, AK_DMG, &Bullets);
+	allPlayerWeapon[2].create(AK_RELOAD_TIME, AK_SHOOT_DELAY_TIME, AK_BULLET_SPEED, AK_ACCURASY, AK_BULLET_PER_SHOOT, AK_MAX_AMMO, AK_DMG, &Bullets, &rnd);
 
 	// init weapon minigan
-	allPlayerWeapon[3].create(MINIGUN_RELOAD_TIME, MINIGUN_SHOOT_DELAY_TIME, MINIGUN_BULLET_SPEED, MINIGUN_ACCURASY, MINIGUN_BULLET_PER_SHOOT, MINIGUN_MAX_AMMO, MINIGUN_DMG, &Bullets);
+	allPlayerWeapon[3].create(MINIGUN_RELOAD_TIME, MINIGUN_SHOOT_DELAY_TIME, MINIGUN_BULLET_SPEED, MINIGUN_ACCURASY, MINIGUN_BULLET_PER_SHOOT, MINIGUN_MAX_AMMO, MINIGUN_DMG, &Bullets, &rnd);
 
 	// init weapon sniper
-	allPlayerWeapon[4].create(SNIPER_RELOAD_TIME, SNIPER_SHOOT_DELAY_TIME, SNIPER_BULLET_SPEED, SNIPER_ACCURASY, SNIPER_BULLET_PER_SHOOT, SNIPER_MAX_AMMO, SNIPER_DMG, &Bullets);
+	allPlayerWeapon[4].create(SNIPER_RELOAD_TIME, SNIPER_SHOOT_DELAY_TIME, SNIPER_BULLET_SPEED, SNIPER_ACCURASY, SNIPER_BULLET_PER_SHOOT, SNIPER_MAX_AMMO, SNIPER_DMG, &Bullets, &rnd);
 
 	// start with pistol
 	currentWeaponPointer = 0;
 	
-	/*
-	Weapon weapon;
-	weapon.create(330, 330, 1, 3 * acos(-1) / 180, 1, 30, 1, &Bullets);
-
-	Enemy enemy;
-
-	enemy.create(1000, 1000, weapon);
-	Enemys.push_back(enemy);
-	enemy.create(1050, 1050, weapon);
-	Enemys.push_back(enemy);
-	enemy.create(1000, 1050, weapon);
-	Enemys.push_back(enemy);
-	enemy.create(1050, 1000, weapon);
-	Enemys.push_back(enemy);
-	enemy.create(1025, 1025, weapon);
-	Enemys.push_back(enemy);
-
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	EnemysState.push_back(new OutOfVisibilityState());
-	*/
+	countsGrenades = 0;
 
 	return 1;
 }
@@ -470,7 +449,10 @@ void Game::switchEvent(Event event)
 		// if LMB
 		if (event.mouseButton.button == Mouse::Left)
 		{
-			playerShooting = 1;
+			if (graphics->drawSwitcher == 0)
+			{
+				playerShooting = 1;
+			}
 		}
 	}
 
@@ -929,7 +911,7 @@ State* Game::chooseNext(int next)
 		result = new RunState();
 
 		// randomize result
-		result->randomizeState();
+		result->randomizeState(&rnd);
 	}
 
 	// if next stay state
@@ -939,7 +921,7 @@ State* Game::chooseNext(int next)
 		result = new StayState();
 
 		// randomize state
-		result->randomizeState();
+		result->randomizeState(&rnd);
 	}
 
 	// if next shoot state
@@ -949,7 +931,7 @@ State* Game::chooseNext(int next)
 		result = new ShootState();
 
 		// randomize state
-		result->randomizeState();
+		result->randomizeState(&rnd);
 	}
 
 	// if next run on random vector state
@@ -959,7 +941,7 @@ State* Game::chooseNext(int next)
 		result = new RunRandomVectorState();
 
 		// randomize state
-		result->randomizeState();
+		result->randomizeState(&rnd);
 	}
 
 	// if next out of visibility state

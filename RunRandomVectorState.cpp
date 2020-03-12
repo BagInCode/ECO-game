@@ -25,8 +25,8 @@ void RunRandomVectorState::doAction(double _timer, Enemy& enemy, Player& player)
 	if (abs(timer) < 1e-3)
 	{
 		// generate random value in range [-1, 1] 
-		double randomValue1 = (rand()%3) - 1;
-		double randomValue2 = (rand()%10) + 1;
+		double randomValue1 = (enemy.getWeaponPointer()->rnd->operator()() % 3) - 1;
+		double randomValue2 = (enemy.getWeaponPointer()->rnd->operator()() % 10) + 1;
 
 		double randomValue = randomValue1 / randomValue2;
 		
@@ -76,12 +76,12 @@ int RunRandomVectorState::goNext(Enemy& enemy, Player& player)
 	return -1;
 }
 
-void RunRandomVectorState::randomizeState()
+void RunRandomVectorState::randomizeState(mt19937* rnd)
 {
 	/*
 	* function of randomizing state
 	*/
 
 	// randomize max time of stay
-	maxTimer = TIME_ENEMY_STAY + ((rand() % 501) - 250);
+	maxTimer = TIME_ENEMY_STAY + (int(rnd->operator()() % 501) - 250);
 }

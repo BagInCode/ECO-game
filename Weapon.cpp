@@ -1,6 +1,5 @@
 #include "Weapon.h"
 
-
 Weapon::Weapon()
 {
 }
@@ -10,7 +9,8 @@ Weapon::~Weapon()
 {
 }
 
-void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, int _maxAmmo, int _damage, vector < Bullet >* _bullets)
+void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, double _accuracy, int _bulletsPerShoot, 
+	int _maxAmmo, int _damage, vector < Bullet >* _bullets, mt19937* _rnd)
 {
 	/*
 	* function of initialiation weapon
@@ -25,6 +25,8 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	*        isPlayerWeapon - true if it is players` weapon
 	*        bullets - vector of bullets
 	*/
+
+	rnd = _rnd;
 
 	reload = _reload;
 	shootDelay = _shootDelay;
@@ -44,9 +46,9 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	timer = 0;
 
 	// at start ammo is full
-	currentAmmo = maxAmmo;
+	currentAmmo = 0;
 
-	countBullets = maxAmmo * 4;
+	countBullets = 0;
 
 	return;
 }
@@ -65,7 +67,7 @@ void Weapon::createBullet(pair < double, double > position, double angle, bool i
 	Bullet newBullet;
 
 	// random value in range [-1..1]
-	double accuracyValue = ((rand() % 101) - 50);
+	double accuracyValue = (int(rnd->operator()() % 101) - 50);
 	accuracyValue /= 50;
 
 	// caculate result bullet angle

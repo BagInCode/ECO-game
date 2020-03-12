@@ -25,6 +25,6 @@ protected:
 public:
 	virtual void doAction(double _timer, Enemy& enemy, Player& player) = 0;
 	virtual int goNext(Enemy& enemy, Player& player) = 0;
-	virtual void randomizeState() = 0;
+	virtual void randomizeState(mt19937* rnd) = 0;
 };
 

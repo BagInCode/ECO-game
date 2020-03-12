@@ -1,5 +1,8 @@
 #include "MainMenu.h"
 
+#include <random>
+#include <time.h>
+
 MainMenu::MainMenu()
 {
 	timer = 0;
