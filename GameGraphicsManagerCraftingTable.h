@@ -31,6 +31,7 @@ public:
 	void initComponents(Game* game);
 
 	void update(Game* game);
+	void improveWeapon(Game* game);
 
 	void open(Game* game);
 	void draw(Game* game);

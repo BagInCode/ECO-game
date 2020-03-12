@@ -254,43 +254,86 @@ void Game::GraphicsManager::CraftingTable::update(Game* game)
 
 			if (improveButton->isPressed() && game->playerObject.getEngramPoints() > 0)
 			{
-				if (skillIndex == 0)
-				{
-					if (game->allPlayerWeapon[weaponIndex].reloadEngrams < 5)
-					{
-						game->allPlayerWeapon[weaponIndex].reloadEngrams++;
-						game->allPlayerWeapon[weaponIndex].improveReloading(0.8);
-						game->playerObject.decrEngramPoints(1);
-					}
-				}
-				else if (skillIndex == 1)
-				{
-					if (game->allPlayerWeapon[weaponIndex].accuracyEngrams < 5)
-					{
-						game->allPlayerWeapon[weaponIndex].accuracyEngrams++;
-						game->allPlayerWeapon[weaponIndex].improveAccuracy(0.8);
-						game->playerObject.decrEngramPoints(1);
-					}
-				}
-				else if (skillIndex == 2)
-				{
-					if (game->allPlayerWeapon[weaponIndex].damageEngrams < 5)
-					{
-						game->allPlayerWeapon[weaponIndex].damageEngrams++;
-						game->allPlayerWeapon[weaponIndex].improveDamage(5);
-						game->playerObject.decrEngramPoints(1);
-					}
-				}
-				else if (skillIndex == 3)
-				{
-					if (game->allPlayerWeapon[weaponIndex].gainingAmmoEngrams < 5)
-					{
-						game->allPlayerWeapon[weaponIndex].gainingAmmoEngrams++;
-						game->allPlayerWeapon[weaponIndex].improveAmmoLoot();
-						game->playerObject.decrEngramPoints(1);
-					}
-				}
+				improveWeapon(game);
 			}
+		}
+	}
+}
+
+void Game::GraphicsManager::CraftingTable::improveWeapon(Game* game)
+{
+	if (skillIndex == 0)
+	{
+		if (game->allPlayerWeapon[weaponIndex].reloadEngrams < 5)
+		{
+			game->allPlayerWeapon[weaponIndex].reloadEngrams++;
+			game->allPlayerWeapon[weaponIndex].improveReloading(0.8);
+			game->playerObject.decrEngramPoints(1);
+		}
+	}
+	else if (skillIndex == 1)
+	{
+		if (game->allPlayerWeapon[weaponIndex].accuracyEngrams < 5)
+		{
+			game->allPlayerWeapon[weaponIndex].accuracyEngrams++;
+			if (weaponIndex == 0)
+			{
+				game->allPlayerWeapon[weaponIndex].improveAccuracy(0.8);
+			}
+			else if (weaponIndex == 1)
+			{
+				game->allPlayerWeapon[weaponIndex].improveAccuracy(0.9);
+			}
+			else if (weaponIndex == 2)
+			{
+				game->allPlayerWeapon[weaponIndex].improveAccuracy(0.8);
+			}
+			else if (weaponIndex == 3)
+			{
+				game->allPlayerWeapon[weaponIndex].improveAccuracy(0.85);
+			}
+			else if (weaponIndex == 4)
+			{
+				game->allPlayerWeapon[weaponIndex].improveAccuracy(0.75);
+			}
+			game->playerObject.decrEngramPoints(1);
+		}
+	}
+	else if (skillIndex == 2)
+	{
+		if (game->allPlayerWeapon[weaponIndex].damageEngrams < 5)
+		{
+			game->allPlayerWeapon[weaponIndex].damageEngrams++;
+			if (weaponIndex == 0)
+			{
+				game->allPlayerWeapon[weaponIndex].improveDamage(5);
+			}
+			else if (weaponIndex == 1)
+			{
+				game->allPlayerWeapon[weaponIndex].improveDamage(2);
+			}
+			else if (weaponIndex == 2)
+			{
+				game->allPlayerWeapon[weaponIndex].improveDamage(3);
+			}
+			else if (weaponIndex == 3)
+			{
+				game->allPlayerWeapon[weaponIndex].improveDamage(2);
+			}
+			else if (weaponIndex == 4)
+			{
+				game->allPlayerWeapon[weaponIndex].improveDamage(5);
+			}
+			game->playerObject.decrEngramPoints(1);
+		}
+	}
+	else if (skillIndex == 3)
+	{
+		if (game->allPlayerWeapon[weaponIndex].gainingAmmoEngrams < 5)
+		{
+			game->allPlayerWeapon[weaponIndex].gainingAmmoEngrams++;
+			game->allPlayerWeapon[weaponIndex].improveAmmoLoot();
+			game->playerObject.decrEngramPoints(1);
 		}
 	}
 }

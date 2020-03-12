@@ -139,13 +139,13 @@ void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, do
 
 	if (weaponAmmo < 5)
 	{
-		bullets = PISTOL_MAX_AMMO / 2 * (2 + game->allPlayerWeapon[0].gainingAmmoEngrams);
+		bullets = PISTOL_MAX_AMMO / 2 * (2 + 2 * game->allPlayerWeapon[0].gainingAmmoEngrams);
 		game->allPlayerWeapon[0].addBullets(bullets);
 		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for pistol", 5);
 	}
 	else if (weaponAmmo < 20)
 	{
-		bullets = SHOTGUN_MAX_AMMO / 2 * (6 + game->allPlayerWeapon[1].gainingAmmoEngrams);
+		bullets = SHOTGUN_MAX_AMMO / 2 * (5 + 2 * game->allPlayerWeapon[1].gainingAmmoEngrams);
 		game->allPlayerWeapon[1].addBullets(bullets);
 		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for shotgun", 5);
 	}
@@ -157,13 +157,13 @@ void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, do
 	}
 	else if (weaponAmmo < 80)
 	{
-		bullets = MINIGUN_MAX_AMMO / 2 * (1 + game->allPlayerWeapon[3].gainingAmmoEngrams);
+		bullets = MINIGUN_MAX_AMMO / 5 * (3 + game->allPlayerWeapon[3].gainingAmmoEngrams);
 		game->allPlayerWeapon[3].addBullets(bullets);
 		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for minigun", 5);
 	}
 	else if (weaponAmmo < 100)
 	{
-		bullets = SNIPER_MAX_AMMO / 2 * (2 + game->allPlayerWeapon[4].gainingAmmoEngrams);
+		bullets = SNIPER_MAX_AMMO / 2 * (2 + 2 * game->allPlayerWeapon[4].gainingAmmoEngrams);
 		game->allPlayerWeapon[4].addBullets(bullets);
 		game->graphics->interface->addAction("find " + intToString(bullets) + " bullets for sniper rifle", 5);
 	}
