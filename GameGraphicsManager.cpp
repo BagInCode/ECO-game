@@ -68,9 +68,13 @@ bool Game::GraphicsManager::loadSprites()
 	groundSprite.setTexture(environmentTexture);
 	groundSprite.setTextureRect(IntRect(0, 0, SQUARE_SIZE_PIXIL, SQUARE_SIZE_PIXIL));
 
-	// choose image of storage
-	storageSprite.setTexture(environmentTexture);
-	storageSprite.setTextureRect(IntRect(HAUSE_SPRITE_POSITION_LEFT, HAUSE_SPRITE_POSITION_TOP, HAUSE_SPRITE_LENGTH, HAUSE_SPRITE_HIGH));
+	// choose image of closed storage
+	storageSprite[0].setTexture(environmentTexture);
+	storageSprite[0].setTextureRect(IntRect(HANGAR_SPRITE_CLOSE_POSITION_LEFT, HANGAR_SPRITE_CLOSE_POSITION_TOP, HANGAR_SPRITE_LENGTH, HANGAR_SPRITE_HIGH));
+
+	// choose image of open storage
+	storageSprite[1].setTexture(environmentTexture);
+	storageSprite[1].setTextureRect(IntRect(HANGAR_SPRITE_OPEN_POSITION_LEFT, HANGAR_SPRITE_OPEN_POSITION_TOP, HANGAR_SPRITE_LENGTH, HANGAR_SPRITE_HIGH));
 
 	// choose image of bullet
 	bulletSprite.setTexture(environmentTexture);
@@ -135,10 +139,9 @@ bool Game::GraphicsManager::loadSprites()
 	grenadeSprite[3].setTextureRect(IntRect(THIRD_FIRE_SPRITE_POSITION_LEFT, THIRD_FIRE_SPRITE_POSITION_TOP, THIRD_FIRE_SPRITE_LENGTH, THIRD_FIRE_SPRITE_HIGH));
 	grenadeSprite[3].setOrigin(THIRD_FIRE_SPRITE_LENGTH / 2, THIRD_FIRE_SPRITE_HIGH / 2);
 
-
-	craftingTableTexture.loadFromFile("Textures\\craftingTable.png");
-	craftingTableSprite.setTexture(craftingTableTexture);
-	craftingTableSprite.setTextureRect(IntRect(0, 0, 100, 100));
+	// choose image of crafting table
+	craftingTableSprite.setTexture(environmentTexture);
+	craftingTableSprite.setTextureRect(IntRect(CRAFTING_TABLE_POSITION_LEFT, CRAFTING_TABLE_POSITION_TOP, CRAFTING_TABLE_LENGTH, CRAFTING_TABLE_HIGH));
 
 	return 1;
 }
@@ -297,7 +300,7 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	for (auto& storageI : storagesToDraw)
 	{
 		game->environment->storages[storageI]->draw(game->window, playerGlobalPositionX - playerPositionX, playerGlobalPositionY - playerPositionY,
-			playerGlobalPositionX, playerGlobalPositionY, storageSprite);
+			playerGlobalPositionX, playerGlobalPositionY, storageSprite[game->environment->storages[storageI]->isLootable()]);
 	}
 
 	// draw craftingTables

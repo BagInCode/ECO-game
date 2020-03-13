@@ -54,11 +54,14 @@ void Game::GraphicsManager::Minimap::loadSprites()
 	inactiveTreeSprite.setTexture(minimapTexture);
 	inactiveTreeSprite.setTextureRect(IntRect(MINIMAP_TREE_INACTIVE_SPRITE_LEFT, MINIMAP_TREE_INACTIVE_SPRITE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
 
-	craftingTableTexture.loadFromFile("Textures\\craftingTableMinimap.png");
-	activeCraftingTableSprite.setTexture(craftingTableTexture);
-	activeCraftingTableSprite.setTextureRect(IntRect(0, 0, 7, 7));
-	inactiveCraftingTableSprite.setTexture(craftingTableTexture);
-	inactiveCraftingTableSprite.setTextureRect(IntRect(0, 7, 7, 7));
+	// set image of active crafting table
+	activeCraftingTableSprite.setTexture(minimapTexture);
+	activeCraftingTableSprite.setTextureRect(IntRect(MINIMAP_CRAFTING_TABLE_ACTIVE_LEFT, MINIMAP_CRAFTING_TABLE_ACTIVE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
+	// set image of inactive crafting table
+	inactiveCraftingTableSprite.setTexture(minimapTexture);
+	inactiveCraftingTableSprite.setTextureRect(IntRect(MINIMAP_CRAFTING_TABLE_INACTIVE_LEFT, MINIMAP_CRAFTING_TABLE_INACTIVE_TOP, MINIMAP_SQUARE_SIZE_PIXIL, MINIMAP_SQUARE_SIZE_PIXIL));
+
 }
 
 void Game::GraphicsManager::Minimap::update(Game* game)

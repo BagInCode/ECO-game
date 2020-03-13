@@ -11,7 +11,7 @@ public:
 	class CraftingTable;
 
 	Texture environmentTexture, craftingTableTexture;
-	Sprite groundSprite, storageSprite, bulletSprite, *playerSprite, enemySprite, treeSprite, grenadeSprite[4], craftingTableSprite;
+	Sprite groundSprite, storageSprite[2], bulletSprite, *playerSprite, enemySprite, treeSprite, grenadeSprite[4], craftingTableSprite;
 	Sprite playerPistolSprite, playerShotgunSprite, playerRifleSprite, playerMachinGunSprite, playerSniperRifleSprite;
 
 	Font storageFont;

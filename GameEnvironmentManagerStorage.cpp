@@ -6,14 +6,14 @@ Game::EnvironmentManager::Storage::Storage(double x1, double x2, double y1, doub
 	lootable = 1;
 	remainingTime = 0.0;
 
-	textName.setString("storage");
+	/*textName.setString("storage");
 	textName.setFillColor(Color::Green);
 	textName.setCharacterSize(50);
 	textName.setOutlineThickness(2);
 
 	textInfo.setFillColor(Color::Green);
 	textInfo.setCharacterSize(30);
-	textInfo.setOutlineThickness(2);
+	textInfo.setOutlineThickness(2);*/
 
 	textPressKey.setString("press E");
 	textPressKey.setFillColor(Color::Green);
@@ -125,6 +125,11 @@ bool Game::EnvironmentManager::Storage::isLootable(double playerX, double player
 	return 0;
 }
 
+bool Game::EnvironmentManager::Storage::isLootable()
+{
+	return lootable;
+}
+
 void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, double playerY)
 {
 	if (!isLootable(playerX, playerY))
@@ -205,20 +210,20 @@ void Game::EnvironmentManager::Storage::draw(RenderWindow* window, double baseX,
 	storageSprite.setPosition(float(startPositionX), float(startPositionY));
 	window->draw(storageSprite);
 
-	textName.setPosition(
+	/*textName.setPosition(
 		float(startPositionX + FIELD_SIZE - textName.getGlobalBounds().width / 2.0),
 		float(startPositionY - textName.getGlobalBounds().height / 2.0 + 100.0)
 		);
-	window->draw(textName);
+	window->draw(textName);*/
 
 	if (lootable)
 	{
-		textInfo.setString("lootable");
+		/*textInfo.setString("lootable");
 		textInfo.setPosition(
 			float(startPositionX + FIELD_SIZE - textInfo.getGlobalBounds().width / 2.0),
 			float(startPositionY - textInfo.getGlobalBounds().height / 2.0 + 150.0)
 			);
-		window->draw(textInfo);
+		window->draw(textInfo);*/
 
 		if (isLootable(playerX, playerY))
 		{
@@ -231,10 +236,10 @@ void Game::EnvironmentManager::Storage::draw(RenderWindow* window, double baseX,
 	}
 	else
 	{
-		textInfo.setString(doubleToString(remainingTime) + "s remains");
+		textInfo.setString(doubleToString(remainingTime) + "s");
 		textInfo.setPosition(
 			float(startPositionX + FIELD_SIZE - textInfo.getGlobalBounds().width / 2.0),
-			float(startPositionY - textInfo.getGlobalBounds().height / 2.0 + 150.0)
+			float(startPositionY - textInfo.getGlobalBounds().height / 2.0 + 200.0)
 			);
 		window->draw(textInfo);
 	}

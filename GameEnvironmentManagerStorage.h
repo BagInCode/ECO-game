@@ -33,6 +33,7 @@ public:
 
 	void update(double timer);
 	bool isLootable(double playerX, double playerY);
+	bool isLootable();
 	void tryToLoot(Game* game, double playerX, double playerY);
 	void draw(RenderWindow* window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite);
 };
