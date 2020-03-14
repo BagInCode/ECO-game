@@ -1,4 +1,6 @@
 #include "IntersectionManager.h"
+#include "GameGraphicsManager.h"
+#include "GameGraphicsManagerInterface.h"
 
 
 Game::IntersectionManager::IntersectionManager()
@@ -376,6 +378,8 @@ bool Game::IntersectionManager::checkIntersection(Bullet& bullet, Game* game)
 			{
 				// decrease player HP
 				game->playerObject.getDamage(bullet.getDamage());
+
+				game->graphics->interface->addAction("Get damage", 3);
 
 				// bulet has intersection
 				return 1;

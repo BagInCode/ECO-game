@@ -114,14 +114,18 @@ void Game::EnvironmentManager::update(double timer)
 
 int Game::EnvironmentManager::isNearCraftingTable(double playerPositionX, double playerPositionY)
 {
-	if (field[int(playerPositionY / SQUARE_SIZE_PIXIL)][int(playerPositionX / SQUARE_SIZE_PIXIL)] == 4)
+	double playerSize = PLAYER_SNIPER_LENGTH;
+
+	for (int i = 0; i < int(craftingTables.size()); i++)
 	{
-		return 1;
+		if (playerPositionX > craftingTables[i].first.first - playerSize - 1 && playerPositionX < craftingTables[i].first.second + playerSize + 1 &&
+			playerPositionY > craftingTables[i].second.first - playerSize - 1 && playerPositionY < craftingTables[i].second.second + playerSize + 1)
+		{
+			return 1;
+		}
 	}
-	else
-	{
-		return 0;
-	}
+
+	return 0;
 }
 
 void Game::EnvironmentManager::checkStoragesAction(Game* game, double playerPositionX, double playerPositionY)

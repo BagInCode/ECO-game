@@ -32,6 +32,9 @@ public:
 	int isDamaged;
 	int armor;
 
+	Player();
+	~Player();
+
 	void create();
 	void move(double timer);
 	void setMovingVector(int newVectorX, int newVectorY);
