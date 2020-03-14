@@ -30,6 +30,7 @@ private:
 	class GraphicsManager;
 	class EnvironmentManager;
 	class WaveManager;
+	class IntersectionManager;
 
 	mt19937 rnd;
 
@@ -60,6 +61,7 @@ private:
 	GraphicsManager* graphics;
 	EnvironmentManager* environment;
 	WaveManager* waves;
+	IntersectionManager* intersectionManager;
 
 	bool isKeyAPressed = 0;
 	bool isKeySPressed = 0;
@@ -71,11 +73,6 @@ private:
 	void moveObjects();
 	void switchEvent(Event event);
 	void doActions();
-	void checkIntersection();
-	void checkIntersectionPlayer();
-	void checkIntersectionEnemy(Enemy & enemy);
-	bool checkIntersectionBullet(Bullet & bullet);
-	bool orientedArea(double x1, double y1, double x2, double y2, double x3, double y3);
 	void checkGameOver();
 	State* chooseNext(int next);
 	void checkEnemyAlive();

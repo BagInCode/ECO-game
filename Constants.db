@@ -14,7 +14,7 @@ const int FIELD_SIZE = 100;
 const int SQUARE_SIZE_PIXIL = 100;
 
 const int BLOCK_SIZE = 20;
-const int COUNT_TREES_IN_BLOCK = 5;
+const int COUNT_TREES_IN_BLOCK = 3;
 
 // ---------------------------- Player Sprite Constants -----|
 const int PLAYER_SPRITE_AK_POSITION_TOP = 0;
@@ -63,6 +63,8 @@ const int GROUND_SPRITE_POSITIOM_LEFT = 0;
 	  
 const int TREE_SPRITE_POSITION_TOP = 0;
 const int TREE_SPRITE_POSITION_LEFT = 100;
+
+const double TREE_RADIUS = 10;
 	  
 const int HANGAR_SPRITE_OPEN_POSITION_TOP = 100;
 const int HANGAR_SPRITE_OPEN_POSITION_LEFT = 0;

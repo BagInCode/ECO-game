@@ -127,7 +127,7 @@ bool Game::EnvironmentManager::Storage::isLootable(double playerX, double player
 
 bool Game::EnvironmentManager::Storage::isLootable()
 {
-	return lootable;
+	return lootable != 0;
 }
 
 void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, double playerY)

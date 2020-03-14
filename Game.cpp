@@ -5,6 +5,7 @@
 #include "GameGraphicsManagerCraftingTable.h"
 #include "GameEnvironmentManager.h"
 #include "GameEnvironmentManagerStorage.h"
+#include "IntersectionManager.h"
 #include "WaveManager.h"
 
 Game::Game() : rnd((unsigned int)time(NULL))
@@ -12,6 +13,7 @@ Game::Game() : rnd((unsigned int)time(NULL))
 	graphics = new GraphicsManager;
 	environment = new EnvironmentManager;
 	waves = new WaveManager;
+	intersectionManager = new IntersectionManager;
 }
 
 Game::~Game()
@@ -19,6 +21,7 @@ Game::~Game()
 	delete graphics;
 	delete environment;
 	delete waves;
+	delete intersectionManager;
 }
 
 bool Game::initComponents()
@@ -94,7 +97,7 @@ void Game::checkTime()
 		moveObjects();
 
 		// check intersections
-		checkIntersection();
+		intersectionManager->checkIntersection(this);
 
 		// check game for ending
 		checkGameOver();
@@ -132,24 +135,11 @@ void Game::moveObjects()
 	// if there are some bullets 
 	if (Bullets.size() > 0)
 	{
-		// create new vector
-		vector < Bullet > newBullets;
-
 		for (int i = 0; i < int(Bullets.size()); i++)
 		{
 			// move bullet
 			Bullets[i].move(timer);
-
-			// if bullet have to stay alife
-			if (!Bullets[i].readyToDelete() && !checkIntersectionBullet(Bullets[i]))
-			{
-				// add to new vector
-				newBullets.push_back(Bullets[i]);
-			}
 		}
-
-		// overwrite old vector
-		Bullets = newBullets;
 	}
 
 	return;
@@ -601,258 +591,6 @@ void Game::doActions()
 	playerObject.isDamaged = max(playerObject.isDamaged - 1, 0);
 
 	return;
-}
-
-void Game::checkIntersection()
-{
-	/*
-	* function of checking intersection
-	*/
-
-	// check player
-	checkIntersectionPlayer();
-
-	// check all enemys
-	for (int i = 0; i < int(Enemys.size()); i++)
-	{
-		checkIntersectionEnemy(Enemys[i]);
-	}
-
-	return;
-}
-
-void Game::checkIntersectionPlayer()
-{
-	/*
-	* function of checking intersection of player with houses
-	*/
-
-	double playerSize = max(playerObject.getSize().first, playerObject.getSize().second);
-
-	// get coordinats of corners of player sprite
-	double playerX1 = playerObject.getPosition().first - playerSize / 2;
-	double playerX2 = playerObject.getPosition().first + playerSize / 2;
-
-	double playerY1 = playerObject.getPosition().second - playerSize / 2;
-	double playerY2 = playerObject.getPosition().second + playerSize / 2;
-
-	// for all objects
-	for (int i = 0; i < int(environment->storages.size()); i++)
-	{
-		// get coordinats of intersection
-		double x1 = max(playerX1, environment->storages[i]->x1);
-		double x2 = min(playerX2, environment->storages[i]->x2);
-
-		double y1 = max(playerY1, environment->storages[i]->y1);
-		double y2 = min(playerY2, environment->storages[i]->y2);
-
-		// if rectangle with negative square
-		if (x1 > x2 || y1 > y2)
-		{
-			// go to the next object
-			continue;
-		}
-
-		// get oriented area
-		bool flag1 = orientedArea(playerObject.getPosition().first, playerObject.getPosition().second, x1, y2, x2, y1);
-		bool flag2 = orientedArea(playerObject.getPosition().first, playerObject.getPosition().second, x1, y1, x2, y2);
-
-		// if moving up or right
-		if (flag1)
-		{
-			// if up
-			if (flag2)
-			{
-				playerObject.setPosition(playerObject.getPosition().first, y2 + playerSize / 2.);
-			}
-			else
-			{
-				playerObject.setPosition(x2 + playerSize / 2., playerObject.getPosition().second);
-			}
-		}
-		else
-		{
-			// if left
-			if (flag2)
-			{
-				playerObject.setPosition(x1 - playerSize / 2., playerObject.getPosition().second);
-			}
-			else
-			{
-				playerObject.setPosition(playerObject.getPosition().first, y1 - playerSize / 2.);
-			}
-		}
-	}
-
-	return;
-}
-
-void Game::checkIntersectionEnemy(Enemy & enemy)
-{
-	/*
-	* function of checking intersection of enemy with houses
-	*/
-
-	double enemySize = max(enemy.getSize().first, enemy.getSize().second);
-
-	// get coordinats of corners of enemy sprite
-	double enemyX1 = enemy.getPosition().first - enemySize / 2;
-	double enemyX2 = enemy.getPosition().first + enemySize / 2;
-
-	double enemyY1 = enemy.getPosition().second - enemySize / 2;
-	double enemyY2 = enemy.getPosition().second + enemySize / 2;
-
-	// for all objects
-	for (int i = 0; i < int(environment->storages.size()); i++)
-	{
-		// get coordinats of intersection
-		double x1 = max(enemyX1, environment->storages[i]->x1);
-		double x2 = min(enemyX2, environment->storages[i]->x2);
-
-		double y1 = max(enemyY1, environment->storages[i]->y1);
-		double y2 = min(enemyY2, environment->storages[i]->y2);
-
-		// if rectangle with negative square
-		if (x1 > x2 || y1 > y2)
-		{
-			// go to the next object
-			continue;
-		}
-
-		// get oriented area
-		bool flag1 = orientedArea(enemy.getPosition().first, enemy.getPosition().second, x1, y2, x2, y1);
-		bool flag2 = orientedArea(enemy.getPosition().first, enemy.getPosition().second, x1, y1, x2, y2);
-
-		// if moving up or right
-		if (flag1)
-		{
-			// if up
-			if (flag2)
-			{
-				enemy.setPosition(enemy.getPosition().first, y2 + enemySize / 2.);
-			}
-			else
-			{
-				enemy.setPosition(x2 + enemySize / 2., enemy.getPosition().second);
-			}
-		}
-		else
-		{
-			// if left
-			if (flag2)
-			{
-				enemy.setPosition(x1 - enemySize / 2., enemy.getPosition().second);
-			}
-			else
-			{
-				enemy.setPosition(enemy.getPosition().first, y1 - enemySize / 2.);
-			}
-		}
-	}
-
-	return;
-}
-
-bool Game::checkIntersectionBullet(Bullet & bullet)
-{
-	/*
-	* function of checking intersection bullets with objects
-	*
-	* @param bullet - bulet
-	*
-	* @return true - if bullet have intersection with any object
-	*/
-
-	// calculate vector of bullet moving
-	pair < double, double > vectorMoving = bullet.getPosition();
-
-	vectorMoving.first -= bullet.getPreviousPosition().first;
-	vectorMoving.second -= bullet.getPreviousPosition().second;
-
-	// set position ofr checking
-	pair < double, double > currentPosition = bullet.getPreviousPosition();
-
-	// for all segments
-	for (int i = 0; i <= COUNT_SEGMENTS_FOR_BULLET_CHECKING; i++)
-	{
-		// check intersection with houses
-		for (int j = 0; j < int(environment->storages.size()); j++)
-		{
-			// if intersection with houses
-			if (environment->storages[j]->x1 < currentPosition.first && environment->storages[j]->x2 > currentPosition.first &&
-				environment->storages[j]->y1 < currentPosition.second && environment->storages[j]->y2 > currentPosition.second)
-			{
-				return 1;
-			}
-		}
-
-		// if target is player
-		if (bullet.getIsPlayerTarget())
-		{
-			// calculate position of body rectangle
-			double playerX1 = playerObject.getPosition().first - CHARACTER_BODY_RADIUS;
-			double playerX2 = playerObject.getPosition().first + CHARACTER_BODY_RADIUS;
-			double playerY1 = playerObject.getPosition().second - CHARACTER_BODY_RADIUS;
-			double playerY2 = playerObject.getPosition().second + CHARACTER_BODY_RADIUS;
-
-			// if there is intersection
-			if (playerX1 < currentPosition.first &&
-				playerX2 > currentPosition.first &&
-				playerY1 < currentPosition.second &&
-				playerY2 > currentPosition.second)
-			{
-				playerObject.getDamage(bullet.getDamage());
-				graphics->interface->addAction("Get damage", 1.0);
-
-				playerObject.isDamaged = 2;
-
-				return 1;
-			}
-		}
-		else
-		{
-			for (int j = 0; j < int(Enemys.size()); j++)
-			{
-				// calculate position of body rectangle
-				double enemyX1 = Enemys[j].getPosition().first - CHARACTER_BODY_RADIUS;
-				double enemyX2 = Enemys[j].getPosition().first + CHARACTER_BODY_RADIUS;
-				double enemyY1 = Enemys[j].getPosition().second - CHARACTER_BODY_RADIUS;
-				double enemyY2 = Enemys[j].getPosition().second + CHARACTER_BODY_RADIUS;
-
-				// if there is intersection
-				if (enemyX1 < currentPosition.first &&
-					enemyX2 > currentPosition.first &&
-					enemyY1 < currentPosition.second &&
-					enemyY2 > currentPosition.second)
-				{
-					Enemys[j].getDamage(bullet.getDamage());
-
-					return 1;
-				}
-			}
-		}
-
-		// go to next position
-		currentPosition.first += vectorMoving.first / COUNT_SEGMENTS_FOR_BULLET_CHECKING;
-		currentPosition.second += vectorMoving.second / COUNT_SEGMENTS_FOR_BULLET_CHECKING;
-	}
-
-	return 0;
-}
-
-bool Game::orientedArea(double x1, double y1, double x2, double y2, double x3, double y3)
-{
-	/*
-	* function of getting oriented area of triangle A(x1, y1) B(x2,y2) C(x3, y3)
-	*
-	* @param x1, y1, x2, y2, x3, y3 - coordinates of triangle vertex
-	* @return true if oriented area greather than zero
-	*/
-
-	// calculate area
-	double S = x1*y2 + y1*x3 + x2*y3 - y2*x3 - x2*y1 - x1*y3;
-
-	return (S > 0);
 }
 
 void Game::checkGameOver()

@@ -71,6 +71,8 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 						// set tree in this square
 						field[i * BLOCK_SIZE + x][j * BLOCK_SIZE + y] = 5;
 
+						trees.push_back({ (j*BLOCK_SIZE + y + 0.5)*SQUARE_SIZE_PIXIL, (i*BLOCK_SIZE + x + 0.5)*SQUARE_SIZE_PIXIL });
+
 						//stop generating
 						break;
 					}
@@ -91,6 +93,9 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 				if (field[i * 33 + x][j * 33 + y] == 0)
 				{
 					field[i * 33 + x][j * 33 + y] = 4;
+
+					craftingTables.push_back({ { (j * 33 + y)*1.*SQUARE_SIZE_PIXIL, (j * 33 + y + 1)*1.*SQUARE_SIZE_PIXIL },
+											   { (i * 33 + x)*1.*SQUARE_SIZE_PIXIL, (i * 33 + x + 1)*1.*SQUARE_SIZE_PIXIL } });
 
 					break;
 				}
