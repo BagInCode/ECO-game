@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <cmath>
+#include <fstream>
 
 // ---------------------------- Window Constants -----|
 const int WINDOW_LENGTH = 1300;
@@ -50,11 +51,14 @@ const double TIME_ENEMY_STAY = 600;
 const double TIME_ENEMY_RUN = 1200;
 
 const double TIME_BASE_BETWEEN_WAVE = 60000;
-const double TIME_DIFF_BETWEEN_WAVE = 3000;
+const double TIME_DIFF_BETWEEN_WAVE = 4000;
 
 const double TIME_GRENADE_DALAY = 2000;
 
 const double TIME_OF_BULLET_LIFE = 10000;
+
+const double DEATH_SCREEN_FIRST_SCENE_TIME = 4000;
+const long long DEATH_SCREEN_SECOND_SCENE_TIME = 1000;
 
 
 // ------------------------------- Environment Sprite Constants -----|
@@ -166,6 +170,7 @@ const int GRENADE_DMG = 50;
 #define ENVIRONMENT_TEXTURE_FILE_PATH "Textures\\Environment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
+#define DEATH_SCREEN_FONT_PATH "Fonts/DeathScreen.ttf"
 #define INTERFACE_TEXTURE "Textures/Interface.png"
 
 

@@ -3,6 +3,7 @@
 
 ShootState::ShootState()
 {
+	stateType = 2;
 }
 
 

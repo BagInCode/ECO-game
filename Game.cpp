@@ -1,12 +1,15 @@
 #include "Constants.db"
 #include "Game.h"
 #include "GameGraphicsManager.h"
+#include "GameGraphicsManagerMinimap.h"
 #include "GameGraphicsManagerInterface.h"
 #include "GameGraphicsManagerCraftingTable.h"
 #include "GameEnvironmentManager.h"
 #include "GameEnvironmentManagerStorage.h"
 #include "IntersectionManager.h"
 #include "WaveManager.h"
+#include "safeManager.h"
+#include <fstream>
 
 Game::Game() : rnd((unsigned int)time(NULL))
 {
@@ -14,6 +17,7 @@ Game::Game() : rnd((unsigned int)time(NULL))
 	environment = new EnvironmentManager;
 	waves = new WaveManager;
 	intersectionManager = new IntersectionManager;
+	Safe = new SafeManager;
 }
 
 Game::~Game()
@@ -22,9 +26,10 @@ Game::~Game()
 	delete environment;
 	delete waves;
 	delete intersectionManager;
+	delete Safe;
 }
 
-bool Game::initComponents()
+bool Game::initComponents(RenderWindow& window)
 {
 	/*
 	* function of initialization of components
@@ -32,6 +37,14 @@ bool Game::initComponents()
 	* @return true - initialization completed
 	*         false - initialization failed
 	*/
+
+	this->window = &window;
+
+	countKillsByPistol = 0;
+	countKillsByShotgun = 0;
+	countKillsByAK = 0;
+	countKillsByMinigun = 0;
+	countKillsBySniper = 0;
 
 	// game is not over
 	gameOver = 0;
@@ -121,6 +134,7 @@ void Game::moveObjects()
 	* function of moving objects
 	*/
 
+	// move grenades
 	for (int i = 0; i < int(grenades.size()); i++)
 	{
 		grenades[i].move(timer);
@@ -334,11 +348,14 @@ void Game::switchEvent(Event event)
 			playerObject.setSize(PLAYER_SNIPER_LENGTH, PLAYER_SPRITE_AK_HIGH);
 		}
 
+		// if E kay
 		if (event.key.code == Keyboard::E)
 		{
+			// get player position
 			double playerPositionX = playerObject.getPosition().first;
 			double playerPositionY = playerObject.getPosition().second;
 
+			// check lootabilyty
 			environment->checkStoragesAction(this, playerPositionX, playerPositionY);
 
 			if (graphics->drawSwitcher == 0)
@@ -362,18 +379,24 @@ void Game::switchEvent(Event event)
 			allPlayerWeapon[currentWeaponPointer].startReload();
 		}
 
+		// if key G
 		if (event.key.code == Keyboard::G)
 		{
+			// if there is no grenades
 			if (countsGrenades == 0)
 			{
+				// do nothing
 				return;
 			}
 
+			// decrease count of granades
 			countsGrenades--;
 
+			// create new grenade
 			Grenade newGranade;
 			newGranade.create(playerObject, window);
 
+			// add grenade
 			grenades.push_back(newGranade);
 		}
 	}
@@ -503,10 +526,11 @@ void Game::process(RenderWindow & window)
 	* @param window - game window
 	*/
 
-	this->window = &window;
-
-	// init game components
-	initComponents();
+	if (!wasLoaded)
+	{
+		// init game components
+		initComponents(window);
+	}
 
 	// starting clock counter
 	myClock.restart();
@@ -550,7 +574,7 @@ void Game::doActions()
 	// action of shooting
 	if (playerShooting)
 	{
-		allPlayerWeapon[currentWeaponPointer].shoot(playerObject.getPosition(), playerObject.getAngle(), 0);
+		allPlayerWeapon[currentWeaponPointer].shoot(playerObject.getPosition(), playerObject.getAngle(), 0, currentWeaponPointer);
 	}
 
 	// for all enemys
@@ -602,6 +626,7 @@ void Game::checkGameOver()
 	// player die
 	if (playerObject.getHealthPoints() < 1)
 	{
+		death.process(getInformationForDeathScreen(), window);
 		gameOver = -1;
 	}
 
@@ -621,6 +646,9 @@ void Game::checkGameOver()
 		// if enemy too close
 		if (dist < ENDING_RADIUS)
 		{
+			// show death screen
+			death.process(getInformationForDeathScreen(), window);
+
 			gameOver = -1;
 
 			break;
@@ -709,6 +737,9 @@ void Game::checkEnemyAlive()
 		{
 			// add to new vector
 			newEnemys.push_back(Enemys[i]);
+		}else
+		{
+			enemyDie++;
 		}
 	}
 
@@ -720,33 +751,49 @@ void Game::checkEnemyAlive()
 
 void Game::checkGranades()
 {
+	/*
+	* function of checking grenades
+	*/
+
+	// create new vector
 	vector < Grenade > newGrenades;
 
+	// for all grenades
 	for (int i = 0; i < int(grenades.size()); i++)
 	{
+		// if there is time for delete
 		if (grenades[i].timeToDelete())
 		{
+			// go to next
 			continue;
 		}
 
+		// add to new vector
 		newGrenades.push_back(grenades[i]);
 	}
 
+	// rewrite previous vector
 	grenades = newGrenades;
 
+	// for all grenades
 	for (int i = 0; i < int(grenades.size()); i++)
 	{
+		// if detonate
 		if (grenades[i].isDetonate())
 		{
+			// for all enemys
 			for (int j = 0; j < int(Enemys.size()); j++)
 			{
+				// get distance betwem grenade and enemy
 				double deltX = Enemys[j].getPosition().first - grenades[i].getPosition().first;
 				double deltY = Enemys[j].getPosition().second - grenades[i].getPosition().second;
 
 				double len = sqrt(deltX*deltX + deltY*deltY);
 
+				// if enemy in area of damage
 				if (len < GRENADE_RADIUS)
 				{
+					// give damage
 					Enemys[j].getDamage(GRENADE_DMG);
 				}
 			}
@@ -754,4 +801,240 @@ void Game::checkGranades()
 	}
 
 	return;
+}
+
+vector < int > Game::getInformationForDeathScreen()
+{
+	/*
+	* function of getting information for death screen 
+	*/
+
+	// create result vector
+	vector < int > result;
+	
+	// get count of visible squares
+	int value = graphics->minimap->countVisibleSquares;
+	result.push_back(value);
+
+	// get number of wave
+	value = waves->getNumberOfWave() - 1;
+	result.push_back(value);
+
+	// get count enemys die and count kill by each weapon
+	value = enemyDie;
+	result.push_back(value);
+
+	value = countKillsByPistol;
+	result.push_back(value);
+
+	value = countKillsByShotgun;
+	result.push_back(value);
+
+	value = countKillsByAK;
+	result.push_back(value);
+
+	value = countKillsByMinigun;
+	result.push_back(value);
+
+	value = countKillsBySniper;
+	result.push_back(value);
+
+	// return result
+	return result;
+}
+
+void Game::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
+{
+	/*
+	* function of saving game
+	*
+	* @param out - outpt file stream
+	*        safeOption - option of safe sequrity
+	*        updSafeOption - function of updating safeOption
+	*/
+
+	// update safe option and draw count of objects and objects data
+	updSafeOption(safeOption, 5);
+	out << "5\n";
+
+	for (int i = 0; i < 5; i++)
+	{
+		updSafeOption(safeOption, allPlayerWeapon[i].accuracyEngrams);
+		updSafeOption(safeOption, allPlayerWeapon[i].damageEngrams);
+		updSafeOption(safeOption, allPlayerWeapon[i].gainingAmmoEngrams);
+		updSafeOption(safeOption, allPlayerWeapon[i].reloadEngrams);
+		updSafeOption(safeOption, allPlayerWeapon[i].getCountBullets());
+		updSafeOption(safeOption, allPlayerWeapon[i].getCurrentAmmo());
+
+		out << allPlayerWeapon[i].accuracyEngrams << " " << allPlayerWeapon[i].damageEngrams << " " << allPlayerWeapon[i].gainingAmmoEngrams << " "
+			<< allPlayerWeapon[i].reloadEngrams << " " << allPlayerWeapon[i].getCountBullets() << " " << allPlayerWeapon[i].getCurrentAmmo() << "\n";
+	}
+
+	updSafeOption(safeOption, 1);
+	out << "1\n";
+
+	updSafeOption(safeOption, countsGrenades);
+	out << countsGrenades << "\n";
+
+	updSafeOption(safeOption, 6);
+	out << "6\n";
+
+	updSafeOption(safeOption, enemyDie);
+	updSafeOption(safeOption, countKillsByPistol);
+	updSafeOption(safeOption, countKillsByShotgun);
+	updSafeOption(safeOption, countKillsByAK);
+	updSafeOption(safeOption, countKillsByMinigun);
+	updSafeOption(safeOption, countKillsBySniper);
+
+	out << enemyDie << " " << countKillsByPistol << " " << countKillsByShotgun << " " << countKillsByAK << " " << countKillsByMinigun << " "
+		<< countKillsBySniper << "\n";
+
+	updSafeOption(safeOption, 5);
+	out << "5\n";
+
+	updSafeOption(safeOption, playerObject.getHealthPoints());
+	updSafeOption(safeOption, playerObject.armor);
+	updSafeOption(safeOption, int(round(playerObject.getPosition().first)));
+	updSafeOption(safeOption, int(round(playerObject.getPosition().second)));
+	updSafeOption(safeOption, playerObject.getEngramPoints());
+
+	out << playerObject.getHealthPoints() << " " << playerObject.armor << " " << round(playerObject.getPosition().first) << " "
+		<< round(playerObject.getPosition().second) << " " << playerObject.getEngramPoints() << "\n";
+
+	return;
+}
+
+void Game::clearGame()
+{
+	/*
+	* fuction of clearing game
+	*/
+
+	// clear minimap
+	graphics->minimap->clearGame();
+
+	// clear environment
+	environment->clearGame();
+
+	// clear vectors
+	Enemys.clear();
+	EnemysState.clear();
+	Bullets.clear();
+	grenades.clear();
+}
+
+void Game::load(vector < vector < int > >& weaponData, int grenadeData, vector < int >& killData, vector < int >& PlayerData)
+{
+	/*
+	* function of loading
+	*
+	* @param weaponData - data about weapon
+	*        grenadeData - data about grenade
+	*        killData - data bout kills
+	*        playerData - data about player
+	*/
+
+	// load weapon
+	for (int i = 0; i < int(weaponData.size()); i++)
+	{
+		allPlayerWeapon[i].accuracyEngrams = weaponData[i][0];
+		allPlayerWeapon[i].damageEngrams = weaponData[i][1];
+		allPlayerWeapon[i].gainingAmmoEngrams = weaponData[i][2];
+		allPlayerWeapon[i].reloadEngrams = weaponData[i][3];
+		allPlayerWeapon[i].setBullets(weaponData[i][4]);
+		allPlayerWeapon[i].setCurrentAmmo(weaponData[i][5]);
+
+		for (int j = 0; j < allPlayerWeapon[i].accuracyEngrams; j++)
+		{
+			if (i == 0)
+			{
+				allPlayerWeapon[i].improveAccuracy(0.8);
+			}
+			else if (i == 1)
+			{
+				allPlayerWeapon[i].improveAccuracy(0.9);
+			}
+			else if (i == 2)
+			{
+				allPlayerWeapon[i].improveAccuracy(0.8);
+			}
+			else if (i == 3)
+			{
+				allPlayerWeapon[i].improveAccuracy(0.85);
+			}
+			else if (i == 4)
+			{
+				allPlayerWeapon[i].improveAccuracy(0.75);
+			}
+		}
+
+		for (int j = 0; j < allPlayerWeapon[i].damageEngrams; j++)
+		{
+			if (i == 0)
+			{
+				allPlayerWeapon[i].improveDamage(5);
+			}
+			else if (i == 1)
+			{
+				allPlayerWeapon[i].improveDamage(2);
+			}
+			else if (i == 2)
+			{
+				allPlayerWeapon[i].improveDamage(3);
+			}
+			else if (i == 3)
+			{
+				allPlayerWeapon[i].improveDamage(2);
+			}
+			else if (i == 4)
+			{
+				allPlayerWeapon[i].improveDamage(5);
+			}
+		}
+
+		for (int j = 0; j < allPlayerWeapon[i].gainingAmmoEngrams; j++)
+		{
+			allPlayerWeapon[i].improveAmmoLoot();
+		}
+
+		for (int j = 0; j < allPlayerWeapon[i].reloadEngrams; j++)
+		{
+			allPlayerWeapon[i].improveReloading(0.8);
+		}
+	}
+
+	// load grenades
+	countsGrenades = grenadeData;
+
+	// load kills data
+	enemyDie = killData[0];
+	countKillsByPistol = killData[1];
+	countKillsByShotgun = killData[2];
+	countKillsByAK = killData[3];
+	countKillsByMinigun = killData[4];
+	countKillsBySniper = killData[5];
+
+	// load player data
+	playerObject.setHP(PlayerData[0]);
+	playerObject.armor = PlayerData[1];
+	playerObject.setPosition(PlayerData[2], PlayerData[3]);
+	playerObject.addEngramPoints(PlayerData[4]);
+
+	return;
+}
+
+bool Game::loadGame(RenderWindow& window)
+{
+	/*
+	* function of loading game
+	*
+	* @param window - game window
+	*
+	* @return true - if loading completed
+	*/
+
+	// game was loaded
+	wasLoaded = 1;
+
+	return Safe->loadGame(window, this);
 }

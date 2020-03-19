@@ -17,7 +17,7 @@ using namespace sf;
 
 class Weapon
 {
-protected:
+private:
 	double reload;
 	double shootDelay;
 	double timer;
@@ -49,15 +49,21 @@ public:
 	void increaseTimer(double _timer);
 	void create(double _reload, double _shootDelay, double bulletSpeed, double _accuracy, int _bulletsPerShoot, 
 		int _maxAmmo, int _damage, vector < Bullet >* _bullets, mt19937* _rnd);
-	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget);
-	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget);
+
+	bool shoot(pair < double, double > position, double angle, bool isPlayerTarget, int weaponType = -1);
+	void createBullet(pair < double, double > position, double angle, bool isPlayerTarget, int weaponType);
+	
+	int getCountBullets();
+	void addBullets(int delt);
+	void setBullets(int newBullets);
+
 	void startReload();
+
 	double getReloadingTime();
 	double getTimer();
 	int getCurrentAmmo();
+
 	void setCurrentAmmo(int _currentAmmo);
-	int getCountBullets();
-	void addBullets(int delt);
 	
 	void improveReloading(double multiplayer);
 	void improveAccuracy(double multiplayer);

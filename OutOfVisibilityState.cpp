@@ -3,6 +3,7 @@
 
 OutOfVisibilityState::OutOfVisibilityState()
 {
+	stateType = 4;
 }
 
 

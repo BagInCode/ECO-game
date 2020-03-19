@@ -55,9 +55,9 @@ public:
 	void setTextThicknessColor(Color color);
 	void setTextSpacing(int spacing);
 
-	bool isPressed();
-
 	void setBackgroundImage(Sprite newBackgroundImage);
+
+	bool isPressed();
 
 	void updateState(Vector2f mousePosition);
 	void draw(RenderWindow& window);

@@ -244,3 +244,14 @@ void Game::EnvironmentManager::Storage::draw(RenderWindow* window, double baseX,
 		window->draw(textInfo);
 	}
 }
+
+double Game::EnvironmentManager::Storage::getRemainingTime()
+{
+	return remainingTime;
+}
+
+void Game::EnvironmentManager::Storage::setRemainingTime(int timer)
+{
+	remainingTime = timer;
+	lootable = 0;
+}

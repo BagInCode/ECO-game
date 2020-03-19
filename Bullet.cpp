@@ -11,7 +11,7 @@ Bullet::~Bullet()
 }
 
 
-void Bullet::create(double _positionX, double _positionY, double _angle, double _speed, int _damage, bool _isPlayerTarget)
+void Bullet::create(double _positionX, double _positionY, double _angle, double _speed, int _damage, bool _isPlayerTarget, int _weaponType)
 {
 	/*
 	* function of initialization
@@ -21,7 +21,10 @@ void Bullet::create(double _positionX, double _positionY, double _angle, double 
 	*        speed - speed of moving
 	*        damage - damage of bullet
 	*        isPlayerTarget - true if bullet created by players` weapon
+	*        weaponType - type of weapon
 	*/
+
+	weaponType = _weaponType;
 
 	positionX = _positionX;
 	positionY = _positionY;
@@ -114,4 +117,14 @@ int Bullet::getDamage()
 	*/
 
 	return damage;
+}
+
+int Bullet::getWeaponType()
+{
+	/*
+	* function of getting weapon type
+	*
+	* @return weapon type
+	*/
+	return weaponType;
 }

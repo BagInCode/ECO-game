@@ -31,9 +31,13 @@ public:
 
 	void setFont(Font& newFont);
 
-	void update(double timer);
+	double getRemainingTime();
+	void setRemainingTime(int timer);
+
 	bool isLootable(double playerX, double playerY);
 	bool isLootable();
 	void tryToLoot(Game* game, double playerX, double playerY);
+
+	void update(double timer);
 	void draw(RenderWindow* window, double baseX, double baseY, double playerX, double playerY, Sprite& storageSprite);
 };

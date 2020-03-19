@@ -379,7 +379,7 @@ bool Game::IntersectionManager::checkIntersection(Bullet& bullet, Game* game)
 				// decrease player HP
 				game->playerObject.getDamage(bullet.getDamage());
 
-				game->graphics->interface->addAction("Get damage", 3);
+				game->graphics->interface->addAction("Get damage", 1);
 
 				// bulet has intersection
 				return 1;
@@ -403,6 +403,20 @@ bool Game::IntersectionManager::checkIntersection(Bullet& bullet, Game* game)
 				// if bullet is inside the enemy
 				if (isInside(positionsForChecking[j].first, positionsForChecking[j].second, xLeft, xRight, yUp, yDown))
 				{
+					if (game->Enemys[i].getHP() <= bullet.getDamage())
+					{
+						switch (bullet.getWeaponType())
+						{
+							case 0: game->countKillsByPistol++; break;
+							case 1: game->countKillsByShotgun++; break;
+							case 2: game->countKillsByAK++; break;
+							case 3: game->countKillsByMinigun++; break;
+							case 4: game->countKillsBySniper++; break;
+							default:
+								break;
+						}
+					}
+
 					// decrease enemy HP
 					game->Enemys[i].getDamage(bullet.getDamage());
 

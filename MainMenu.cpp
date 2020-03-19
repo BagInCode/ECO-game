@@ -80,7 +80,12 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 	if (continueGame->isPressed())
 	{
-		// todo
+		Game game;
+
+		if (game.loadGame(window))
+		{
+			game.process(window);
+		}
 	}
 
 	if (settings->isPressed())

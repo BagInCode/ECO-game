@@ -15,6 +15,10 @@ const string WINDOW_NAME = "ECO game";
 
 int main()
 {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
 	// create window
 	RenderWindow window(VideoMode(WINDOW_LENGTH, WINDOW_HIGH), WINDOW_NAME);
 

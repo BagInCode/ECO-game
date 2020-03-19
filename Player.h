@@ -35,22 +35,33 @@ public:
 	Player();
 	~Player();
 
-	void create();
-	void move(double timer);
 	void setMovingVector(int newVectorX, int newVectorY);
 	void updateMovingVector(int deltX, int deltY);
+
 	pair < double, double > getPosition();
-	pair < double, double > getPositionInWindow();
-	pair < double, double > getSize();
-	double rotate(RenderWindow* window);
-	double getAngle();
 	void setPosition(double newX, double newY);
+
+	pair < double, double > getSize();
+	void setSize(double length, double high);
+
+	pair < double, double > getPositionInWindow();
+	double getAngle();
+
 	int getHealthPoints();
 	void addHealthPoints(int value);
+	void setHP(int newHP);
+
 	int getEngramPoints();
 	void addEngramPoints(int value);
 	void decrEngramPoints(int value);
+	void setEngramPoints(int newEngramPoints);
+
 	void getDamage(int damage);
-	void setSize(double length, double high);
+
+	void setArmor(int newArmor);
+
+	void create();
+	void move(double timer);
+	double rotate(RenderWindow* window);
 };
 

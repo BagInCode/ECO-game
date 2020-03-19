@@ -185,7 +185,9 @@ void Enemy::getDamage(int damage)
 bool Enemy::isDead()
 {
 	/*
-	* function of chekcing enemy hp 
+	* function of chekcing enemy hp
+	*
+	* @return true - if enemy is dead
 	*/
 
 	return healthPoints < 1;
@@ -198,5 +200,28 @@ pair < double, double > Enemy::getPreviousPosition()
 	*
 	* @return previous position 
 	*/
+
 	return previousPosition;
+}
+
+int Enemy::getHP()
+{
+	/*
+	* function of getting enemy health points
+	*
+	* @return enemy health points
+	*/
+
+	return healthPoints;
+}
+
+void Enemy::setHP(int newHP)
+{
+	/*
+	* function of setting enemy health points
+	*
+	* @param newHP - new value of enemy health points
+	*/
+
+	healthPoints = newHP;
 }

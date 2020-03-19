@@ -33,11 +33,7 @@ void Game::GraphicsManager::update(Game* game, double timer)
 
 void Game::GraphicsManager::initComponents(Game* game)
 {
-	storageFont.loadFromFile(ROBO_REGULAR_2_FILE_PATH);
-	for (auto& storage : game->environment->storages)
-	{
-		storage->setFont(storageFont);
-	}
+	loadStorageFonts(game);
 
 	interface->initComponents();
 	minimap->initComponents();
@@ -354,4 +350,20 @@ void Game::GraphicsManager::drawPicture(Game* game)
 	playerSprite->setColor(Color::White);
 
 	return;
+}
+
+void Game::GraphicsManager::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
+{
+	minimap->safe(out, safeOption, updSafeOption);
+
+	return;
+}
+
+void Game::GraphicsManager::loadStorageFonts(Game* game)
+{
+	storageFont.loadFromFile(ROBO_REGULAR_2_FILE_PATH);
+	for (auto& storage : game->environment->storages)
+	{
+		storage->setFont(storageFont);
+	}
 }

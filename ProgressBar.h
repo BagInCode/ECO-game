@@ -42,8 +42,8 @@ public:
 
 	void setPosition(int newX, int newY);
 
-	void update(double currentPercetnage);
 	void setPotentialPercentage(double newPotentialPercentage);
+	void update(double currentPercetnage);
 	void draw(RenderWindow* window);
 
 };

@@ -34,7 +34,6 @@ public:
 	double calculteSpeed(Player& player, RenderWindow* window);
 
 	pair < double, double > getPosition();
-
 	int getNumberOfPicture();
 	
 	bool timeToDelete();

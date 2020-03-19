@@ -15,6 +15,10 @@ public:
 	double getTimeToWave();
 	int getNumberOfWave();
 
+	void load(int waveData);
+
+	void safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int));
+
 	WaveManager();
 	~WaveManager();
 };

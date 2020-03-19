@@ -3,6 +3,7 @@
 
 StayState::StayState()
 {
+	stateType = 1;
 }
 
 

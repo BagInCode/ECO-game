@@ -3,6 +3,7 @@
 
 RunState::RunState()
 {
+	stateType = 0;
 }
 
 

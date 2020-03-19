@@ -32,11 +32,11 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 	int x, y;
 
 	int storageIndex = 0;
-	// divide all fieald on squares 10x10 and random in each square independly
+	// divide all fieald on squares 20õ20 and random in each square independly
 	for (int i = 0; i < FIELD_SIZE / BLOCK_SIZE; i++)
 	{
 		for (int j = 0; j < FIELD_SIZE / BLOCK_SIZE; j++)
-		{
+		{//
 			// random position of house
 			x = game->rnd() % (BLOCK_SIZE-3);
 			y = game->rnd() % (BLOCK_SIZE - 3);
@@ -53,8 +53,7 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 			field[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x + 1] = -1;
 			field[i * BLOCK_SIZE + y + 1][j * BLOCK_SIZE + x + 1] = -1;
 			field[i * BLOCK_SIZE + y + 2][j * BLOCK_SIZE + x + 1] = -1;
-
-
+			
 			// generate tree
 			for (int k = 0; k < COUNT_TREES_IN_BLOCK; k++)
 			{
@@ -143,6 +142,114 @@ void Game::EnvironmentManager::checkStoragesAction(Game* game, double playerPosi
 					storages[storageNumber[i][j]]->tryToLoot(game, playerPositionX, playerPositionY);
 				}
 			}
+		}
+	}
+}
+
+void Game::EnvironmentManager::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
+{
+	updSafeOption(safeOption, int(storages.size()));
+	out << storages.size() << "\n";
+
+	for (int i = 0; i < int(storages.size()); i++)
+	{
+		updSafeOption(safeOption, int(round(storages[i]->x1)));
+		updSafeOption(safeOption, int(round(storages[i]->y1)));
+		updSafeOption(safeOption, int(round(storages[i]->getRemainingTime())));
+
+		out << round(storages[i]->x1) << " " << round(storages[i]->y1) << " " << round(storages[i]->getRemainingTime()) << "\n";
+	}
+
+	updSafeOption(safeOption, int(craftingTables.size()));
+	out << craftingTables.size() << "\n";
+
+	for (int i = 0; i < int(craftingTables.size()); i++)
+	{
+		updSafeOption(safeOption, int(round(craftingTables[i].first.first)));
+		updSafeOption(safeOption, int(round(craftingTables[i].second.first)));
+
+		out << round(craftingTables[i].first.first) << " " << round(craftingTables[i].second.first) << "\n";
+	}
+
+	updSafeOption(safeOption, int(trees.size()));
+	out << trees.size() << "\n";
+
+	for (int i = 0; i < int(trees.size()); i++)
+	{
+		updSafeOption(safeOption, int(round(trees[i].first)));
+		updSafeOption(safeOption, int(round(trees[i].second)));
+
+		out << round(trees[i].first) << " " << round(trees[i].second) << "\n";
+	}
+
+	return;
+}
+
+void Game::EnvironmentManager::load(vector < pair < pair < int, int >, int > >& storageData,
+	vector < pair < int, int > >& craftingTableData, vector < pair < int, int > >& treeData)
+{
+	for (int i = 0; i < int(storageData.size()); i++)
+	{
+		int cellX = storageData[i].first.first / SQUARE_SIZE_PIXIL;
+		int cellY = storageData[i].first.second / SQUARE_SIZE_PIXIL;
+
+		storageNumber[cellY][cellX] = int(storages.size());
+		storages.push_back(new Game::EnvironmentManager::Storage(cellX * SQUARE_SIZE_PIXIL, (cellX + 2) * SQUARE_SIZE_PIXIL,
+																 cellY * SQUARE_SIZE_PIXIL, (cellY + 3) * SQUARE_SIZE_PIXIL));
+	
+		storages.back()->setRemainingTime(storageData[i].second);
+
+		field[cellY][cellX] = -1;
+		field[cellY][cellX + 1] = -1;
+		field[cellY + 1][cellX] = -1;
+		field[cellY + 1][cellX + 1] = -1;
+		field[cellY + 2][cellX] = -1;
+		field[cellY + 2][cellX + 1] = -1;
+	}
+
+	for (int i = 0; i < int(craftingTableData.size()); i++)
+	{
+		int cellX = craftingTableData[i].first / SQUARE_SIZE_PIXIL;
+		int cellY = craftingTableData[i].second / SQUARE_SIZE_PIXIL;
+
+		field[cellY][cellX] = 4;
+
+		craftingTables.push_back({ { cellX * SQUARE_SIZE_PIXIL, (cellX + 1) * SQUARE_SIZE_PIXIL }, 
+								   { cellY * SQUARE_SIZE_PIXIL, (cellY + 1) * SQUARE_SIZE_PIXIL } });
+	}
+
+	for (int i = 0; i < int(treeData.size()); i++)
+	{
+		int cellX = treeData[i].first / SQUARE_SIZE_PIXIL;
+		int cellY = treeData[i].second / SQUARE_SIZE_PIXIL;
+
+		field[cellY][cellX] = 5;
+
+		trees.push_back({ (cellX + 0.5) * SQUARE_SIZE_PIXIL, (cellY + 0.5) * SQUARE_SIZE_PIXIL });
+	}
+
+	return;
+}
+
+void Game::EnvironmentManager::clearGame()
+{
+	storages.clear();
+	trees.clear();
+	craftingTables.clear();
+
+	for (auto& row : field)
+	{
+		for (auto& cell : row)
+		{
+			cell = 0;
+		}
+	}
+
+	for (auto& row : storageNumber)
+	{
+		for (auto& cell : row)
+		{
+			cell = -1;
 		}
 	}
 }

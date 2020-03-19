@@ -1,5 +1,7 @@
 #include "WaveManager.h"
 #include "GameGraphicsManagerMinimap.h"
+#include "GameGraphicsManagerInterface.h"
+#include "safeManager.h"
 
 
 Game::WaveManager::WaveManager()
@@ -26,6 +28,15 @@ void Game::WaveManager::checkTimer(double _timer, Game* game)
 	// if there is time for new wave
 	if (timer > TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1))
 	{
+		//if no enemy in game now
+		if (int(game->Enemys.size()) == 0)
+		{
+			// autosafe
+			game->Safe->safeGame(game);
+
+			game->graphics->interface->addAction("AutoSafe", 5);
+		}
+
 		// null timer
 		timer = 0;
 
@@ -108,10 +119,51 @@ pair < int, int > Game::WaveManager::randomSpawnPoint(Game* game)
 
 double Game::WaveManager::getTimeToWave()
 {
+	/*
+	* function of getting time to next wave
+	*
+	* @return timer to next wave
+	*/
+
 	return TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1) - timer;
 }
 
 int Game::WaveManager::getNumberOfWave()
 {
+	/*
+	* function of getting number of next wave
+	*
+	* @return number of next wave
+	*/
+
 	return numberOfWave;
+}
+
+void Game::WaveManager::load(int waveData)
+{
+	/*
+	* function of loading
+	*
+	* @param waveData - data about waves
+	*/
+
+	// set number of wave, set timer to 10 sec before next wave
+	numberOfWave = waveData;
+	timer = TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1) - 10000;
+}
+
+void Game::WaveManager::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
+{
+	/*
+	* function of saving
+	*/
+
+	updSafeOption(safeOption, 1);
+	out << "1\n";
+
+	updSafeOption(safeOption, numberOfWave);
+
+	out << numberOfWave << "\n";
+
+	return;
 }

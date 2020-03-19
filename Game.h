@@ -20,6 +20,7 @@
 #include "RunRandomVectorState.h"
 #include "OutOfVisibilityState.h"
 #include "Grenade.h"
+#include "DeathScreen.h"
 
 #include "Constants.db"
 
@@ -31,6 +32,7 @@ private:
 	class EnvironmentManager;
 	class WaveManager;
 	class IntersectionManager;
+	class SafeManager;
 
 	mt19937 rnd;
 
@@ -62,21 +64,40 @@ private:
 	EnvironmentManager* environment;
 	WaveManager* waves;
 	IntersectionManager* intersectionManager;
+	SafeManager* Safe;
+	
+	DeathScreen death;
 
 	bool isKeyAPressed = 0;
 	bool isKeySPressed = 0;
 	bool isKeyWPressed = 0;
 	bool isKeyDPressed = 0;
 
-	bool initComponents();
+	int enemyDie;
+	int countKillsByPistol;
+	int countKillsByShotgun;
+	int countKillsByAK;
+	int countKillsByMinigun;
+	int countKillsBySniper;
+
+	bool wasLoaded = 0;
+
+	void checkGameOver();
+	void checkEnemyAlive();
+	void checkGranades();
 	void checkTime();
+
+	vector < int > getInformationForDeathScreen();
+
+	bool initComponents(RenderWindow& window);
 	void moveObjects();
 	void switchEvent(Event event);
 	void doActions();
-	void checkGameOver();
 	State* chooseNext(int next);
-	void checkEnemyAlive();
-	void checkGranades();
+	void clearGame();
+
+	void safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int));
+	void load(vector < vector < int > >& weaponData, int grenadeData, vector < int >& killData, vector < int >& PlayerData);
 
 public:
 
@@ -84,4 +105,5 @@ public:
 	~Game();
 
 	void process(RenderWindow & window);
+	bool loadGame(RenderWindow& window);
 };

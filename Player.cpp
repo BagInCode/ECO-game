@@ -241,21 +241,45 @@ int Player::getHealthPoints()
 
 void Player::addHealthPoints(int value)
 {
+	/*
+	* function of increasing HP
+	*
+	* @param value - HP delt
+	*/
+
 	healthPoints = min(healthPoints + value, 100);
 }
 
 int Player::getEngramPoints()
 {
+	/*
+	* function of getting engram points
+	*
+	* @return engram points
+	*/
+
 	return engramPoints;
 }
 
 void Player::addEngramPoints(int value)
 {
+	/*
+	* function of adding engram points
+	*
+	* @param value - delt of engram points
+	*/
+
 	engramPoints += value;
 }
 
 void Player::decrEngramPoints(int value)
 {
+	/*
+	* function of decresing engram points
+	*
+	* @param value - delt of engram points
+	*/
+
 	engramPoints -= value;
 }
 
@@ -283,4 +307,37 @@ void Player::setSize(double length, double high)
 
 	spriteLength = int(length);
 	spriteHigh = int(high);
+}
+
+void Player::setHP(int newHP)
+{
+	/*
+	* function of settin HP
+	*
+	* @param newHP - new HP value
+	*/
+
+	healthPoints = newHP;
+}
+
+void Player::setArmor(int newArmor)
+{
+	/*
+	* function of settin armor
+	*
+	* @param newArmor - new armor value
+	*/
+
+	armor = newArmor;
+}
+
+void Player::setEngramPoints(int newEngramPoints)
+{
+	/*
+	* function of setting engram points
+	*
+	* @param newEngramPoints - new value
+	*/
+
+	engramPoints = newEngramPoints;
 }

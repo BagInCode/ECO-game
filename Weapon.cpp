@@ -53,7 +53,7 @@ void Weapon::create(double _reload, double _shootDelay, double _bulletSpeed, dou
 	return;
 }
 
-void Weapon::createBullet(pair < double, double > position, double angle, bool isPlayerTarget)
+void Weapon::createBullet(pair < double, double > position, double angle, bool isPlayerTarget, int weaponType)
 {
 	/*
 	* function of creating bullet and add to vector of bullets
@@ -74,7 +74,7 @@ void Weapon::createBullet(pair < double, double > position, double angle, bool i
 	angle += accuracy * accuracyValue;
 
 	// init bullet with new parametrs
-	newBullet.create(position.first, position.second, angle, bulletSpeed, damage, isPlayerTarget);
+	newBullet.create(position.first, position.second, angle, bulletSpeed, damage, isPlayerTarget, weaponType);
 
 	// add new bullet
 	Bullets->push_back(newBullet);
@@ -138,7 +138,7 @@ void Weapon::increaseTimer(double _timer)
 	return;
 }
 
-bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayerTarget)
+bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayerTarget, int weaponType)
 {
 	/*
 	* function of checking ammo and shooting
@@ -159,7 +159,7 @@ bool Weapon::shoot(pair < double, double > position, double angle, bool isPlayer
 		// create bullets
 		for (int i = 0; i < bulletsPerShoot; i++)
 		{
-			createBullet(position, angle, isPlayerTarget);
+			createBullet(position, angle, isPlayerTarget, weaponType);
 		}
 
 		return 1;
@@ -240,4 +240,9 @@ void Weapon::improveDamage(int add)
 void Weapon::improveAmmoLoot()
 {
 
+}
+
+void Weapon::setBullets(int newBllets)
+{
+	countBullets = newBllets;
 }

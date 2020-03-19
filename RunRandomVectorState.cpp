@@ -3,6 +3,7 @@
 
 RunRandomVectorState::RunRandomVectorState()
 {
+	stateType = 3;
 }
 
 

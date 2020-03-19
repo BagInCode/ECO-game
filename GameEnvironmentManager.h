@@ -22,4 +22,9 @@ public:
 	int isNearCraftingTable(double playerPositionX, double playerPositionY);
 	void checkStoragesAction(Game* game, double playerPositionX, double playerPositionY);
 
+	void load(vector < pair < pair < int, int >, int > > & storageData, vector < pair < int, int > > & craftingTableData, 
+			  vector < pair < int, int > > & treeData);
+
+	void safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int));
+	void clearGame();
 };

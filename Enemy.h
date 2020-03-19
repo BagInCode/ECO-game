@@ -31,20 +31,27 @@ class Enemy
 	double spriteHigh;
 public:
 
-	void move(double timer, double speed);
-	Weapon* getWeaponPointer();
-	void calculateAngleWatching(Player & player);
-	double getAngleWatching();
 	void setAngleMoving(double _angleMoving);
-	pair < double, double > getPosition();
-	void doAction(double timer);
+
+	Weapon* getWeaponPointer();
 	pair < double, double > getSize();
-	void setPosition(double newX, double newY);
-	void create(double _positionX, double _positionY, Weapon weapon);
-	void setAngleWatching(double angle);
 	void getDamage(int damage);
-	bool isDead();
 	pair < double, double > getPreviousPosition();
+
+	int getHP();
+	void setHP(int newHP);
+
+	void setAngleWatching(double angle);
+	double getAngleWatching();
+	void calculateAngleWatching(Player & player);
+
+	void setPosition(double newX, double newY);
+	pair < double, double > getPosition();
+
+	void move(double timer, double speed);
+	void doAction(double timer);
+	void create(double _positionX, double _positionY, Weapon weapon);
+	bool isDead();
 
 	Enemy();
 	~Enemy();

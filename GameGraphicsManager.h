@@ -30,6 +30,11 @@ public:
 
 	void initComponents(Game* game);
 	bool loadSprites();
+
 	void draw(Game* game, WaveManager* waveManager);
 	void drawPicture(Game* game);
+
+	void safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int));
+
+	void loadStorageFonts(Game* game);
 };

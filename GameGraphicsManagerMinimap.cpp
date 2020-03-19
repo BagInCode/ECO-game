@@ -3,6 +3,8 @@
 
 void Game::GraphicsManager::Minimap::initComponents()
 {
+	countVisibleSquares = 0;
+
 	loadSprites();
 
 	for (auto& it : visionMap)
@@ -90,6 +92,13 @@ void Game::GraphicsManager::Minimap::updateVision(Game* game)
 	{
 		for (int j = Left; j <= Right; j++)
 		{
+			// if was invisible
+			if (visionMap[i][j] == 0)
+			{
+				// increase count visible
+				countVisibleSquares++;
+			}
+
 			// set visibility
 			visionMap[i][j] = 1;
 		}
@@ -212,4 +221,49 @@ void Game::GraphicsManager::Minimap::draw(Game* game)
 	// set player sprite position
 	playerSprite.setPosition(MINIMAP_DELT_X + playerX * float(MINIMAP_SQUARE_SIZE_PIXIL), playerY * float(MINIMAP_SQUARE_SIZE_PIXIL));
 	game->window->draw(playerSprite);
+}
+
+void Game::GraphicsManager::Minimap::load(vector < int > & minimapData)
+{
+	for (int i = 0; i < FIELD_SIZE; i++)
+	{
+		for (int j = 0; j < FIELD_SIZE; j++)
+		{
+			visionMap[i][j] = bool(minimapData[i*FIELD_SIZE + j]);
+
+			countVisibleSquares += visionMap[i][j];
+		}
+	}
+}
+
+void Game::GraphicsManager::Minimap::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
+{
+	updSafeOption(safeOption, FIELD_SIZE*FIELD_SIZE);
+	out << FIELD_SIZE*FIELD_SIZE << "\n";
+
+	for (int i = 0; i < FIELD_SIZE; i++)
+	{
+		for (int j = 0; j < FIELD_SIZE; j++)
+		{
+			updSafeOption(safeOption, int(visionMap[i][j]));
+			out << visionMap[i][j];
+		}
+
+		out << "\n";
+	}
+
+	return;
+}
+
+void Game::GraphicsManager::Minimap::clearGame()
+{
+	for (int i = 0; i < FIELD_SIZE; i++)
+	{
+		for (int j = 0; j < FIELD_SIZE; j++)
+		{
+			visionMap[i][j] = 0;
+		}
+	}
+
+	return;
 }
