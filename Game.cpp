@@ -893,12 +893,12 @@ void Game::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
 	out << "5\n";
 
 	updSafeOption(safeOption, playerObject.getHealthPoints());
-	updSafeOption(safeOption, playerObject.armor);
+	updSafeOption(safeOption, playerObject.getArmor());
 	updSafeOption(safeOption, int(round(playerObject.getPosition().first)));
 	updSafeOption(safeOption, int(round(playerObject.getPosition().second)));
 	updSafeOption(safeOption, playerObject.getEngramPoints());
 
-	out << playerObject.getHealthPoints() << " " << playerObject.armor << " " << round(playerObject.getPosition().first) << " "
+	out << playerObject.getHealthPoints() << " " << playerObject.getArmor() << " " << round(playerObject.getPosition().first) << " "
 		<< round(playerObject.getPosition().second) << " " << playerObject.getEngramPoints() << "\n";
 
 	return;
@@ -1016,7 +1016,7 @@ void Game::load(vector < vector < int > >& weaponData, int grenadeData, vector <
 
 	// load player data
 	playerObject.setHP(PlayerData[0]);
-	playerObject.armor = PlayerData[1];
+	playerObject.setArmor(PlayerData[1]);
 	playerObject.setPosition(PlayerData[2], PlayerData[3]);
 	playerObject.addEngramPoints(PlayerData[4]);
 

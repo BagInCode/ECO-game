@@ -194,7 +194,7 @@ void Game::GraphicsManager::Interface::draw(Game* game, WaveManager* waveManager
 
 	armorSprite.setPosition(280, 645);
 	game->window->draw(armorSprite);
-	armorText.setString(toString(game->playerObject.armor));
+	armorText.setString(toString(game->playerObject.getArmor()));
 	armorText.setPosition(270 - armorText.getGlobalBounds().width, 630);
 	game->window->draw(armorText);
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 
@@ -15,6 +17,8 @@ class MainMenu
 {
 private:
 
+	class Settings;
+
 	Font font;
 	Event event;
 
@@ -29,6 +33,8 @@ private:
 	void init();
 	bool switchEvent(Event event, RenderWindow &window);
 	void draw(RenderWindow& window);
+
+	Settings* sett;
 
 public:
 

@@ -140,7 +140,8 @@ void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, do
 	lootable = 0;
 	remainingTime = 300.0;
 
-	int weaponAmmo = game->rnd() % 100, firstAidKit = game->rnd() % 3, grenades = min(int(game->rnd() % 2 + 1), 10 - game->countsGrenades), bullets;
+	int weaponAmmo = game->rnd() % 100, firstAidKit = game->rnd() % 3, grenades = min(int(game->rnd() % 2 + 1), 10 - game->countsGrenades), 
+		armor = !(game->rnd() % 10), bullets;
 
 	if (weaponAmmo < 5)
 	{
@@ -200,6 +201,13 @@ void Game::EnvironmentManager::Storage::tryToLoot(Game* game, double playerX, do
 		{
 			game->graphics->interface->addAction("find " + intToString(grenades) + " grenades", 5);
 		}
+	}
+
+	if (armor != 0)
+	{
+		game->playerObject.setArmor(100);
+
+		game->graphics->interface->addAction("find armor", 5);
 	}
 }
 

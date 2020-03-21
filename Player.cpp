@@ -28,7 +28,7 @@ void Player::create()
 
 	// set health points
 	healthPoints = 100;
-	armor = 100;
+	armor = 0;
 
 	engramPoints = 0;
 
@@ -283,7 +283,7 @@ void Player::decrEngramPoints(int value)
 	engramPoints -= value;
 }
 
-void Player::getDamage(int damage)
+void Player::getDamage(int damage, mt19937* rnd)
 {
 	/*
 	* function of decreasing player HP
@@ -291,9 +291,30 @@ void Player::getDamage(int damage)
 	* @param damage - damage
 	*/
 
-	healthPoints -= damage;
+	if (armor > 0)
+	{
+		int useArmor = !(rnd->operator()() % 2);
+
+		if (useArmor)
+		{
+			armor -= 5;
+		}
+		else
+		{
+			healthPoints -= damage;
+		}
+	}
+	else
+	{
+		healthPoints -= damage;
+	}
 
 	return;
+}
+
+int Player::getArmor()
+{
+	return armor;
 }
 
 void Player::setSize(double length, double high)

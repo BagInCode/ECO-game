@@ -377,7 +377,7 @@ bool Game::IntersectionManager::checkIntersection(Bullet& bullet, Game* game)
 			if (isInside(positionsForChecking[i].first, positionsForChecking[i].second, xLeft, xRight, yUp, yDown))
 			{
 				// decrease player HP
-				game->playerObject.getDamage(bullet.getDamage());
+				game->playerObject.getDamage(bullet.getDamage(), &(game->rnd));
 
 				game->graphics->interface->addAction("Get damage", 1);
 

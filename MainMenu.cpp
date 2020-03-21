@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "MainMenuSettings.h"
 
 #include <random>
 #include <time.h>
@@ -28,6 +29,8 @@ MainMenu::MainMenu()
 	quit->setTextSize(50);
 	quit->setTextColor(Color(213, 0, 0));
 	quit->setTextThickness(2);
+
+	sett = new Settings(&font);
 }
 
 MainMenu::~MainMenu()
@@ -36,6 +39,8 @@ MainMenu::~MainMenu()
 	delete continueGame;
 	delete settings;
 	delete quit;
+
+	delete sett;
 }
 
 void MainMenu::init()
@@ -90,7 +95,7 @@ bool MainMenu::switchEvent(Event event, RenderWindow &window)
 
 	if (settings->isPressed())
 	{
-		// todo
+		sett->process(window);
 	}
 
 	if (quit->isPressed())

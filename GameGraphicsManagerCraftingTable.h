@@ -17,7 +17,7 @@ public:
 	Texture weaponTextures;
 	Sprite pistolSprite, shotgunSprite, AKSprite, minigunSprite, sniperSprite, *weaponInconPointer;
 
-	Text engramPointsText;
+	Text engramPointsText, pressToExitText;
 
 	int weaponIndex, skillIndex;
 

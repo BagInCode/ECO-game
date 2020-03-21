@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <random>
 
 #include "Constants.db"
 
@@ -27,10 +28,10 @@ class Player
 	int healthPoints;
 
 	int engramPoints;
+	int armor;
 
 public:
 	int isDamaged;
-	int armor;
 
 	Player();
 	~Player();
@@ -55,10 +56,11 @@ public:
 	void addEngramPoints(int value);
 	void decrEngramPoints(int value);
 	void setEngramPoints(int newEngramPoints);
-
-	void getDamage(int damage);
+	
+	void getDamage(int damage, mt19937* rnd);
 
 	void setArmor(int newArmor);
+	int getArmor();
 
 	void create();
 	void move(double timer);

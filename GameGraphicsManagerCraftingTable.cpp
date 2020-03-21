@@ -122,6 +122,14 @@ void Game::GraphicsManager::CraftingTable::initComponents(Game* game)
 	engramPointsText.setString("Engram points: " + toString(game->playerObject.getEngramPoints()));
 	engramPointsText.setPosition(15, 15);
 
+	pressToExitText.setFont(*font);
+	pressToExitText.setCharacterSize(72);
+	pressToExitText.setFillColor(Color::Black);
+	pressToExitText.setOutlineThickness(2);
+	pressToExitText.setOutlineColor(Color::White);
+	pressToExitText.setString("Press E to exit");
+	pressToExitText.setPosition(800, 15);
+
 	reloadButton->setTextSpacing(15);
 	reloadButton->setTextColor(Color::Black);
 	reloadButton->setTextSize(40);
@@ -350,6 +358,7 @@ void Game::GraphicsManager::CraftingTable::draw(Game* game)
 	game->window->clear(Color(190, 235, 220));
 
 	game->window->draw(engramPointsText);
+	game->window->draw(pressToExitText);
 
 	pistolButton->draw(*(game->window));
 	shotgunButton->draw(*(game->window));
