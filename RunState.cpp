@@ -31,6 +31,11 @@ void RunState::doAction(double _timer, Enemy& enemy, Player& player)
 	// set angle oving to player
 	enemy.setAngleMoving(angle);
 
+	if (flag > -1)
+	{
+		enemy.setAngleMoving(flag*acos(-1) / 2);
+	}
+
 	// move enemy
 	enemy.move(_timer, ENEMY_SPEED);
 
@@ -61,6 +66,45 @@ int RunState::goNext(Enemy& enemy, Player& player)
 	{
 		// return pointer to run state
 		return 4;
+	}
+
+	// get enemy current position and enemy previous position
+	pair < double, double > enemyPreviousPosition = enemy.getPreviousPosition();
+	pair < double, double > enemyPosition = enemy.getPosition();
+
+	// calc dist of moving
+	double deltX = enemyPosition.first - enemyPreviousPosition.first;
+	double deltY = enemyPosition.second - enemyPreviousPosition.second;
+
+	double dist = sqrt(deltX * deltX + deltY * deltY);
+
+	// if enemy run to small dist
+	if (dist * 2 < TIME_FOR_ACTION * ENEMY_SPEED)
+	{
+		timer = 0;
+		maxTimer = 2000;
+
+		double angle = enemy.getAngleMoving();
+
+		if (abs(sin(angle)) > abs(cos(angle)))
+		{
+			if (rand() % 2)
+			{
+				flag = 0;
+			}else
+			{
+				flag = 2;
+			}
+		}else
+		{
+			if (rand() % 2)
+			{
+				flag = 1;
+			}else
+			{
+				flag = 3;
+			}
+		}
 	}
 
 	// if run too long

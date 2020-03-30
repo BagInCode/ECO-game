@@ -32,6 +32,7 @@ class Enemy
 public:
 
 	void setAngleMoving(double _angleMoving);
+	double getAngleMoving();
 
 	Weapon* getWeaponPointer();
 	pair < double, double > getSize();

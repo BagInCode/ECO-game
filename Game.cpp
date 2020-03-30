@@ -586,19 +586,6 @@ void Game::doActions()
 		// do action
 		EnemysState[i]->doAction(timer, Enemys[i], playerObject);
 
-		// try next state
-		int next = EnemysState[i]->goNext(Enemys[i], playerObject);
-
-		// if there is some
-		if (next != -1)
-		{
-			// delete previous
-			delete EnemysState[i];
-
-			// overwrite
-			EnemysState[i] = chooseNext(next);
-		}
-
 		// calculate coordinates of vector (enemy position -> player position)
 		double deltX = playerObject.getPosition().first - Enemys[i].getPosition().first;
 		double deltY = playerObject.getPosition().second - Enemys[i].getPosition().second;
@@ -726,17 +713,32 @@ void Game::checkEnemyAlive()
 	* function of checking is enemy alive or not
 	*/
 
-	// create new enemy vector
+	// create new enemy vector and enemy state vector
 	vector < Enemy > newEnemys;
+	vector < State* > newEnemysStates;
 
 	// for all enemys
 	for (int i = 0; i < int(Enemys.size()); i++)
 	{
+		// try next state
+		int next = EnemysState[i]->goNext(Enemys[i], playerObject);
+
+		// if there is some
+		if (next != -1)
+		{
+			// delete previous
+			delete EnemysState[i];
+
+			// overwrite
+			EnemysState[i] = chooseNext(next);
+		}
+
 		// if enemy alive
 		if (!Enemys[i].isDead())
 		{
 			// add to new vector
 			newEnemys.push_back(Enemys[i]);
+			newEnemysStates.push_back(EnemysState[i]);
 		}else
 		{
 			enemyDie++;
@@ -745,6 +747,7 @@ void Game::checkEnemyAlive()
 
 	// overwite previous vector
 	Enemys = newEnemys;
+	EnemysState = newEnemysStates;
 
 	return;
 }

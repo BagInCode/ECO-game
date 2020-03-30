@@ -86,6 +86,17 @@ void Enemy::setAngleMoving(double _angleMoving)
 	return;
 }
 
+double Enemy::getAngleMoving()
+{
+	/*
+	* function of getting angle of moving
+	*
+	* @return angle of moving
+	*/
+
+	return angleMoving;
+}
+
 pair < double, double > Enemy::getPosition()
 {
 	/*

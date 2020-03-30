@@ -1,4 +1,4 @@
-#include "GameEnvironmentManager.h"
+﻿#include "GameEnvironmentManager.h"
 #include "GameEnvironmentManagerStorage.h"
 #include "GameGraphicsManagerInterface.h"
 
@@ -32,13 +32,13 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 	int x, y;
 
 	int storageIndex = 0;
-	// divide all fieald on squares 20�20 and random in each square independly
+	// divide all fieald on squares 20õ20 and random in each square independly
 	for (int i = 0; i < FIELD_SIZE / BLOCK_SIZE; i++)
 	{
 		for (int j = 0; j < FIELD_SIZE / BLOCK_SIZE; j++)
 		{//
 			// random position of house
-			x = game->rnd() % (BLOCK_SIZE-3);
+			x = game->rnd() % (BLOCK_SIZE - 3);
 			y = game->rnd() % (BLOCK_SIZE - 3);
 
 			storageNumber[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x] = storageIndex;
@@ -53,7 +53,7 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 			field[i * BLOCK_SIZE + y][j * BLOCK_SIZE + x + 1] = -1;
 			field[i * BLOCK_SIZE + y + 1][j * BLOCK_SIZE + x + 1] = -1;
 			field[i * BLOCK_SIZE + y + 2][j * BLOCK_SIZE + x + 1] = -1;
-			
+
 			// generate tree
 			for (int k = 0; k < COUNT_TREES_IN_BLOCK; k++)
 			{
@@ -94,7 +94,7 @@ void Game::EnvironmentManager::fieldGeneration(Game* game)
 					field[i * 33 + x][j * 33 + y] = 4;
 
 					craftingTables.push_back({ { (j * 33 + y)*1.*SQUARE_SIZE_PIXIL, (j * 33 + y + 1)*1.*SQUARE_SIZE_PIXIL },
-											   { (i * 33 + x)*1.*SQUARE_SIZE_PIXIL, (i * 33 + x + 1)*1.*SQUARE_SIZE_PIXIL } });
+					{ (i * 33 + x)*1.*SQUARE_SIZE_PIXIL, (i * 33 + x + 1)*1.*SQUARE_SIZE_PIXIL } });
 
 					break;
 				}
@@ -195,9 +195,9 @@ void Game::EnvironmentManager::load(vector < pair < pair < int, int >, int > >& 
 
 		storageNumber[cellY][cellX] = int(storages.size());
 		storages.push_back(new Game::EnvironmentManager::Storage(cellX * SQUARE_SIZE_PIXIL, (cellX + 2) * SQUARE_SIZE_PIXIL,
-																 cellY * SQUARE_SIZE_PIXIL, (cellY + 3) * SQUARE_SIZE_PIXIL));
-	
-		storages.back()->setRemainingTime(storageData[i].second);
+			cellY * SQUARE_SIZE_PIXIL, (cellY + 3) * SQUARE_SIZE_PIXIL));
+
+		storages.back()->setRemainingTime(storageData[i].second+10);
 
 		field[cellY][cellX] = -1;
 		field[cellY][cellX + 1] = -1;
@@ -214,8 +214,8 @@ void Game::EnvironmentManager::load(vector < pair < pair < int, int >, int > >& 
 
 		field[cellY][cellX] = 4;
 
-		craftingTables.push_back({ { cellX * SQUARE_SIZE_PIXIL, (cellX + 1) * SQUARE_SIZE_PIXIL }, 
-								   { cellY * SQUARE_SIZE_PIXIL, (cellY + 1) * SQUARE_SIZE_PIXIL } });
+		craftingTables.push_back({ { cellX * SQUARE_SIZE_PIXIL, (cellX + 1) * SQUARE_SIZE_PIXIL },
+		{ cellY * SQUARE_SIZE_PIXIL, (cellY + 1) * SQUARE_SIZE_PIXIL } });
 	}
 
 	for (int i = 0; i < int(treeData.size()); i++)

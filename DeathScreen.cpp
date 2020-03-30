@@ -154,8 +154,8 @@ void DeathScreen::showResult(vector < int > parametrs, RenderWindow* window)
 	information = information + "             by Shotgun ................. " + toString(parametrs[4]) + "\n";
 	information = information + "             by AK ............................ " + toString(parametrs[5]) + "\n";
 	information = information + "             by Minigun .................. " + toString(parametrs[6]) + "\n";
-	information = information + "             by Sniper ..................... " + toString(parametrs[7]) + "\n\n";
-	information = information + "             by grenade ................. " + toString(parametrs[2] - parametrs[3] - parametrs[4] - parametrs[5] - parametrs[6] - parametrs[7]) + "\n";
+	information = information + "             by Sniper ..................... " + toString(parametrs[7]) + "\n";
+	information = information + "             by grenade .................. " + toString(parametrs[2] - parametrs[3] - parametrs[4] - parametrs[5] - parametrs[6] - parametrs[7]) + "\n\n";
 	
 	information = information + "Press any key to continue...";
 
