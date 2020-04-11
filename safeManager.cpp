@@ -2,6 +2,7 @@
 #include "GameEnvironmentManager.h"
 #include "GameGraphicsManagerMinimap.h"
 #include "WaveManager.h"
+#include "GlobalVariable.h"
 #include <fstream>
 
 Game::SafeManager::SafeManager()
@@ -40,7 +41,9 @@ void Game::SafeManager::safeGame(Game* game)
 	game->safe(out, safeOption, updSafeOption);
 	game->waves->safe(out, safeOption, updSafeOption);
 
-	out << safeOption;
+	updSafeOption(safeOption, GlobalVariable::gameLevel);
+
+	out << GlobalVariable::gameLevel << "\n" << safeOption;
 }
 
 bool Game::SafeManager::loadGame(RenderWindow& window, Game* game)
@@ -164,7 +167,7 @@ bool Game::SafeManager::isCorrectSafe(vector < int >& loadedData)
 		loadedData.push_back(value);
 	}
 
-	if (int(loadedData.size()) != 10296)
+	if (int(loadedData.size()) != 10297)
 	{
 		return 0;
 	}
@@ -275,11 +278,14 @@ void Game::SafeManager::splitInput(vector < int >& loadedData, Game* game)
 	int countWaveData = loadedData[position];
 	int waveData = loadedData[position + 1];
 
+	position += countWaveData + 1;
+
+	int gameLevel = loadedData[position];
+
 	game->graphics->minimap->load(minimapData);
 	game->environment->load(storagesData, craftingTablesData, treeData);
 	game->load(weaponData, grenadeData, killData, playerData);
 	game->waves->load(waveData);
 
-	cerr << countMinimapData << " " << countStoragesData << " " << countCradtingTablesData << " " << countTreeData << " " << countWeaponData << " "
-		<< countGrenadeData << " " << countKillData << " " << countPlayerData << "\n";
+	GlobalVariable::gameLevel = gameLevel;
 }

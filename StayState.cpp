@@ -1,4 +1,5 @@
 #include "StayState.h"
+#include "GlobalVariable.h"
 
 
 StayState::StayState()
@@ -68,5 +69,5 @@ void StayState::randomizeState(mt19937* rnd)
 	*/
 
 	// randomize max time of stay
-	maxTimer = TIME_ENEMY_STAY + (int(rnd->operator()() % 501) - 250);
+	maxTimer = TIME_ENEMY_STAY[GlobalVariable::gameLevel] + (int(rnd->operator()() % 401) - 200);
 }

@@ -28,6 +28,13 @@ Button::~Button()
 
 }
 
+void Button::setText(string text)
+{
+	this->text.setString(text);
+
+	return;
+}
+
 void Button::setTextSize(int textSize)
 {
 	text.setCharacterSize(textSize);

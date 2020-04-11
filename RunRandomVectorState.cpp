@@ -1,4 +1,5 @@
 #include "RunRandomVectorState.h"
+#include "GlobalVariable.h"
 
 
 RunRandomVectorState::RunRandomVectorState()
@@ -36,7 +37,7 @@ void RunRandomVectorState::doAction(double _timer, Enemy& enemy, Player& player)
 	}
 
 	// move enemy
-	enemy.move(_timer, ENEMY_SPEED);
+	enemy.move(_timer, ENEMY_SPEED[GlobalVariable::gameLevel]);
 
 	// increase timer
 	timer += _timer;
@@ -84,5 +85,5 @@ void RunRandomVectorState::randomizeState(mt19937* rnd)
 	*/
 
 	// randomize max time of stay
-	maxTimer = TIME_ENEMY_STAY + (int(rnd->operator()() % 501) - 250);
+	maxTimer = TIME_ENEMY_STAY[GlobalVariable::gameLevel] + (int(rnd->operator()() % 401) - 200);
 }

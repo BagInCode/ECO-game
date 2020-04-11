@@ -1,5 +1,5 @@
 #include "RunState.h"
-
+#include "GlobalVariable.h"
 
 RunState::RunState()
 {
@@ -37,7 +37,7 @@ void RunState::doAction(double _timer, Enemy& enemy, Player& player)
 	}
 
 	// move enemy
-	enemy.move(_timer, ENEMY_SPEED);
+	enemy.move(_timer, ENEMY_SPEED[GlobalVariable::gameLevel]);
 
 	// increase timer
 	timer += _timer;
@@ -79,7 +79,7 @@ int RunState::goNext(Enemy& enemy, Player& player)
 	double dist = sqrt(deltX * deltX + deltY * deltY);
 
 	// if enemy run to small dist
-	if (dist * 2 < TIME_FOR_ACTION * ENEMY_SPEED)
+	if (dist * 2 < TIME_FOR_ACTION * ENEMY_SPEED[GlobalVariable::gameLevel])
 	{
 		timer = 0;
 		maxTimer = 2000;
@@ -124,5 +124,5 @@ void RunState::randomizeState(mt19937* rnd)
 	*/
 
 	// randomize max time of stay
-	maxTimer = TIME_ENEMY_STAY + (int(rnd->operator()() % 501) - 250);
+	maxTimer = TIME_ENEMY_STAY[GlobalVariable::gameLevel] + (int(rnd->operator()() % 401) - 200);
 }

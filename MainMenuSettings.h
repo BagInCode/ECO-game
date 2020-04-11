@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MainMenu.h"
+#include "GlobalVariable.h"
 
 class MainMenu::Settings
 {
@@ -9,6 +10,7 @@ class MainMenu::Settings
 	Text grenadeGText, interactEText, minimapMText, pausaEscText;
 
 	Button* exitButton;
+	Button* levelButton;
 
 	Event event;
 	Clock clock;
@@ -19,6 +21,7 @@ class MainMenu::Settings
 	void switchEvent(Event event, RenderWindow &window);
 	void draw(RenderWindow& window);
 
+	string toString(int val);
 public:
 
 	Settings(Font* font);

@@ -8,8 +8,12 @@
 
 #include "Constants.db"
 
+#include "GlobalVariable.h"
+
 using namespace std;
 using namespace sf;
+
+int GlobalVariable::gameLevel = 0;
 
 const string WINDOW_NAME = "ECO game";
 

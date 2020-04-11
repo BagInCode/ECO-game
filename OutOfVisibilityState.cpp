@@ -1,4 +1,5 @@
 #include "OutOfVisibilityState.h"
+#include "GlobalVariable.h"
 
 
 OutOfVisibilityState::OutOfVisibilityState()
@@ -32,7 +33,7 @@ void OutOfVisibilityState::doAction(double _timer, Enemy& enemy, Player& player)
 	enemy.setAngleMoving(angle);
 
 	// move enemy
-	enemy.move(_timer, 2*ENEMY_SPEED);
+	enemy.move(_timer, 2 * ENEMY_SPEED[GlobalVariable::gameLevel]);
 
 	// remember how much time has been passed
 	timer = _timer;
@@ -71,7 +72,7 @@ int OutOfVisibilityState::goNext(Enemy& enemy, Player& player)
 					   (currentPosition.second - previousPosition.second)*(currentPosition.first - previousPosition.second));
 
 	// if dist is too short
-	if (dist < timer * ENEMY_SPEED)
+	if (dist < timer * ENEMY_SPEED[GlobalVariable::gameLevel])
 	{
 		// return pointer to run on random vector
 		return 3;

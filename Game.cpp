@@ -9,6 +9,7 @@
 #include "IntersectionManager.h"
 #include "WaveManager.h"
 #include "safeManager.h"
+#include "GlobalVariable.h"
 #include <fstream>
 
 Game::Game() : rnd((unsigned int)time(NULL))
@@ -631,7 +632,7 @@ void Game::checkGameOver()
 		double dist = sqrt((enemyX - playerX) * (enemyX - playerX) + (enemyY - playerY) * (enemyY - playerY));
 
 		// if enemy too close
-		if (dist < ENDING_RADIUS)
+		if (dist < ENDING_RADIUS[GlobalVariable::gameLevel])
 		{
 			// show death screen
 			death.process(getInformationForDeathScreen(), window);

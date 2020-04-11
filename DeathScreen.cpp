@@ -157,7 +157,7 @@ void DeathScreen::showResult(vector < int > parametrs, RenderWindow* window)
 	information = information + "             by Sniper ..................... " + toString(parametrs[7]) + "\n";
 	information = information + "             by grenade .................. " + toString(parametrs[2] - parametrs[3] - parametrs[4] - parametrs[5] - parametrs[6] - parametrs[7]) + "\n\n";
 	
-	information = information + "Press any key to continue...";
+	information = information + "Press Enter to continue...";
 
 	// set color, size, position and string to text
 	DeathText.setFillColor(Color::White);
@@ -201,8 +201,8 @@ void DeathScreen::process(vector < int > parametrs, RenderWindow* window)
 		// if there is some event
 		if (window->pollEvent(event))
 		{
-			// if wvwnt of key pressing
-			if (event.type == Event::KeyPressed)
+			// if Enter pressing
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Enter)
 			{
 				// end function
 				return;

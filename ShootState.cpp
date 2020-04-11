@@ -1,5 +1,5 @@
 #include "ShootState.h"
-
+#include "GlobalVariable.h"
 
 ShootState::ShootState()
 {
@@ -79,5 +79,5 @@ void ShootState::randomizeState(mt19937* rnd)
 	*/
 
 	// randomize max time of stay
-	maxCountShoots = COUNT_ENEMY_SHOOT + (int(rnd->operator()() % 5) - 2);
+	maxCountShoots = COUNT_ENEMY_SHOOT[GlobalVariable::gameLevel] + (int(rnd->operator()() % 5) - 2);
 }

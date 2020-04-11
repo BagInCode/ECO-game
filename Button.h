@@ -49,6 +49,7 @@ public:
 		Color idleColor, Color hoverColor, Color activeColor);
 	~Button();
 
+	void setText(string text);
 	void setTextSize(int textSize);
 	void setTextColor(Color color);
 	void setTextThickness(int thicknessSize);

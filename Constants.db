@@ -5,6 +5,12 @@
 #include <cmath>
 #include <fstream>
 
+// ------------------------------------- Other Constants -----|
+const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
+const double CHARACTER_BODY_RADIUS = 10;
+const int COUNT_GAME_LEVELS = 3; 
+
+
 // ---------------------------- Window Constants -----|
 const int WINDOW_LENGTH = 1300;
 const int WINDOW_HIGH = 700;
@@ -41,21 +47,20 @@ const int PLAYER_SPRITE_AK_HIGH = 30;
 
 // ------------------------------ Speed Constants -----|
 const double PLAYER_SPEED = 0.1;
-const double ENEMY_SPEED = 0.15;
-
+const double ENEMY_SPEED[COUNT_GAME_LEVELS] = {0.15, 0.175, 0.2};
 
 // ------------------------------ Time Constants -----|
 const double TIME_FOR_ACTION = 20;
 
-const double TIME_ENEMY_STAY = 600;
-const double TIME_ENEMY_RUN = 1200;
+const double TIME_ENEMY_STAY[COUNT_GAME_LEVELS] = {600, 400, 200};
+const double TIME_ENEMY_RUN[COUNT_GAME_LEVELS] = {1200, 1100, 1000};
 
-const double TIME_BASE_BETWEEN_WAVE = 60000;
-const double TIME_DIFF_BETWEEN_WAVE = 4000;
+const double TIME_BASE_BETWEEN_WAVE[COUNT_GAME_LEVELS] = {60000, 50000, 45000};
+const double TIME_DIFF_BETWEEN_WAVE[COUNT_GAME_LEVELS] = {4000, 3500, 3000};
 
 const double TIME_GRENADE_DALAY = 2000;
 
-const double TIME_OF_BULLET_LIFE = 10000;
+const double TIME_OF_BULLET_LIFE = 5000;
 
 const double DEATH_SCREEN_FIRST_SCENE_TIME = 4000;
 const long long DEATH_SCREEN_SECOND_SCENE_TIME = 1000;
@@ -148,15 +153,24 @@ const int MAX_VISIBLE_DIST = 12;
 
 
 // ------------------------------------ Enemy Constants -----|
-const int COUNT_ENEMY_SHOOT = 3;
+const int COUNT_ENEMY_SHOOT[COUNT_GAME_LEVELS] = {3, 4, 5};
 
-const double ENDING_RADIUS = 40;
+const double ENDING_RADIUS[COUNT_GAME_LEVELS] = {40, 45, 50};
+
+const double ENEMY_WEAPON_RELOAD_TIME[COUNT_GAME_LEVELS] = {1002, 1002, 1002};
+const double ENEMY_WEAPON_SHOOT_DELAY_TIME[COUNT_GAME_LEVELS] = {1000, 750, 500};
+const double ENEMY_WEAPON_BULLET_SPEED[COUNT_GAME_LEVELS] = {1, 1.1, 1.2};
+const double ENEMY_WEAPON_ACCURACY[COUNT_GAME_LEVELS] = {4 * acos(-1) / 180, 3 * acos(-1) / 180, 2 * acos(-1) / 180}; 
+const int ENEMY_WEAPON_BULLETS_PER_SHOOT[COUNT_GAME_LEVELS] = {1, 1, 1};
+const int ENEMY_WEAPON_MAX_AMMO[COUNT_GAME_LEVELS] = {30, 30, 30};
+const int ENEMY_BULLET_DAMAGE[COUNT_GAME_LEVELS] = {1, 1, 1};
 
 const int ENEMY_SPRITE_TOP = 30;
 const int ENEMY_SPRITE_LEFT = 200;
 	  
 const int ENEMY_SPRITE_LENGTH = 35;
 const int ENEMY_SPRITE_HIGH = 25;
+
 
 
 // ------------------------------------- Grenade Constants -----|
@@ -172,11 +186,6 @@ const int GRENADE_DMG = 50;
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
 #define DEATH_SCREEN_FONT_PATH "Fonts/DeathScreen.ttf"
 #define INTERFACE_TEXTURE "Textures/Interface.png"
-
-
-// ------------------------------------- Other Constants -----|
-const int COUNT_SEGMENTS_FOR_BULLET_CHECKING = 5;
-const double CHARACTER_BODY_RADIUS = 10;
 
 
 // ------------------------------------- Player Weapon Constants -----|

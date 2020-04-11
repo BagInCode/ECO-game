@@ -2,6 +2,7 @@
 #include "GameGraphicsManagerMinimap.h"
 #include "GameGraphicsManagerInterface.h"
 #include "safeManager.h"
+#include "GlobalVariable.h"
 
 
 Game::WaveManager::WaveManager()
@@ -26,7 +27,7 @@ void Game::WaveManager::checkTimer(double _timer, Game* game)
 	timer += _timer;
 
 	// if there is time for new wave
-	if (timer > TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1))
+	if (timer > TIME_BASE_BETWEEN_WAVE[GlobalVariable::gameLevel] + TIME_DIFF_BETWEEN_WAVE[GlobalVariable::gameLevel] * (numberOfWave - 1))
 	{
 		//if no enemy in game now
 		if (int(game->Enemys.size()) == 0)
@@ -67,7 +68,10 @@ void Game::WaveManager::createWave(int numberOfWave, Game* game)
 
 		// create enemy weapon
 		Weapon enemyWeapon;
-		enemyWeapon.create(1002, 1000, 1, 4 * acos(-1) / 180, 1, 30, 1, &(game->Bullets), &(game->rnd));
+		enemyWeapon.create(ENEMY_WEAPON_SHOOT_DELAY_TIME[GlobalVariable::gameLevel], ENEMY_WEAPON_SHOOT_DELAY_TIME[GlobalVariable::gameLevel],
+						   ENEMY_WEAPON_BULLET_SPEED[GlobalVariable::gameLevel], ENEMY_WEAPON_ACCURACY[GlobalVariable::gameLevel],
+						   ENEMY_WEAPON_BULLETS_PER_SHOOT[GlobalVariable::gameLevel], ENEMY_WEAPON_MAX_AMMO[GlobalVariable::gameLevel],
+						   ENEMY_BULLET_DAMAGE[GlobalVariable::gameLevel], &(game->Bullets), &(game->rnd));
 		enemyWeapon.addBullets(1000);
 
 		// create enemy
@@ -125,7 +129,7 @@ double Game::WaveManager::getTimeToWave()
 	* @return timer to next wave
 	*/
 
-	return TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1) - timer;
+	return TIME_BASE_BETWEEN_WAVE[GlobalVariable::gameLevel] + TIME_DIFF_BETWEEN_WAVE[GlobalVariable::gameLevel] * (numberOfWave - 1) - timer;
 }
 
 int Game::WaveManager::getNumberOfWave()
@@ -149,7 +153,7 @@ void Game::WaveManager::load(int waveData)
 
 	// set number of wave, set timer to 10 sec before next wave
 	numberOfWave = waveData;
-	timer = TIME_BASE_BETWEEN_WAVE + TIME_DIFF_BETWEEN_WAVE*(numberOfWave - 1) - 10000;
+	timer = TIME_BASE_BETWEEN_WAVE[GlobalVariable::gameLevel] + TIME_DIFF_BETWEEN_WAVE[GlobalVariable::gameLevel] * (numberOfWave - 1) - 10000;
 }
 
 void Game::WaveManager::safe(ofstream& out, int& safeOption, void(*updSafeOption)(int&, int))
