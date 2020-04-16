@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MainMenu.h"
+#include "ToggleBox.h"
 #include "GlobalVariable.h"
 
 class MainMenu::Settings
@@ -10,7 +11,7 @@ class MainMenu::Settings
 	Text grenadeGText, interactEText, minimapMText, pausaEscText;
 
 	Button* exitButton;
-	Button* levelButton;
+	ToggleBox* complexityLevel;
 
 	Event event;
 	Clock clock;

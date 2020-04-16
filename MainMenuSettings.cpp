@@ -11,10 +11,14 @@ MainMenu::Settings::Settings(Font* font)
 	exitButton->setTextColor(Color(213, 0, 0));
 	exitButton->setTextThickness(2);
 
-	levelButton = new Button(450, 450, 400, 100, *font, "Level " + toString(GlobalVariable::gameLevel + 1), Color(255, 255, 255), Color(189, 189, 189), Color(117, 117, 117));
-	levelButton->setTextSize(60);
-	levelButton->setTextColor(Color(213, 0, 0));
-	levelButton->setTextThickness(2);
+	Texture pointerTexture;
+	pointerTexture.loadFromFile(TOGGLE_BOW_ARROW_TEXTURE);
+	complexityLevel = new ToggleBox(450, 450, 400, 100, 50, 50, pointerTexture, *font);
+	complexityLevel->addCase("Easy");
+	complexityLevel->addCase("Medium");
+	complexityLevel->addCase("Hard");
+
+	complexityLevel->setCaseIndex(GlobalVariable::gameLevel);
 
 	moveWText.setString("W - move up");
 	moveWText.setFont(*font);
@@ -86,7 +90,7 @@ MainMenu::Settings::Settings(Font* font)
 MainMenu::Settings::~Settings()
 {
 	delete exitButton;
-	delete levelButton;
+	delete complexityLevel;
 }
 
 void MainMenu::Settings::switchEvent(Event event, RenderWindow &window)
@@ -108,14 +112,8 @@ void MainMenu::Settings::switchEvent(Event event, RenderWindow &window)
 		toProcess = 0;
 	}
 
-	levelButton->updateState(mousePosition);
-
-	if (levelButton->isPressed())
-	{
-		GlobalVariable::gameLevel = (GlobalVariable::gameLevel + 1) % 3;
-
-		levelButton->setText("Level " + toString(GlobalVariable::gameLevel + 1));
-	}
+	complexityLevel->update(window);
+	GlobalVariable::gameLevel = complexityLevel->getCaseIndex();
 }
 
 void MainMenu::Settings::draw(RenderWindow &window)
@@ -123,7 +121,7 @@ void MainMenu::Settings::draw(RenderWindow &window)
 	window.clear(Color::Black);
 
 	exitButton->draw(window);
-	levelButton->draw(window);
+	complexityLevel->draw(window);
 
 	window.draw(moveWText);
 	window.draw(moveSText);
@@ -140,6 +138,8 @@ void MainMenu::Settings::draw(RenderWindow &window)
 
 void MainMenu::Settings::process(RenderWindow& window)
 {
+	complexityLevel->setCaseIndex(GlobalVariable::gameLevel);
+	complexityLevel->update(window);
 	clock.restart();
 	toProcess = 1;
 	timer = 0;

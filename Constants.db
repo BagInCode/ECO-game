@@ -183,6 +183,7 @@ const int GRENADE_DMG = 50;
 #define ROBO_REGULAR_FILE_PATH "Fonts/Roboto-Regular.ttf"
 #define ENVIRONMENT_TEXTURE_FILE_PATH "Textures\\Environment.png"
 #define MINIMAP_TEXTURE_FILE_PATH "Textures\\Minimap.png"
+#define TOGGLE_BOW_ARROW_TEXTURE "Textures\\toggle.png"
 #define GAME_GRAPHICS_MANAGER_INTERFACE_FONT_PATH "Fonts/InterfaceFont.ttf"
 #define DEATH_SCREEN_FONT_PATH "Fonts/DeathScreen.ttf"
 #define INTERFACE_TEXTURE "Textures/Interface.png"
