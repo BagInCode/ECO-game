@@ -169,6 +169,8 @@ void DeathScreen::showResult(vector < int > parametrs, RenderWindow* window)
 	window->draw(DeathText);
 	window->display();
 
+	this_thread::sleep_for(chrono::milliseconds(DEATH_SCREEN_SECOND_SCENE_TIME));
+
 	return;
 }
 
